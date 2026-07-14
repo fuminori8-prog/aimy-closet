@@ -56,13 +56,11 @@ const categories = categoryConfig.map((category) => ({
   href: `/item?category=${encodeURIComponent(category.name)}`,
 }))
 
-const latestItems = [
-  { name: 'ブラックビーチ（水着）', rarity: 'SSR', date: '2026/07/11' },
-  { name: 'ピンクナース', rarity: 'SR', date: '2026/07/08' },
-  { name: 'フローラルワンピース', rarity: 'R', date: '2026/07/05' },
-  { name: 'シェルイヤリング', rarity: 'SR', date: '2026/07/03' },
-  { name: 'サンセットビーチ', rarity: 'R', date: '2026/06/30' },
-]
+const latestItems = gachas[0].items.slice(0, 5).map((item) => ({
+  name: item.name,
+  rarity: item.rarity,
+  category: item.category,
+}))
 
 const popularItems = [
   { name: 'ブラックビーチ（水着）', hearts: '1,248' },
@@ -82,7 +80,6 @@ function App() {
         <AdBanner text="広告バナー 728×90" />
         <CategoryGrid categories={categories} />
         <ItemSection title="新着アイテム" items={latestItems} showRarity />
-        <ItemSection title="人気アイテムTOP5" items={popularItems} showRarity={false} />
         <AdBanner text="広告バナー 728×90" />
       </main>
       <Footer />
