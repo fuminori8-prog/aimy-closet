@@ -821,59 +821,47 @@ footer p {
 }
 
 @media (max-width: 768px) {
-
   .header {
-
     flex-direction: column;
-
     gap: 16px;
   }
 
   .header-nav {
-
     width: 100%;
-
     display: grid;
-
     grid-template-columns: 1fr 1fr;
-
     gap: 10px;
   }
 
-  .nav-button{
-
-    min-width:0;
+  .nav-button {
+    min-width: 0;
   }
 
-  .logo-description{
-  
-    display:none;
+  .logo-area {
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
   }
 
-  .logo-area{
-    flex-direction:column;
-    align-items:center;
-    gap:2px;
+  /* ← display:none は消す */
+  .logo-description {
+    display: block;
+    font-size: 11px;
   }
-
-  .logo-description{
-    font-size:11px;
-  }
+}
 
 @media (max-width: 500px) {
-  /* カテゴリなど、通常カードは1列 */
   .card-grid {
     grid-template-columns: 1fr;
   }
 
-  /* アイテムだけは2列 */
   .item-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(2, 1fr);
     gap: 8px;
   }
 
   .categories .card-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(2, 1fr);
   }
 
   .search {
@@ -881,7 +869,6 @@ footer p {
   }
 
   .item-card {
-    min-width: 0;
     padding: 8px;
     border-radius: 12px;
     grid-template-rows: auto 3.8em auto;
@@ -901,16 +888,38 @@ footer p {
   .rarity-badge {
     top: 6px;
     right: 6px;
-    padding: 3px 6px;
     font-size: 10px;
+    padding: 3px 6px;
   }
 }
 
 @media (min-width: 501px) and (max-width: 900px) {
   .item-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(3, 1fr);
     gap: 10px;
   }
-} 
+}
 
+@media (max-width: 768px) {
+  .logo-area {
+    width: 100%;
+    flex-direction: row;
+    align-items: baseline;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: nowrap;
+  }
+
+  .logo {
+    font-size: 21px;
+    flex-shrink: 0;
+  }
+
+  .logo-description {
+    display: inline;
+    margin: 0;
+    font-size: 9px;
+    line-height: 1.2;
+    white-space: nowrap;
+  }
 }
