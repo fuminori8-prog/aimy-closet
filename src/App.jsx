@@ -58,8 +58,6 @@ const categories = categoryConfig.map((category) => ({
 
 const latestGacha = gachas[0]
 
-console.log(gachas[0])
-
 const latestItems = latestGacha.items.slice(0, 5)
 
 function App() {
@@ -71,7 +69,12 @@ function App() {
         <LatestGacha />
         <AdBanner text="広告バナー 728×90" />
         <CategoryGrid categories={categories} />
-
+        
+        <ItemSection
+          title="新着アイテム"
+          items={latestItems}
+          showRarity
+          />
         <AdBanner text="広告バナー 728×90" />
       </main>
       <Footer />
