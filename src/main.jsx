@@ -7,10 +7,13 @@ import GachaDetail from './pages/GachaDetail.jsx'
 import GachaList from './pages/GachaList.jsx'
 import ItemList from './pages/ItemList.jsx'
 import ItemDetail from './pages/ItemDetail.jsx'
+import ScrollToTop from './components/ScrollToTop'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
+      <ScrollToTop />
+
       <Routes>
         <Route path="/" element={<App />} />
         <Route path="/item" element={<ItemList />} />
