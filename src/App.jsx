@@ -56,19 +56,11 @@ const categories = categoryConfig.map((category) => ({
   href: `/item?category=${encodeURIComponent(category.name)}`,
 }))
 
-const latestItems = gachas[0].items.slice(0, 5).map((item) => ({
-  name: item.name,
-  rarity: item.rarity,
-  category: item.category,
-}))
+const latestGacha = gachas[0]
 
-const popularItems = [
-  { name: 'ブラックビーチ（水着）', hearts: '1,248' },
-  { name: 'ピンクナース', hearts: '892' },
-  { name: 'フローラルワンピース', hearts: '761' },
-  { name: 'シェルイヤリング', hearts: '704' },
-  { name: 'サンセットビーチ', hearts: '612' },
-]
+const latestGacha = gachas[0]
+
+const latestItems = latestGacha.items.slice(0, 5)
 
 function App() {
   return (
