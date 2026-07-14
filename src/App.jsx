@@ -76,7 +76,6 @@ function App() {
         <ItemSection
           title="新着アイテム"
           items={latestItems}
-          showRarity
           />
         <AdBanner text="広告バナー 728×90" />
       </main>
