@@ -56,7 +56,12 @@ const categories = categoryConfig.map((category) => ({
   href: `/item?category=${encodeURIComponent(category.name)}`,
 }))
 
-const latestGacha = gachas[0]
+const latestGacha = [...gachas].sort((a, b) => {
+  const toDate = (str) => new Date(str.replace(/\//g, "-"))
+  return toDate(b.startDate) - toDate(a.startDate)
+})[0]
+
+const latestItems = latestGacha.items.slice(0, 5)
 
 const latestItems = latestGacha.items.slice(0, 5)
 
