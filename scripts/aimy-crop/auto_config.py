@@ -1,0 +1,215 @@
+#!/usr/bin/env python3
+"""Aimy Crop Tool v4 - auto generate config from candidates.json."""
+
+from __future__ import annotations
+
+import argparse
+import json
+import subprocess
+from pathlib import Path
+from typing import Any, Dict, List, Tuple
+
+
+RARITY_RANK = {
+    "SSR": 0,
+    "SR": 1,
+    "NR": 2,
+    "R": 3,
+    "N": 4,
+    "UNKNOWN": 9,
+}
+
+
+def _load_gacha(slug: str, project_root: Path) -> Dict[str, Any]:
+    gacha_path = project_root / "src" / "data" / "gachas" / f"{slug}.js"
+    if not gacha_path.exists():
+        raise FileNotFoundError(f"Gacha file not found: {gacha_path}")
+
+    node_script = r"""
+const fs = require('fs');
+const vm = require('vm');
+const file = process.argv[1];
+const src = fs.readFileSync(file, 'utf8').replace(/export\s+default/, 'module.exports =');
+const ctx = { module: { exports: {} }, exports: {} };
+vm.runInNewContext(src, ctx, { filename: file });
+const g = ctx.module.exports;
+console.log(JSON.stringify({
+  slug: g.slug,
+  title: g.title,
+  items: (g.items || []).map((x) => ({ id: x.id, name: x.name, rarity: x.rarity, category: x.category }))
+}));
+"""
+    proc = subprocess.run(
+        ["node", "-e", node_script, str(gacha_path)],
+        cwd=project_root,
+        text=True,
+        capture_output=True,
+        check=True,
+    )
+    return json.loads(proc.stdout)
+
+
+def _load_candidates(slug: str, project_root: Path) -> List[Dict[str, Any]]:
+    p = project_root / "scripts" / "aimy-crop" / "output" / slug / "candidates.json"
+    if not p.exists():
+        raise FileNotFoundError(f"candidates.json not found: {p}")
+    obj = json.loads(p.read_text(encoding="utf-8"))
+    candidates = obj.get("candidates", [])
+    if not isinstance(candidates, list):
+        raise ValueError("candidates.json has invalid candidates")
+
+    for i, c in enumerate(candidates, start=1):
+        c["candidateIndex"] = i
+    return candidates
+
+
+def _dedupe_candidates(
+    candidates: List[Dict[str, Any]],
+    target_count: int,
+) -> Tuple[List[Dict[str, Any]], int]:
+    """
+    候補数がitems件数を超えている分だけ、重複候補を控えめに除外する。
+
+    duplicateGroupに含まれる2件目以降を削除候補とするが、
+    target_count未満になるまで削除しない。
+    """
+    sorted_candidates = sorted(
+        candidates,
+        key=lambda c: int(c.get("orderFromTop", 0)),
+    )
+
+    excess = max(0, len(sorted_candidates) - target_count)
+    if excess == 0:
+        return sorted_candidates, 0
+
+    seen_groups = set()
+    duplicate_indexes = []
+
+    for index, candidate in enumerate(sorted_candidates):
+        group = candidate.get("duplicateGroup")
+        if not group:
+            continue
+
+        if group in seen_groups:
+            duplicate_indexes.append(index)
+        else:
+            seen_groups.add(group)
+
+    # 必要数を超えている分だけ除外する。
+    remove_indexes = set(duplicate_indexes[:excess])
+
+    result = [
+        candidate
+        for index, candidate in enumerate(sorted_candidates)
+        if index not in remove_indexes
+    ]
+
+    if len(result) < target_count:
+        raise ValueError(
+            f"Conservative dedupe removed too many candidates: "
+            f"target={target_count} result={len(result)}"
+        )
+
+    return result, len(remove_indexes)
+
+
+def _sort_candidates(candidates: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    return sorted(
+        candidates,
+        key=lambda c: (
+            RARITY_RANK.get(str(c.get("estimatedRarity", "UNKNOWN")), 9),
+            int(c.get("orderFromTop", 0)),
+        ),
+    )
+
+
+def run_auto_config(slug: str, project_root: Path) -> Dict[str, Any]:
+    gacha = _load_gacha(slug, project_root)
+    items = gacha.get("items", [])
+    if len(items) == 0:
+        raise ValueError("items is empty")
+
+    candidates_raw = _load_candidates(slug, project_root)
+    candidates_unique, dropped_count = _dedupe_candidates(candidates_raw, len(items))
+    candidates_sorted = _sort_candidates(candidates_unique)
+
+    if len(candidates_sorted) < len(items):
+        raise ValueError(
+            f"Not enough candidates after dedupe: items={len(items)} candidates={len(candidates_sorted)}"
+        )
+
+    by_rarity: Dict[str, List[Dict[str, Any]]] = {}
+    for c in candidates_sorted:
+        r = str(c.get("estimatedRarity", "UNKNOWN"))
+        by_rarity.setdefault(r, []).append(c)
+
+    remaining = list(candidates_sorted)
+    assigned: List[Dict[str, Any]] = []
+    matched_rarity = 0
+
+    for idx, item in enumerate(items, start=1):
+        rarity = str(item.get("rarity", "UNKNOWN"))
+        cand = None
+
+        pool = by_rarity.get(rarity, [])
+        if pool:
+            cand = pool.pop(0)
+            if cand in remaining:
+                remaining.remove(cand)
+            matched_rarity += 1
+        elif remaining:
+            cand = remaining.pop(0)
+            r2 = str(cand.get("estimatedRarity", "UNKNOWN"))
+            pool2 = by_rarity.get(r2, [])
+            if cand in pool2:
+                pool2.remove(cand)
+
+        if cand is None:
+            raise ValueError("Unexpected mapping failure")
+
+        assigned.append(
+            {
+                "output": f"{idx:02d}.png",
+                "source": cand["source"],
+                "box": [int(v) for v in cand["box"]],
+                "candidateId": cand.get("id"),
+                "candidateIndex": int(cand.get("candidateIndex", idx)),
+                "estimatedRarity": cand.get("estimatedRarity", "UNKNOWN"),
+            }
+        )
+
+    config = {
+        "slug": slug,
+        "items": assigned,
+    }
+
+    config_path = project_root / "scripts" / "aimy-crop" / "configs" / f"{slug}.json"
+    config_path.parent.mkdir(parents=True, exist_ok=True)
+    config_path.write_text(json.dumps(config, ensure_ascii=False, indent=2), encoding="utf-8")
+
+    return {
+        "slug": slug,
+        "title": gacha.get("title", ""),
+        "itemsCount": len(items),
+        "candidateCountRaw": len(candidates_raw),
+        "candidateCountAfterDedupe": len(candidates_sorted),
+        "droppedDuplicateCandidates": dropped_count,
+        "matchedRarityCount": matched_rarity,
+        "autoMatchRate": round((matched_rarity / max(1, len(items))) * 100.0, 2),
+        "configPath": str(config_path),
+    }
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description="Auto generate gacha config from candidates")
+    parser.add_argument("slug", help="gacha slug")
+    parser.add_argument("--project-root", default=".", help="project root")
+    args = parser.parse_args()
+
+    result = run_auto_config(args.slug, Path(args.project_root).resolve())
+    print(json.dumps(result, ensure_ascii=False, indent=2))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

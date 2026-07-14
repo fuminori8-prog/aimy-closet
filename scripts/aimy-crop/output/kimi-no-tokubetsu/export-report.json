@@ -1,0 +1,274 @@
+{
+  "slug": "kimi-no-tokubetsu",
+  "config": "/Users/appleuser/Desktop/aimy-closet/scripts/aimy-crop/configs/kimi-no-tokubetsu.json",
+  "outputDir": "/Users/appleuser/Desktop/aimy-closet/scripts/aimy-crop/output/kimi-no-tokubetsu/items",
+  "exportedCount": 19,
+  "exported": [
+    {
+      "output": "01.png",
+      "source": "IMG_7198.PNG",
+      "box": [
+        96,
+        1867,
+        288,
+        2059
+      ],
+      "size": [
+        192,
+        192
+      ]
+    },
+    {
+      "output": "02.png",
+      "source": "IMG_7199.PNG",
+      "box": [
+        96,
+        426,
+        288,
+        618
+      ],
+      "size": [
+        192,
+        192
+      ]
+    },
+    {
+      "output": "03.png",
+      "source": "IMG_7199.PNG",
+      "box": [
+        96,
+        1038,
+        288,
+        1230
+      ],
+      "size": [
+        192,
+        192
+      ]
+    },
+    {
+      "output": "04.png",
+      "source": "IMG_7199.PNG",
+      "box": [
+        96,
+        1284,
+        288,
+        1476
+      ],
+      "size": [
+        192,
+        192
+      ]
+    },
+    {
+      "output": "05.png",
+      "source": "IMG_7199.PNG",
+      "box": [
+        96,
+        1530,
+        288,
+        1722
+      ],
+      "size": [
+        192,
+        192
+      ]
+    },
+    {
+      "output": "06.png",
+      "source": "IMG_7199.PNG",
+      "box": [
+        96,
+        1776,
+        288,
+        1968
+      ],
+      "size": [
+        192,
+        192
+      ]
+    },
+    {
+      "output": "07.png",
+      "source": "IMG_7199.PNG",
+      "box": [
+        96,
+        2022,
+        288,
+        2214
+      ],
+      "size": [
+        192,
+        192
+      ]
+    },
+    {
+      "output": "08.png",
+      "source": "IMG_7199.PNG",
+      "box": [
+        96,
+        2268,
+        288,
+        2460
+      ],
+      "size": [
+        192,
+        192
+      ]
+    },
+    {
+      "output": "09.png",
+      "source": "IMG_7200.PNG",
+      "box": [
+        96,
+        442,
+        288,
+        634
+      ],
+      "size": [
+        192,
+        192
+      ]
+    },
+    {
+      "output": "10.png",
+      "source": "IMG_7200.PNG",
+      "box": [
+        96,
+        688,
+        288,
+        880
+      ],
+      "size": [
+        192,
+        192
+      ]
+    },
+    {
+      "output": "11.png",
+      "source": "IMG_7200.PNG",
+      "box": [
+        96,
+        1054,
+        288,
+        1246
+      ],
+      "size": [
+        192,
+        192
+      ]
+    },
+    {
+      "output": "12.png",
+      "source": "IMG_7200.PNG",
+      "box": [
+        96,
+        1420,
+        288,
+        1612
+      ],
+      "size": [
+        192,
+        192
+      ]
+    },
+    {
+      "output": "13.png",
+      "source": "IMG_7200.PNG",
+      "box": [
+        96,
+        1786,
+        288,
+        1978
+      ],
+      "size": [
+        192,
+        192
+      ]
+    },
+    {
+      "output": "14.png",
+      "source": "IMG_7200.PNG",
+      "box": [
+        96,
+        2032,
+        288,
+        2224
+      ],
+      "size": [
+        192,
+        192
+      ]
+    },
+    {
+      "output": "15.png",
+      "source": "IMG_7200.PNG",
+      "box": [
+        96,
+        2278,
+        288,
+        2470
+      ],
+      "size": [
+        192,
+        192
+      ]
+    },
+    {
+      "output": "16.png",
+      "source": "IMG_7201.PNG",
+      "box": [
+        96,
+        405,
+        288,
+        597
+      ],
+      "size": [
+        192,
+        192
+      ]
+    },
+    {
+      "output": "17.png",
+      "source": "IMG_7201.PNG",
+      "box": [
+        96,
+        651,
+        288,
+        843
+      ],
+      "size": [
+        192,
+        192
+      ]
+    },
+    {
+      "output": "18.png",
+      "source": "IMG_7201.PNG",
+      "box": [
+        96,
+        1017,
+        288,
+        1209
+      ],
+      "size": [
+        192,
+        192
+      ]
+    },
+    {
+      "output": "19.png",
+      "source": "IMG_7201.PNG",
+      "box": [
+        96,
+        1263,
+        288,
+        1455
+      ],
+      "size": [
+        192,
+        192
+      ]
+    }
+  ]
+}

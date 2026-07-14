@@ -1,0 +1,25 @@
+{
+  "slug": "kimi-no-tokubetsu",
+  "title": "君の「特別」になりたくて",
+  "previewPath": "/Users/appleuser/Desktop/aimy-closet/scripts/aimy-crop/output/kimi-no-tokubetsu/preview.html",
+  "itemsCount": 19,
+  "outputImageCount": 19,
+  "okCount": 0,
+  "warningCount": 19,
+  "errorCount": 0,
+  "infoStatus": "情報収集中",
+  "allImagesSet": false,
+  "all192": true,
+  "noMissingNumbers": true,
+  "completionCandidate": true,
+  "categories": [
+    "チェキフレーム",
+    "目",
+    "耳飾り",
+    "背景",
+    "衣装",
+    "髪型",
+    "髪飾り"
+  ],
+  "localStorageKey": "aimy-crop-preview:kimi-no-tokubetsu:checks:v1"
+}

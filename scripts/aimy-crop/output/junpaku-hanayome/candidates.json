@@ -1,0 +1,432 @@
+{
+  "slug": "junpaku-hanayome",
+  "inputDir": "/Users/appleuser/Desktop/aimy-closet/public/images/gacha/junpaku-hanayome",
+  "candidateCount": 26,
+  "duplicateGroupCount": 6,
+  "candidates": [
+    {
+      "id": "c0001",
+      "source": "IMG_7159.PNG",
+      "box": [
+        96,
+        1867,
+        288,
+        2059
+      ],
+      "estimatedRarity": "SSR",
+      "orderFromTop": 1,
+      "dhash": "7e1c7d616969292b",
+      "duplicateGroup": null,
+      "duplicateCandidateIds": []
+    },
+    {
+      "id": "c0002",
+      "source": "IMG_7159.PNG",
+      "box": [
+        96,
+        2113,
+        288,
+        2305
+      ],
+      "estimatedRarity": "SSR",
+      "orderFromTop": 2,
+      "dhash": "7e3c317169616971",
+      "duplicateGroup": null,
+      "duplicateCandidateIds": []
+    },
+    {
+      "id": "c0003",
+      "source": "IMG_7160.PNG",
+      "box": [
+        96,
+        438,
+        288,
+        630
+      ],
+      "estimatedRarity": "SSR",
+      "orderFromTop": 3,
+      "dhash": "7e1c4dcccc450171",
+      "duplicateGroup": "dup-01",
+      "duplicateCandidateIds": [
+        "c0004",
+        "c0005"
+      ]
+    },
+    {
+      "id": "c0004",
+      "source": "IMG_7160.PNG",
+      "box": [
+        96,
+        684,
+        288,
+        876
+      ],
+      "estimatedRarity": "SSR",
+      "orderFromTop": 4,
+      "dhash": "7e1c4dcc8e450171",
+      "duplicateGroup": "dup-01",
+      "duplicateCandidateIds": [
+        "c0003",
+        "c0005"
+      ]
+    },
+    {
+      "id": "c0005",
+      "source": "IMG_7160.PNG",
+      "box": [
+        96,
+        930,
+        288,
+        1122
+      ],
+      "estimatedRarity": "SSR",
+      "orderFromTop": 5,
+      "dhash": "7e1c0dcccc050171",
+      "duplicateGroup": "dup-01",
+      "duplicateCandidateIds": [
+        "c0003",
+        "c0004"
+      ]
+    },
+    {
+      "id": "c0006",
+      "source": "IMG_7160.PNG",
+      "box": [
+        96,
+        1296,
+        288,
+        1488
+      ],
+      "estimatedRarity": "SSR",
+      "orderFromTop": 6,
+      "dhash": "7670e1dccccccc8e",
+      "duplicateGroup": "dup-02",
+      "duplicateCandidateIds": [
+        "c0010"
+      ]
+    },
+    {
+      "id": "c0007",
+      "source": "IMG_7160.PNG",
+      "box": [
+        96,
+        1542,
+        288,
+        1734
+      ],
+      "estimatedRarity": "SSR",
+      "orderFromTop": 7,
+      "dhash": "7674e9ddcd6d6103",
+      "duplicateGroup": null,
+      "duplicateCandidateIds": []
+    },
+    {
+      "id": "c0008",
+      "source": "IMG_7160.PNG",
+      "box": [
+        96,
+        1788,
+        288,
+        1980
+      ],
+      "estimatedRarity": "SSR",
+      "orderFromTop": 8,
+      "dhash": "7e7c69cd4d697103",
+      "duplicateGroup": null,
+      "duplicateCandidateIds": []
+    },
+    {
+      "id": "c0009",
+      "source": "IMG_7160.PNG",
+      "box": [
+        96,
+        2034,
+        288,
+        2226
+      ],
+      "estimatedRarity": "SSR",
+      "orderFromTop": 9,
+      "dhash": "7e7469cdcdcce88e",
+      "duplicateGroup": null,
+      "duplicateCandidateIds": []
+    },
+    {
+      "id": "c0010",
+      "source": "IMG_7160.PNG",
+      "box": [
+        96,
+        2280,
+        288,
+        2472
+      ],
+      "estimatedRarity": "SSR",
+      "orderFromTop": 10,
+      "dhash": "7670e1c4c4cccce6",
+      "duplicateGroup": "dup-02",
+      "duplicateCandidateIds": [
+        "c0006"
+      ]
+    },
+    {
+      "id": "c0011",
+      "source": "IMG_7161.PNG",
+      "box": [
+        96,
+        359,
+        288,
+        551
+      ],
+      "estimatedRarity": "SSR",
+      "orderFromTop": 11,
+      "dhash": "7e7c79e5c5cceca6",
+      "duplicateGroup": null,
+      "duplicateCandidateIds": []
+    },
+    {
+      "id": "c0012",
+      "source": "IMG_7161.PNG",
+      "box": [
+        96,
+        1181,
+        288,
+        1373
+      ],
+      "estimatedRarity": "SR",
+      "orderFromTop": 12,
+      "dhash": "7571f1f1cccce9cf",
+      "duplicateGroup": "dup-03",
+      "duplicateCandidateIds": [
+        "c0014"
+      ]
+    },
+    {
+      "id": "c0013",
+      "source": "IMG_7161.PNG",
+      "box": [
+        96,
+        1427,
+        288,
+        1619
+      ],
+      "estimatedRarity": "SR",
+      "orderFromTop": 13,
+      "dhash": "357169f0cdcce94d",
+      "duplicateGroup": null,
+      "duplicateCandidateIds": []
+    },
+    {
+      "id": "c0014",
+      "source": "IMG_7161.PNG",
+      "box": [
+        96,
+        1673,
+        288,
+        1865
+      ],
+      "estimatedRarity": "SR",
+      "orderFromTop": 14,
+      "dhash": "7575f0f0cccde94d",
+      "duplicateGroup": "dup-03",
+      "duplicateCandidateIds": [
+        "c0012"
+      ]
+    },
+    {
+      "id": "c0015",
+      "source": "IMG_7161.PNG",
+      "box": [
+        96,
+        1919,
+        288,
+        2111
+      ],
+      "estimatedRarity": "SR",
+      "orderFromTop": 15,
+      "dhash": "3d3d71e1cce4d68e",
+      "duplicateGroup": null,
+      "duplicateCandidateIds": []
+    },
+    {
+      "id": "c0016",
+      "source": "IMG_7161.PNG",
+      "box": [
+        96,
+        2285,
+        288,
+        2477
+      ],
+      "estimatedRarity": "SR",
+      "orderFromTop": 16,
+      "dhash": "3d357b79694d1dd9",
+      "duplicateGroup": "dup-04",
+      "duplicateCandidateIds": [
+        "c0017"
+      ]
+    },
+    {
+      "id": "c0017",
+      "source": "IMG_7162.PNG",
+      "box": [
+        96,
+        465,
+        288,
+        657
+      ],
+      "estimatedRarity": "SR",
+      "orderFromTop": 17,
+      "dhash": "3d357b79694d1dd9",
+      "duplicateGroup": "dup-04",
+      "duplicateCandidateIds": [
+        "c0016"
+      ]
+    },
+    {
+      "id": "c0018",
+      "source": "IMG_7162.PNG",
+      "box": [
+        96,
+        831,
+        288,
+        1023
+      ],
+      "estimatedRarity": "SR",
+      "orderFromTop": 18,
+      "dhash": "7d4d4d4d4d4d457f",
+      "duplicateGroup": "dup-05",
+      "duplicateCandidateIds": [
+        "c0019",
+        "c0021"
+      ]
+    },
+    {
+      "id": "c0019",
+      "source": "IMG_7162.PNG",
+      "box": [
+        96,
+        1077,
+        288,
+        1269
+      ],
+      "estimatedRarity": "SR",
+      "orderFromTop": 19,
+      "dhash": "7d4d4d4d4d4d4d7f",
+      "duplicateGroup": "dup-05",
+      "duplicateCandidateIds": [
+        "c0018",
+        "c0021"
+      ]
+    },
+    {
+      "id": "c0020",
+      "source": "IMG_7162.PNG",
+      "box": [
+        96,
+        1443,
+        288,
+        1635
+      ],
+      "estimatedRarity": "SR",
+      "orderFromTop": 20,
+      "dhash": "bd0d07078f0f078f",
+      "duplicateGroup": null,
+      "duplicateCandidateIds": []
+    },
+    {
+      "id": "c0021",
+      "source": "IMG_7162.PNG",
+      "box": [
+        96,
+        1809,
+        288,
+        2001
+      ],
+      "estimatedRarity": "SR",
+      "orderFromTop": 21,
+      "dhash": "7d4d4d454d490f7f",
+      "duplicateGroup": "dup-05",
+      "duplicateCandidateIds": [
+        "c0018",
+        "c0019"
+      ]
+    },
+    {
+      "id": "c0022",
+      "source": "IMG_7162.PNG",
+      "box": [
+        96,
+        2055,
+        288,
+        2247
+      ],
+      "estimatedRarity": "SR",
+      "orderFromTop": 22,
+      "dhash": "3d5d454553110d7f",
+      "duplicateGroup": null,
+      "duplicateCandidateIds": []
+    },
+    {
+      "id": "c0023",
+      "source": "IMG_7162.PNG",
+      "box": [
+        96,
+        2301,
+        288,
+        2493
+      ],
+      "estimatedRarity": "SR",
+      "orderFromTop": 23,
+      "dhash": "7d6d4d4d4d593977",
+      "duplicateGroup": "dup-06",
+      "duplicateCandidateIds": [
+        "c0024"
+      ]
+    },
+    {
+      "id": "c0024",
+      "source": "IMG_7163.PNG",
+      "box": [
+        96,
+        361,
+        288,
+        553
+      ],
+      "estimatedRarity": "SR",
+      "orderFromTop": 24,
+      "dhash": "7d6d4d4d4d593977",
+      "duplicateGroup": "dup-06",
+      "duplicateCandidateIds": [
+        "c0023"
+      ]
+    },
+    {
+      "id": "c0025",
+      "source": "IMG_7163.PNG",
+      "box": [
+        96,
+        727,
+        288,
+        919
+      ],
+      "estimatedRarity": "SR",
+      "orderFromTop": 25,
+      "dhash": "8f99b1b1b9b19e17",
+      "duplicateGroup": null,
+      "duplicateCandidateIds": []
+    },
+    {
+      "id": "c0026",
+      "source": "IMG_7163.PNG",
+      "box": [
+        96,
+        973,
+        288,
+        1165
+      ],
+      "estimatedRarity": "SR",
+      "orderFromTop": 26,
+      "dhash": "2105854c3ca5a787",
+      "duplicateGroup": null,
+      "duplicateCandidateIds": []
+    }
+  ]
+}

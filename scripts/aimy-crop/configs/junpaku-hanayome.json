@@ -1,0 +1,291 @@
+{
+  "slug": "junpaku-hanayome",
+  "items": [
+    {
+      "output": "01.png",
+      "source": "IMG_7159.PNG",
+      "box": [
+        96,
+        1867,
+        288,
+        2059
+      ],
+      "candidateId": "c0001",
+      "candidateIndex": 1,
+      "estimatedRarity": "SSR"
+    },
+    {
+      "output": "02.png",
+      "source": "IMG_7159.PNG",
+      "box": [
+        96,
+        2113,
+        288,
+        2305
+      ],
+      "candidateId": "c0002",
+      "candidateIndex": 2,
+      "estimatedRarity": "SSR"
+    },
+    {
+      "output": "03.png",
+      "source": "IMG_7160.PNG",
+      "box": [
+        96,
+        438,
+        288,
+        630
+      ],
+      "candidateId": "c0003",
+      "candidateIndex": 3,
+      "estimatedRarity": "SSR"
+    },
+    {
+      "output": "04.png",
+      "source": "IMG_7160.PNG",
+      "box": [
+        96,
+        1296,
+        288,
+        1488
+      ],
+      "candidateId": "c0006",
+      "candidateIndex": 6,
+      "estimatedRarity": "SSR"
+    },
+    {
+      "output": "05.png",
+      "source": "IMG_7160.PNG",
+      "box": [
+        96,
+        1542,
+        288,
+        1734
+      ],
+      "candidateId": "c0007",
+      "candidateIndex": 7,
+      "estimatedRarity": "SSR"
+    },
+    {
+      "output": "06.png",
+      "source": "IMG_7160.PNG",
+      "box": [
+        96,
+        1788,
+        288,
+        1980
+      ],
+      "candidateId": "c0008",
+      "candidateIndex": 8,
+      "estimatedRarity": "SSR"
+    },
+    {
+      "output": "07.png",
+      "source": "IMG_7160.PNG",
+      "box": [
+        96,
+        2034,
+        288,
+        2226
+      ],
+      "candidateId": "c0009",
+      "candidateIndex": 9,
+      "estimatedRarity": "SSR"
+    },
+    {
+      "output": "08.png",
+      "source": "IMG_7161.PNG",
+      "box": [
+        96,
+        359,
+        288,
+        551
+      ],
+      "candidateId": "c0011",
+      "candidateIndex": 11,
+      "estimatedRarity": "SSR"
+    },
+    {
+      "output": "09.png",
+      "source": "IMG_7161.PNG",
+      "box": [
+        96,
+        1181,
+        288,
+        1373
+      ],
+      "candidateId": "c0012",
+      "candidateIndex": 12,
+      "estimatedRarity": "SR"
+    },
+    {
+      "output": "10.png",
+      "source": "IMG_7161.PNG",
+      "box": [
+        96,
+        1427,
+        288,
+        1619
+      ],
+      "candidateId": "c0013",
+      "candidateIndex": 13,
+      "estimatedRarity": "SR"
+    },
+    {
+      "output": "11.png",
+      "source": "IMG_7161.PNG",
+      "box": [
+        96,
+        1919,
+        288,
+        2111
+      ],
+      "candidateId": "c0015",
+      "candidateIndex": 15,
+      "estimatedRarity": "SR"
+    },
+    {
+      "output": "12.png",
+      "source": "IMG_7161.PNG",
+      "box": [
+        96,
+        2285,
+        288,
+        2477
+      ],
+      "candidateId": "c0016",
+      "candidateIndex": 16,
+      "estimatedRarity": "SR"
+    },
+    {
+      "output": "13.png",
+      "source": "IMG_7162.PNG",
+      "box": [
+        96,
+        465,
+        288,
+        657
+      ],
+      "candidateId": "c0017",
+      "candidateIndex": 17,
+      "estimatedRarity": "SR"
+    },
+    {
+      "output": "14.png",
+      "source": "IMG_7162.PNG",
+      "box": [
+        96,
+        831,
+        288,
+        1023
+      ],
+      "candidateId": "c0018",
+      "candidateIndex": 18,
+      "estimatedRarity": "SR"
+    },
+    {
+      "output": "15.png",
+      "source": "IMG_7162.PNG",
+      "box": [
+        96,
+        1077,
+        288,
+        1269
+      ],
+      "candidateId": "c0019",
+      "candidateIndex": 19,
+      "estimatedRarity": "SR"
+    },
+    {
+      "output": "16.png",
+      "source": "IMG_7162.PNG",
+      "box": [
+        96,
+        1443,
+        288,
+        1635
+      ],
+      "candidateId": "c0020",
+      "candidateIndex": 20,
+      "estimatedRarity": "SR"
+    },
+    {
+      "output": "17.png",
+      "source": "IMG_7162.PNG",
+      "box": [
+        96,
+        1809,
+        288,
+        2001
+      ],
+      "candidateId": "c0021",
+      "candidateIndex": 21,
+      "estimatedRarity": "SR"
+    },
+    {
+      "output": "18.png",
+      "source": "IMG_7162.PNG",
+      "box": [
+        96,
+        2055,
+        288,
+        2247
+      ],
+      "candidateId": "c0022",
+      "candidateIndex": 22,
+      "estimatedRarity": "SR"
+    },
+    {
+      "output": "19.png",
+      "source": "IMG_7162.PNG",
+      "box": [
+        96,
+        2301,
+        288,
+        2493
+      ],
+      "candidateId": "c0023",
+      "candidateIndex": 23,
+      "estimatedRarity": "SR"
+    },
+    {
+      "output": "20.png",
+      "source": "IMG_7163.PNG",
+      "box": [
+        96,
+        361,
+        288,
+        553
+      ],
+      "candidateId": "c0024",
+      "candidateIndex": 24,
+      "estimatedRarity": "SR"
+    },
+    {
+      "output": "21.png",
+      "source": "IMG_7163.PNG",
+      "box": [
+        96,
+        727,
+        288,
+        919
+      ],
+      "candidateId": "c0025",
+      "candidateIndex": 25,
+      "estimatedRarity": "SR"
+    },
+    {
+      "output": "22.png",
+      "source": "IMG_7163.PNG",
+      "box": [
+        96,
+        973,
+        288,
+        1165
+      ],
+      "candidateId": "c0026",
+      "candidateIndex": 26,
+      "estimatedRarity": "SR"
+    }
+  ]
+}

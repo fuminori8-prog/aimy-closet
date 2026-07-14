@@ -1,0 +1,27 @@
+{
+  "slug": "kyuketsuki",
+  "items": [
+    { "output": "01.png", "source": "IMG_7138.PNG", "box": [96, 1867, 288, 2059] },
+    { "output": "02.png", "source": "IMG_7139.PNG", "box": [96, 445, 288, 637] },
+    { "output": "03.png", "source": "IMG_7139.PNG", "box": [96, 691, 288, 883] },
+    { "output": "04.png", "source": "IMG_7139.PNG", "box": [96, 937, 288, 1129] },
+    { "output": "05.png", "source": "IMG_7139.PNG", "box": [96, 1183, 288, 1375] },
+    { "output": "06.png", "source": "IMG_7139.PNG", "box": [96, 2041, 288, 2233] },
+    { "output": "07.png", "source": "IMG_7139.PNG", "box": [96, 2287, 288, 2479] },
+    { "output": "08.png", "source": "IMG_7140.PNG", "box": [96, 1431, 288, 1623] },
+    { "output": "09.png", "source": "IMG_7140.PNG", "box": [96, 1677, 288, 1869] },
+    { "output": "10.png", "source": "IMG_7140.PNG", "box": [96, 1923, 288, 2115] },
+    { "output": "11.png", "source": "IMG_7140.PNG", "box": [96, 2169, 288, 2361] },
+    { "output": "12.png", "source": "IMG_7141.PNG", "box": [96, 471, 288, 663] },
+    { "output": "13.png", "source": "IMG_7141.PNG", "box": [96, 837, 288, 1029] },
+    { "output": "14.png", "source": "IMG_7141.PNG", "box": [96, 1083, 288, 1275] },
+    { "output": "15.png", "source": "IMG_7141.PNG", "box": [96, 1329, 288, 1521] },
+    { "output": "16.png", "source": "IMG_7141.PNG", "box": [96, 1695, 288, 1887] },
+    { "output": "17.png", "source": "IMG_7141.PNG", "box": [96, 1941, 288, 2133] },
+    { "output": "18.png", "source": "IMG_7141.PNG", "box": [96, 2307, 288, 2499] },
+    { "output": "19.png", "source": "IMG_7142.PNG", "box": [96, 806, 288, 998] },
+    { "output": "20.png", "source": "IMG_7142.PNG", "box": [96, 1052, 288, 1244] },
+    { "output": "21.png", "source": "IMG_7142.PNG", "box": [96, 1418, 288, 1610] },
+    { "output": "22.png", "source": "IMG_7142.PNG", "box": [96, 1664, 288, 1856] }
+  ]
+}

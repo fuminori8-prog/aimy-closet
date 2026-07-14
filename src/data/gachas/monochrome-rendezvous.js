@@ -1,0 +1,32 @@
+const gacha = {
+  id: 'monochrome-rendezvous',
+  slug: 'monochrome-rendezvous',
+  title: 'モノクローム・ランデヴー',
+  type: 'アイミーボックス',
+  banner: '/images/gacha/monochrome-rendezvous/banner.jpg',
+  status: '開催中',
+  infoStatus: '確認済み',
+  startDate: '2026/06/22 15:00',
+  endDate: '2026/08/17 14:59',
+  description: 'モノクローム・ランデヴーの限定ガチャです。',
+  items: [
+    { id: 'monochrome-rendezvous-monotone-girly-coordinate', rarity: 'SSR', category: '衣装', name: 'モノトーンガーリーコーデ', image: '/images/items/monochrome-rendezvous/01.png' },
+    { id: 'monochrome-rendezvous-cute-grade-long-gray', rarity: 'SSR', category: '髪型', name: 'キュートグラデロング(灰)', image: '/images/items/monochrome-rendezvous/02.png' },
+    { id: 'monochrome-rendezvous-cool-grade-long-gray', rarity: 'SSR', category: '髪型', name: 'クールグラデロング(灰)', image: '/images/items/monochrome-rendezvous/03.png' },
+    { id: 'monochrome-rendezvous-yurufuwa-bob-light-brown', rarity: 'SSR', category: '髪型', name: 'ゆるふわボブ(薄茶)', image: '/images/items/monochrome-rendezvous/04.png' },
+    { id: 'monochrome-rendezvous-monotone-knit-cap', rarity: 'SR', category: '髪飾り', name: 'モノトーンニットキャップ', image: '/images/items/monochrome-rendezvous/05.png' },
+    { id: 'monochrome-rendezvous-pearl-flower-katyusha', rarity: 'SR', category: '髪飾り', name: 'パールフラワーカチューシャ', image: '/images/items/monochrome-rendezvous/06.png' },
+    { id: 'monochrome-rendezvous-monotone-hanagara-ribbon', rarity: 'SR', category: '髪飾り', name: 'モノトーン花柄リボン', image: '/images/items/monochrome-rendezvous/07.png' },
+    { id: 'monochrome-rendezvous-monotone-hanagara-onepiece', rarity: 'SR', category: '衣装', name: 'モノトーン花柄ワンピ', image: '/images/items/monochrome-rendezvous/08.png' },
+    { id: 'monochrome-rendezvous-pearl-long-pierce', rarity: 'SR', category: '耳飾り', name: 'パールロングピアス', image: '/images/items/monochrome-rendezvous/09.png' },
+    { id: 'monochrome-rendezvous-monotone-mini-hoop-pierce', rarity: 'SR', category: '耳飾り', name: 'モノトーンミニフープピアス', image: '/images/items/monochrome-rendezvous/10.png' },
+    { id: 'monochrome-rendezvous-pearl-ribbon-pierce', rarity: 'SR', category: '耳飾り', name: 'パールリボンピアス', image: '/images/items/monochrome-rendezvous/11.png' },
+    { id: 'monochrome-rendezvous-monochrome-sexy', rarity: 'SR', category: 'チェキフレーム', name: 'モノクロセクシー', image: '/images/items/monochrome-rendezvous/12.png' },
+    { id: 'monochrome-rendezvous-kyouwa-orange-aji', rarity: 'SR', category: 'チェキフレーム', name: '今日はオレンジ味', image: '/images/items/monochrome-rendezvous/13.png' },
+    { id: 'monochrome-rendezvous-monochrome-girl', rarity: 'SR', category: 'チェキフレーム', name: 'モノクロームガール', image: '/images/items/monochrome-rendezvous/14.png' },
+    { id: 'monochrome-rendezvous-monotone-cafe', rarity: 'SR', category: '背景', name: 'モノトーンカフェ', image: '/images/items/monochrome-rendezvous/15.png' },
+    { id: 'monochrome-rendezvous-higure-ekimae', rarity: 'SR', category: '背景', name: '日暮れの駅前', image: '/images/items/monochrome-rendezvous/16.png' },
+  ],
+}
+
+export default gacha

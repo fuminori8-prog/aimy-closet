@@ -1,0 +1,25 @@
+{
+  "slug": "kyuketsuki",
+  "title": "闇へと誘う吸血姫",
+  "previewPath": "/Users/appleuser/Desktop/aimy-closet/scripts/aimy-crop/output/kyuketsuki/preview.html",
+  "itemsCount": 22,
+  "outputImageCount": 22,
+  "okCount": 0,
+  "warningCount": 22,
+  "errorCount": 0,
+  "infoStatus": "情報収集中",
+  "allImagesSet": false,
+  "all192": true,
+  "noMissingNumbers": true,
+  "completionCandidate": true,
+  "categories": [
+    "チェキフレーム",
+    "目",
+    "耳飾り",
+    "背景",
+    "衣装",
+    "髪型",
+    "髪飾り"
+  ],
+  "localStorageKey": "aimy-crop-preview:kyuketsuki:checks:v1"
+}

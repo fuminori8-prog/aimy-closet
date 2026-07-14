@@ -1,0 +1,32 @@
+const gacha = {
+  id: 'hikoboshi',
+  slug: 'hikoboshi',
+  title: 'おまたせ、彦星さま♡',
+  type: 'アイミーボックス',
+  banner: '/images/gacha/hikoboshi/banner.jpg',
+  status: '開催中',
+  infoStatus: '確認済み',
+  startDate: '2026/07/06 15:00',
+  endDate: '2026/09/07 14:59',
+  description: 'おまたせ、彦星さま♡の限定ガチャです。',
+  items: [
+    { id: 'hikoboshi-aurora-orihime-dress', rarity: 'SSR', category: '衣装', name: '煌めくオーロラの織姫ドレス', image: '/images/items/hikoboshi/01.png' },
+    { id: 'hikoboshi-nightsky-orihime-dress', rarity: 'SSR', category: '衣装', name: '夜空を彩る織姫ドレス', image: '/images/items/hikoboshi/02.png' },
+    { id: 'hikoboshi-kyubi-eyes-blue', rarity: 'SSR', category: '目', name: '九尾の目(青)', image: '/images/items/hikoboshi/03.png' },
+    { id: 'hikoboshi-kyubi-eyes-purple', rarity: 'SSR', category: '目', name: '九尾の目(紫)', image: '/images/items/hikoboshi/04.png' },
+    { id: 'hikoboshi-braided-miko-hair', rarity: 'SSR', category: '髪型', name: '編み込み巫女ヘア(薄紫)', image: '/images/items/hikoboshi/05.png' },
+    { id: 'hikoboshi-odango-twintail', rarity: 'SSR', category: '髪型', name: 'お団子ツインテール(水色)', image: '/images/items/hikoboshi/06.png' },
+    { id: 'hikoboshi-side-tail-brown', rarity: 'SSR', category: '髪型', name: 'ゆったりサイドテール(茶)', image: '/images/items/hikoboshi/07.png' },
+    { id: 'hikoboshi-aurora-ribbon', rarity: 'SR', category: '髪飾り', name: 'オーロラリボン', image: '/images/items/hikoboshi/08.png' },
+    { id: 'hikoboshi-orihime-tiara', rarity: 'SR', category: '髪飾り', name: '織姫ティアラ', image: '/images/items/hikoboshi/09.png' },
+    { id: 'hikoboshi-starry-ribbon', rarity: 'SR', category: '髪飾り', name: '星空リボン', image: '/images/items/hikoboshi/10.png' },
+    { id: 'hikoboshi-heaven-idol-outfit', rarity: 'SR', category: '衣装', name: '天界のアイドル衣装', image: '/images/items/hikoboshi/11.png' },
+    { id: 'hikoboshi-cheki-negai', rarity: 'SR', category: 'チェキフレーム', name: 'お願い事はなぁに？', image: '/images/items/hikoboshi/12.png' },
+    { id: 'hikoboshi-cheki-starry-princess', rarity: 'SR', category: 'チェキフレーム', name: '星空のお姫様', image: '/images/items/hikoboshi/13.png' },
+    { id: 'hikoboshi-cheki-once-a-year', rarity: 'SR', category: 'チェキフレーム', name: '一年に一度', image: '/images/items/hikoboshi/14.png' },
+    { id: 'hikoboshi-milky-way', rarity: 'SR', category: '背景', name: 'ゆめかわミルキーウェイ', image: '/images/items/hikoboshi/15.png' },
+    { id: 'hikoboshi-heaven-palace', rarity: 'SR', category: '背景', name: '星降る天の宮', image: '/images/items/hikoboshi/16.png' },
+  ],
+}
+
+export default gacha

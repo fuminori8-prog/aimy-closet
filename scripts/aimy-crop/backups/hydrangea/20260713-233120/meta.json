@@ -1,0 +1,8 @@
+{
+  "slug": "hydrangea",
+  "createdAt": "20260713-233120",
+  "hadProdImages": false,
+  "hadDataFile": true,
+  "prodItemsDir": "/Users/appleuser/Desktop/aimy-closet/public/images/items/hydrangea",
+  "dataFile": "/Users/appleuser/Desktop/aimy-closet/src/data/gachas/hydrangea.js"
+}

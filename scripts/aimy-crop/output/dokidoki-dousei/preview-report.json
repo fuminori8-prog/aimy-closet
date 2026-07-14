@@ -1,0 +1,25 @@
+{
+  "slug": "dokidoki-dousei",
+  "title": "ドキドキ同棲生活、はじめました！",
+  "previewPath": "/Users/appleuser/Desktop/aimy-closet/scripts/aimy-crop/output/dokidoki-dousei/preview.html",
+  "itemsCount": 21,
+  "outputImageCount": 21,
+  "okCount": 0,
+  "warningCount": 21,
+  "errorCount": 0,
+  "infoStatus": "情報収集中",
+  "allImagesSet": false,
+  "all192": true,
+  "noMissingNumbers": true,
+  "completionCandidate": true,
+  "categories": [
+    "チェキフレーム",
+    "メイク",
+    "目",
+    "背景",
+    "衣装",
+    "髪型",
+    "髪飾り"
+  ],
+  "localStorageKey": "aimy-crop-preview:dokidoki-dousei:checks:v1"
+}

@@ -1,0 +1,26 @@
+{
+  "slug": "junpaku-hanayome",
+  "title": "永遠の誓いと純白の花嫁",
+  "previewPath": "/Users/appleuser/Desktop/aimy-closet/scripts/aimy-crop/output/junpaku-hanayome/preview.html",
+  "itemsCount": 22,
+  "outputImageCount": 22,
+  "okCount": 0,
+  "warningCount": 22,
+  "errorCount": 0,
+  "infoStatus": "情報収集中",
+  "allImagesSet": false,
+  "all192": true,
+  "noMissingNumbers": true,
+  "completionCandidate": true,
+  "categories": [
+    "チェキフレーム",
+    "メイク",
+    "目",
+    "耳飾り",
+    "背景",
+    "衣装",
+    "髪型",
+    "髪飾り"
+  ],
+  "localStorageKey": "aimy-crop-preview:junpaku-hanayome:checks:v1"
+}

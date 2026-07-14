@@ -1,0 +1,28 @@
+{
+  "slug": "monochrome-rendezvous",
+  "sourceScreenshots": [
+    "IMG_7134.PNG",
+    "IMG_7135.PNG",
+    "IMG_7136.PNG",
+    "IMG_7137.PNG"
+  ],
+  "outputDir": "public/images/items/monochrome-rendezvous",
+  "mappings": [
+    { "index": 1, "source": "IMG_7134.PNG", "cropBox": [96, 1867, 288, 2059], "output": "01.png" },
+    { "index": 2, "source": "IMG_7135.PNG", "cropBox": [96, 444, 288, 636], "output": "02.png" },
+    { "index": 3, "source": "IMG_7135.PNG", "cropBox": [96, 690, 288, 882], "output": "03.png" },
+    { "index": 4, "source": "IMG_7135.PNG", "cropBox": [96, 936, 288, 1128], "output": "04.png" },
+    { "index": 5, "source": "IMG_7135.PNG", "cropBox": [96, 1758, 288, 1950], "output": "05.png" },
+    { "index": 6, "source": "IMG_7135.PNG", "cropBox": [96, 2004, 288, 2196], "output": "06.png" },
+    { "index": 7, "source": "IMG_7135.PNG", "cropBox": [96, 2250, 288, 2442], "output": "07.png" },
+    { "index": 8, "source": "IMG_7136.PNG", "cropBox": [96, 447, 288, 639], "output": "08.png" },
+    { "index": 9, "source": "IMG_7136.PNG", "cropBox": [96, 813, 288, 1005], "output": "09.png" },
+    { "index": 10, "source": "IMG_7136.PNG", "cropBox": [96, 1059, 288, 1251], "output": "10.png" },
+    { "index": 11, "source": "IMG_7136.PNG", "cropBox": [96, 1305, 288, 1497], "output": "11.png" },
+    { "index": 12, "source": "IMG_7136.PNG", "cropBox": [96, 1671, 288, 1863], "output": "12.png" },
+    { "index": 13, "source": "IMG_7136.PNG", "cropBox": [96, 1917, 288, 2109], "output": "13.png" },
+    { "index": 14, "source": "IMG_7136.PNG", "cropBox": [96, 2163, 288, 2355], "output": "14.png" },
+    { "index": 15, "source": "IMG_7137.PNG", "cropBox": [96, 747, 288, 939], "output": "15.png" },
+    { "index": 16, "source": "IMG_7137.PNG", "cropBox": [96, 993, 288, 1185], "output": "16.png" }
+  ]
+}

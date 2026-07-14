@@ -1,0 +1,165 @@
+{
+  "slug": "monochrome-rendezvous",
+  "items": [
+    {
+      "output": "01.png",
+      "source": "IMG_7134.PNG",
+      "box": [
+        96,
+        1867,
+        288,
+        2059
+      ]
+    },
+    {
+      "output": "02.png",
+      "source": "IMG_7135.PNG",
+      "box": [
+        96,
+        444,
+        288,
+        636
+      ]
+    },
+    {
+      "output": "03.png",
+      "source": "IMG_7135.PNG",
+      "box": [
+        96,
+        690,
+        288,
+        882
+      ]
+    },
+    {
+      "output": "04.png",
+      "source": "IMG_7135.PNG",
+      "box": [
+        96,
+        936,
+        288,
+        1128
+      ]
+    },
+    {
+      "output": "05.png",
+      "source": "IMG_7135.PNG",
+      "box": [
+        96,
+        1758,
+        288,
+        1950
+      ]
+    },
+    {
+      "output": "06.png",
+      "source": "IMG_7135.PNG",
+      "box": [
+        96,
+        2004,
+        288,
+        2196
+      ]
+    },
+    {
+      "output": "07.png",
+      "source": "IMG_7135.PNG",
+      "box": [
+        96,
+        2250,
+        288,
+        2442
+      ]
+    },
+    {
+      "output": "08.png",
+      "source": "IMG_7136.PNG",
+      "box": [
+        96,
+        447,
+        288,
+        639
+      ]
+    },
+    {
+      "output": "09.png",
+      "source": "IMG_7136.PNG",
+      "box": [
+        96,
+        813,
+        288,
+        1005
+      ]
+    },
+    {
+      "output": "10.png",
+      "source": "IMG_7136.PNG",
+      "box": [
+        96,
+        1059,
+        288,
+        1251
+      ]
+    },
+    {
+      "output": "11.png",
+      "source": "IMG_7136.PNG",
+      "box": [
+        96,
+        1305,
+        288,
+        1497
+      ]
+    },
+    {
+      "output": "12.png",
+      "source": "IMG_7136.PNG",
+      "box": [
+        96,
+        1671,
+        288,
+        1863
+      ]
+    },
+    {
+      "output": "13.png",
+      "source": "IMG_7136.PNG",
+      "box": [
+        96,
+        1917,
+        288,
+        2109
+      ]
+    },
+    {
+      "output": "14.png",
+      "source": "IMG_7136.PNG",
+      "box": [
+        96,
+        2163,
+        288,
+        2355
+      ]
+    },
+    {
+      "output": "15.png",
+      "source": "IMG_7137.PNG",
+      "box": [
+        96,
+        747,
+        288,
+        939
+      ]
+    },
+    {
+      "output": "16.png",
+      "source": "IMG_7137.PNG",
+      "box": [
+        96,
+        993,
+        288,
+        1185
+      ]
+    }
+  ]
+}

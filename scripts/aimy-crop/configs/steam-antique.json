@@ -1,0 +1,213 @@
+{
+  "slug": "steam-antique",
+  "items": [
+    {
+      "output": "01.png",
+      "source": "IMG_7176.PNG",
+      "box": [
+        96,
+        1867,
+        288,
+        2059
+      ],
+      "candidateId": "c0001",
+      "candidateIndex": 1,
+      "estimatedRarity": "SSR"
+    },
+    {
+      "output": "02.png",
+      "source": "IMG_7176.PNG",
+      "box": [
+        96,
+        2113,
+        288,
+        2305
+      ],
+      "candidateId": "c0002",
+      "candidateIndex": 2,
+      "estimatedRarity": "SSR"
+    },
+    {
+      "output": "03.png",
+      "source": "IMG_7177.PNG",
+      "box": [
+        96,
+        446,
+        288,
+        638
+      ],
+      "candidateId": "c0003",
+      "candidateIndex": 3,
+      "estimatedRarity": "SSR"
+    },
+    {
+      "output": "04.png",
+      "source": "IMG_7177.PNG",
+      "box": [
+        96,
+        692,
+        288,
+        884
+      ],
+      "candidateId": "c0004",
+      "candidateIndex": 4,
+      "estimatedRarity": "SSR"
+    },
+    {
+      "output": "05.png",
+      "source": "IMG_7177.PNG",
+      "box": [
+        96,
+        1058,
+        288,
+        1250
+      ],
+      "candidateId": "c0005",
+      "candidateIndex": 5,
+      "estimatedRarity": "SSR"
+    },
+    {
+      "output": "06.png",
+      "source": "IMG_7177.PNG",
+      "box": [
+        96,
+        1304,
+        288,
+        1496
+      ],
+      "candidateId": "c0006",
+      "candidateIndex": 6,
+      "estimatedRarity": "SSR"
+    },
+    {
+      "output": "07.png",
+      "source": "IMG_7177.PNG",
+      "box": [
+        96,
+        1550,
+        288,
+        1742
+      ],
+      "candidateId": "c0007",
+      "candidateIndex": 7,
+      "estimatedRarity": "SSR"
+    },
+    {
+      "output": "08.png",
+      "source": "IMG_7177.PNG",
+      "box": [
+        96,
+        2042,
+        288,
+        2234
+      ],
+      "candidateId": "c0009",
+      "candidateIndex": 9,
+      "estimatedRarity": "SSR"
+    },
+    {
+      "output": "09.png",
+      "source": "IMG_7178.PNG",
+      "box": [
+        96,
+        442,
+        288,
+        634
+      ],
+      "candidateId": "c0011",
+      "candidateIndex": 11,
+      "estimatedRarity": "SR"
+    },
+    {
+      "output": "10.png",
+      "source": "IMG_7178.PNG",
+      "box": [
+        96,
+        688,
+        288,
+        880
+      ],
+      "candidateId": "c0012",
+      "candidateIndex": 12,
+      "estimatedRarity": "SR"
+    },
+    {
+      "output": "11.png",
+      "source": "IMG_7178.PNG",
+      "box": [
+        96,
+        1054,
+        288,
+        1246
+      ],
+      "candidateId": "c0013",
+      "candidateIndex": 13,
+      "estimatedRarity": "SR"
+    },
+    {
+      "output": "12.png",
+      "source": "IMG_7178.PNG",
+      "box": [
+        96,
+        1420,
+        288,
+        1612
+      ],
+      "candidateId": "c0014",
+      "candidateIndex": 14,
+      "estimatedRarity": "SR"
+    },
+    {
+      "output": "13.png",
+      "source": "IMG_7178.PNG",
+      "box": [
+        96,
+        1666,
+        288,
+        1858
+      ],
+      "candidateId": "c0015",
+      "candidateIndex": 15,
+      "estimatedRarity": "SR"
+    },
+    {
+      "output": "14.png",
+      "source": "IMG_7178.PNG",
+      "box": [
+        96,
+        2278,
+        288,
+        2470
+      ],
+      "candidateId": "c0017",
+      "candidateIndex": 17,
+      "estimatedRarity": "SR"
+    },
+    {
+      "output": "15.png",
+      "source": "IMG_7179.PNG",
+      "box": [
+        96,
+        1660,
+        288,
+        1852
+      ],
+      "candidateId": "c0022",
+      "candidateIndex": 22,
+      "estimatedRarity": "SR"
+    },
+    {
+      "output": "16.png",
+      "source": "IMG_7179.PNG",
+      "box": [
+        96,
+        1906,
+        288,
+        2098
+      ],
+      "candidateId": "c0023",
+      "candidateIndex": 23,
+      "estimatedRarity": "SR"
+    }
+  ]
+}

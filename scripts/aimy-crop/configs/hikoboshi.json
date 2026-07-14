@@ -1,0 +1,21 @@
+{
+  "slug": "hikoboshi",
+  "items": [
+    { "output": "01.png", "candidateIndex": 1 },
+    { "output": "02.png", "candidateIndex": 2 },
+    { "output": "03.png", "candidateIndex": 3 },
+    { "output": "04.png", "candidateIndex": 4 },
+    { "output": "05.png", "candidateIndex": 5 },
+    { "output": "06.png", "candidateIndex": 6 },
+    { "output": "07.png", "candidateIndex": 7 },
+    { "output": "08.png", "candidateIndex": 8 },
+    { "output": "09.png", "candidateIndex": 9 },
+    { "output": "10.png", "candidateIndex": 10 },
+    { "output": "11.png", "candidateIndex": 11 },
+    { "output": "12.png", "candidateIndex": 12 },
+    { "output": "13.png", "candidateIndex": 13 },
+    { "output": "14.png", "candidateIndex": 14 },
+    { "output": "15.png", "candidateIndex": 16 },
+    { "output": "16.png", "candidateIndex": 17 }
+  ]
+}

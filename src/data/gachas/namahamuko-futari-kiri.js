@@ -1,0 +1,30 @@
+const gacha = {
+  id: 'namahamuko-futari-kiri',
+  slug: 'namahamuko-futari-kiri',
+  title: '「なまはむこ先輩とふたりきり」',
+  type: 'アイミーボックス',
+  banner: '/images/gacha/namahamuko-futari-kiri/banner.jpg',
+  status: '開催中',
+  infoStatus: '確認済み',
+  startDate: '2026/07/10 15:00',
+  endDate: '2026/09/11 14:59',
+  description: 'なまはむこ先輩とふたりきりの限定ガチャです。',
+  items: [
+    { id: 'namahamuko-roomwear', rarity: 'SSR', category: '衣装', name: 'なまはむこのルームウェア', image: '/images/items/namahamuko-futari-kiri/01.png' },
+    { id: 'namahamuko-suit', rarity: 'SSR', category: '衣装', name: 'なまはむこのスーツ', image: '/images/items/namahamuko-futari-kiri/02.png' },
+    { id: 'namahamuko-orange-eyes', rarity: 'SSR', category: '目', name: 'VTuberなまはむこの目（オレンジ）', image: '/images/items/namahamuko-futari-kiri/03.png' },
+    { id: 'namahamuko-round-eyes', rarity: 'SSR', category: '目', name: 'なまはむこの丸目（茶）', image: '/images/items/namahamuko-futari-kiri/04.png' },
+    { id: 'namahamuko-long-hair', rarity: 'SSR', category: '髪型', name: 'なまはむこのロングヘア（黒）', image: '/images/items/namahamuko-futari-kiri/05.png' },
+    { id: 'namahamuko-dango-hair', rarity: 'SSR', category: '髪型', name: 'なまはむこのゆるおだんご（黒）', image: '/images/items/namahamuko-futari-kiri/06.png' },
+    { id: 'namahamuko-bob-hair', rarity: 'SSR', category: '髪型', name: 'VTuberなまはむこのボブ（ベージュ）', image: '/images/items/namahamuko-futari-kiri/07.png' },
+    { id: 'namahamuko-hairpin', rarity: 'SR', category: '髪飾り', name: 'なまはむこのヘアピン', image: '/images/items/namahamuko-futari-kiri/08.png' },
+    { id: 'namahamuko-vtuber-ears', rarity: 'SR', category: '髪飾り', name: 'VTuberなまはむこのはむ耳', image: '/images/items/namahamuko-futari-kiri/09.png' },
+    { id: 'namahamuko-vtuber-outfit', rarity: 'SR', category: '衣装', name: 'なまはむこのVTuber衣装', image: '/images/items/namahamuko-futari-kiri/10.png' },
+    { id: 'namahamuko-drunk-cheeks', rarity: 'SR', category: 'メイク', name: '酔いどれほっぺ', image: '/images/items/namahamuko-futari-kiri/11.png' },
+    { id: 'namahamuko-cheeks', rarity: 'SR', category: 'メイク', name: 'なまはむこのほっぺ', image: '/images/items/namahamuko-futari-kiri/12.png' },
+    { id: 'namahamuko-room', rarity: 'SR', category: '背景', name: 'なまはむこの部屋', image: '/images/items/namahamuko-futari-kiri/13.png' },
+    { id: 'namahamuko-office', rarity: 'SR', category: '背景', name: '昼間のオフィス', image: '/images/items/namahamuko-futari-kiri/14.png' },
+  ],
+}
+
+export default gacha

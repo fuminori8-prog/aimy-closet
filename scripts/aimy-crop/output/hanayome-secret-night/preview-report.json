@@ -1,0 +1,25 @@
+{
+  "slug": "hanayome-secret-night",
+  "title": "花嫁のシークレットナイト",
+  "previewPath": "/Users/appleuser/Desktop/aimy-closet/scripts/aimy-crop/output/hanayome-secret-night/preview.html",
+  "itemsCount": 19,
+  "outputImageCount": 19,
+  "okCount": 0,
+  "warningCount": 19,
+  "errorCount": 0,
+  "infoStatus": "情報収集中",
+  "allImagesSet": false,
+  "all192": true,
+  "noMissingNumbers": true,
+  "completionCandidate": true,
+  "categories": [
+    "チェキフレーム",
+    "メイク",
+    "目",
+    "背景",
+    "衣装",
+    "髪型",
+    "髪飾り"
+  ],
+  "localStorageKey": "aimy-crop-preview:hanayome-secret-night:checks:v1"
+}

@@ -1,0 +1,32 @@
+const gacha = {
+  id: 'hydrangea',
+  slug: 'hydrangea',
+  title: '五月雨に濡れるハイドレンジア',
+  type: 'アイミーボックス',
+  banner: '/images/gacha/hydrangea/banner.jpg',
+  status: '開催中',
+  infoStatus: '確認済み',
+  startDate: '2026/06/15 15:00',
+  endDate: '2026/08/10 14:59',
+  description: '五月雨に濡れるハイドレンジアの限定ガチャです。',
+  items: [
+    { id: 'hydrangea-usubenifuji-ajisai-dress', rarity: 'SSR', category: '衣装', name: '薄紅藤の紫陽花ドレス', image: '/images/items/hydrangea/01.png' },
+    { id: 'hydrangea-tsuyu-day-hitomi-purple', rarity: 'SSR', category: '目', name: '梅雨の日の瞳(紫)', image: '/images/items/hydrangea/02.png' },
+    { id: 'hydrangea-tenshi-odango-twin-white-purple', rarity: 'SSR', category: '髪型', name: '天使のおだんごツイン(白紫)', image: '/images/items/hydrangea/03.png' },
+    { id: 'hydrangea-tenshi-odango-twin-purple-mizu', rarity: 'SSR', category: '髪型', name: '天使のおだんごツイン(紫水)', image: '/images/items/hydrangea/04.png' },
+    { id: 'hydrangea-witch-twintail-mizuiro', rarity: 'SSR', category: '髪型', name: 'ウィッチツインテ(水色)', image: '/images/items/hydrangea/05.png' },
+    { id: 'hydrangea-witch-twintail-white', rarity: 'SSR', category: '髪型', name: 'ウィッチツインテ(白)', image: '/images/items/hydrangea/06.png' },
+    { id: 'hydrangea-tsuyu-grade-long-pink', rarity: 'SSR', category: '髪型', name: '梅雨のグラデロングヘア(ピンク)', image: '/images/items/hydrangea/07.png' },
+    { id: 'hydrangea-ajisai-head-dress', rarity: 'SR', category: '髪飾り', name: '紫陽花ヘッドドレス', image: '/images/items/hydrangea/08.png' },
+    { id: 'hydrangea-ajisai-twin-ribbon', rarity: 'SR', category: '髪飾り', name: '紫陽花ツインリボン', image: '/images/items/hydrangea/09.png' },
+    { id: 'hydrangea-pink-ribbon-head-dress', rarity: 'SR', category: '髪飾り', name: 'ピンクリボンのヘッドドレス', image: '/images/items/hydrangea/10.png' },
+    { id: 'hydrangea-tsuyu-no-osanpo', rarity: 'SR', category: '衣装', name: '梅雨のおさんぽ', image: '/images/items/hydrangea/11.png' },
+    { id: 'hydrangea-amenochi-ohana', rarity: 'SR', category: 'チェキフレーム', name: '雨のちお花', image: '/images/items/hydrangea/12.png' },
+    { id: 'hydrangea-ame-ga-agattara', rarity: 'SR', category: 'チェキフレーム', name: '雨が上がったら', image: '/images/items/hydrangea/13.png' },
+    { id: 'hydrangea-haremasuyoni', rarity: 'SR', category: 'チェキフレーム', name: '晴れますように', image: '/images/items/hydrangea/14.png' },
+    { id: 'hydrangea-kisetsu-gentei-ajisai-cafe', rarity: 'SR', category: '背景', name: '季節限定あじさいカフェ', image: '/images/items/hydrangea/15.png' },
+    { id: 'hydrangea-chuka-fu-ajisai-studio', rarity: 'SR', category: '背景', name: '中華風あじさいスタジオ', image: '/images/items/hydrangea/16.png' },
+  ],
+}
+
+export default gacha

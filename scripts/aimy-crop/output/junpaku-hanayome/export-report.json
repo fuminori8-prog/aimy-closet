@@ -1,0 +1,316 @@
+{
+  "slug": "junpaku-hanayome",
+  "config": "/Users/appleuser/Desktop/aimy-closet/scripts/aimy-crop/configs/junpaku-hanayome.json",
+  "outputDir": "/Users/appleuser/Desktop/aimy-closet/scripts/aimy-crop/output/junpaku-hanayome/items",
+  "exportedCount": 22,
+  "exported": [
+    {
+      "output": "01.png",
+      "source": "IMG_7159.PNG",
+      "box": [
+        96,
+        1867,
+        288,
+        2059
+      ],
+      "size": [
+        192,
+        192
+      ]
+    },
+    {
+      "output": "02.png",
+      "source": "IMG_7159.PNG",
+      "box": [
+        96,
+        2113,
+        288,
+        2305
+      ],
+      "size": [
+        192,
+        192
+      ]
+    },
+    {
+      "output": "03.png",
+      "source": "IMG_7160.PNG",
+      "box": [
+        96,
+        438,
+        288,
+        630
+      ],
+      "size": [
+        192,
+        192
+      ]
+    },
+    {
+      "output": "04.png",
+      "source": "IMG_7160.PNG",
+      "box": [
+        96,
+        1296,
+        288,
+        1488
+      ],
+      "size": [
+        192,
+        192
+      ]
+    },
+    {
+      "output": "05.png",
+      "source": "IMG_7160.PNG",
+      "box": [
+        96,
+        1542,
+        288,
+        1734
+      ],
+      "size": [
+        192,
+        192
+      ]
+    },
+    {
+      "output": "06.png",
+      "source": "IMG_7160.PNG",
+      "box": [
+        96,
+        1788,
+        288,
+        1980
+      ],
+      "size": [
+        192,
+        192
+      ]
+    },
+    {
+      "output": "07.png",
+      "source": "IMG_7160.PNG",
+      "box": [
+        96,
+        2034,
+        288,
+        2226
+      ],
+      "size": [
+        192,
+        192
+      ]
+    },
+    {
+      "output": "08.png",
+      "source": "IMG_7161.PNG",
+      "box": [
+        96,
+        359,
+        288,
+        551
+      ],
+      "size": [
+        192,
+        192
+      ]
+    },
+    {
+      "output": "09.png",
+      "source": "IMG_7161.PNG",
+      "box": [
+        96,
+        1181,
+        288,
+        1373
+      ],
+      "size": [
+        192,
+        192
+      ]
+    },
+    {
+      "output": "10.png",
+      "source": "IMG_7161.PNG",
+      "box": [
+        96,
+        1427,
+        288,
+        1619
+      ],
+      "size": [
+        192,
+        192
+      ]
+    },
+    {
+      "output": "11.png",
+      "source": "IMG_7161.PNG",
+      "box": [
+        96,
+        1919,
+        288,
+        2111
+      ],
+      "size": [
+        192,
+        192
+      ]
+    },
+    {
+      "output": "12.png",
+      "source": "IMG_7161.PNG",
+      "box": [
+        96,
+        2285,
+        288,
+        2477
+      ],
+      "size": [
+        192,
+        192
+      ]
+    },
+    {
+      "output": "13.png",
+      "source": "IMG_7162.PNG",
+      "box": [
+        96,
+        465,
+        288,
+        657
+      ],
+      "size": [
+        192,
+        192
+      ]
+    },
+    {
+      "output": "14.png",
+      "source": "IMG_7162.PNG",
+      "box": [
+        96,
+        831,
+        288,
+        1023
+      ],
+      "size": [
+        192,
+        192
+      ]
+    },
+    {
+      "output": "15.png",
+      "source": "IMG_7162.PNG",
+      "box": [
+        96,
+        1077,
+        288,
+        1269
+      ],
+      "size": [
+        192,
+        192
+      ]
+    },
+    {
+      "output": "16.png",
+      "source": "IMG_7162.PNG",
+      "box": [
+        96,
+        1443,
+        288,
+        1635
+      ],
+      "size": [
+        192,
+        192
+      ]
+    },
+    {
+      "output": "17.png",
+      "source": "IMG_7162.PNG",
+      "box": [
+        96,
+        1809,
+        288,
+        2001
+      ],
+      "size": [
+        192,
+        192
+      ]
+    },
+    {
+      "output": "18.png",
+      "source": "IMG_7162.PNG",
+      "box": [
+        96,
+        2055,
+        288,
+        2247
+      ],
+      "size": [
+        192,
+        192
+      ]
+    },
+    {
+      "output": "19.png",
+      "source": "IMG_7162.PNG",
+      "box": [
+        96,
+        2301,
+        288,
+        2493
+      ],
+      "size": [
+        192,
+        192
+      ]
+    },
+    {
+      "output": "20.png",
+      "source": "IMG_7163.PNG",
+      "box": [
+        96,
+        361,
+        288,
+        553
+      ],
+      "size": [
+        192,
+        192
+      ]
+    },
+    {
+      "output": "21.png",
+      "source": "IMG_7163.PNG",
+      "box": [
+        96,
+        727,
+        288,
+        919
+      ],
+      "size": [
+        192,
+        192
+      ]
+    },
+    {
+      "output": "22.png",
+      "source": "IMG_7163.PNG",
+      "box": [
+        96,
+        973,
+        288,
+        1165
+      ],
+      "size": [
+        192,
+        192
+      ]
+    }
+  ]
+}

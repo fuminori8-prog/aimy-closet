@@ -1,0 +1,252 @@
+{
+  "slug": "kimi-no-tokubetsu",
+  "items": [
+    {
+      "output": "01.png",
+      "source": "IMG_7198.PNG",
+      "box": [
+        96,
+        1867,
+        288,
+        2059
+      ],
+      "candidateId": "c0001",
+      "candidateIndex": 1,
+      "estimatedRarity": "SSR"
+    },
+    {
+      "output": "02.png",
+      "source": "IMG_7199.PNG",
+      "box": [
+        96,
+        426,
+        288,
+        618
+      ],
+      "candidateId": "c0003",
+      "candidateIndex": 3,
+      "estimatedRarity": "SSR"
+    },
+    {
+      "output": "03.png",
+      "source": "IMG_7199.PNG",
+      "box": [
+        96,
+        1038,
+        288,
+        1230
+      ],
+      "candidateId": "c0005",
+      "candidateIndex": 5,
+      "estimatedRarity": "SSR"
+    },
+    {
+      "output": "04.png",
+      "source": "IMG_7199.PNG",
+      "box": [
+        96,
+        1284,
+        288,
+        1476
+      ],
+      "candidateId": "c0006",
+      "candidateIndex": 6,
+      "estimatedRarity": "SSR"
+    },
+    {
+      "output": "05.png",
+      "source": "IMG_7199.PNG",
+      "box": [
+        96,
+        1530,
+        288,
+        1722
+      ],
+      "candidateId": "c0007",
+      "candidateIndex": 7,
+      "estimatedRarity": "SSR"
+    },
+    {
+      "output": "06.png",
+      "source": "IMG_7199.PNG",
+      "box": [
+        96,
+        1776,
+        288,
+        1968
+      ],
+      "candidateId": "c0008",
+      "candidateIndex": 8,
+      "estimatedRarity": "SSR"
+    },
+    {
+      "output": "07.png",
+      "source": "IMG_7199.PNG",
+      "box": [
+        96,
+        2022,
+        288,
+        2214
+      ],
+      "candidateId": "c0009",
+      "candidateIndex": 9,
+      "estimatedRarity": "SSR"
+    },
+    {
+      "output": "08.png",
+      "source": "IMG_7199.PNG",
+      "box": [
+        96,
+        2268,
+        288,
+        2460
+      ],
+      "candidateId": "c0010",
+      "candidateIndex": 10,
+      "estimatedRarity": "SSR"
+    },
+    {
+      "output": "09.png",
+      "source": "IMG_7200.PNG",
+      "box": [
+        96,
+        442,
+        288,
+        634
+      ],
+      "candidateId": "c0011",
+      "candidateIndex": 11,
+      "estimatedRarity": "SR"
+    },
+    {
+      "output": "10.png",
+      "source": "IMG_7200.PNG",
+      "box": [
+        96,
+        688,
+        288,
+        880
+      ],
+      "candidateId": "c0012",
+      "candidateIndex": 12,
+      "estimatedRarity": "SR"
+    },
+    {
+      "output": "11.png",
+      "source": "IMG_7200.PNG",
+      "box": [
+        96,
+        1054,
+        288,
+        1246
+      ],
+      "candidateId": "c0013",
+      "candidateIndex": 13,
+      "estimatedRarity": "SR"
+    },
+    {
+      "output": "12.png",
+      "source": "IMG_7200.PNG",
+      "box": [
+        96,
+        1420,
+        288,
+        1612
+      ],
+      "candidateId": "c0014",
+      "candidateIndex": 14,
+      "estimatedRarity": "SR"
+    },
+    {
+      "output": "13.png",
+      "source": "IMG_7200.PNG",
+      "box": [
+        96,
+        1786,
+        288,
+        1978
+      ],
+      "candidateId": "c0015",
+      "candidateIndex": 15,
+      "estimatedRarity": "SR"
+    },
+    {
+      "output": "14.png",
+      "source": "IMG_7200.PNG",
+      "box": [
+        96,
+        2032,
+        288,
+        2224
+      ],
+      "candidateId": "c0016",
+      "candidateIndex": 16,
+      "estimatedRarity": "SR"
+    },
+    {
+      "output": "15.png",
+      "source": "IMG_7200.PNG",
+      "box": [
+        96,
+        2278,
+        288,
+        2470
+      ],
+      "candidateId": "c0017",
+      "candidateIndex": 17,
+      "estimatedRarity": "SR"
+    },
+    {
+      "output": "16.png",
+      "source": "IMG_7201.PNG",
+      "box": [
+        96,
+        405,
+        288,
+        597
+      ],
+      "candidateId": "c0018",
+      "candidateIndex": 18,
+      "estimatedRarity": "SR"
+    },
+    {
+      "output": "17.png",
+      "source": "IMG_7201.PNG",
+      "box": [
+        96,
+        651,
+        288,
+        843
+      ],
+      "candidateId": "c0019",
+      "candidateIndex": 19,
+      "estimatedRarity": "SR"
+    },
+    {
+      "output": "18.png",
+      "source": "IMG_7201.PNG",
+      "box": [
+        96,
+        1017,
+        288,
+        1209
+      ],
+      "candidateId": "c0020",
+      "candidateIndex": 20,
+      "estimatedRarity": "SR"
+    },
+    {
+      "output": "19.png",
+      "source": "IMG_7201.PNG",
+      "box": [
+        96,
+        1263,
+        288,
+        1455
+      ],
+      "candidateId": "c0021",
+      "candidateIndex": 21,
+      "estimatedRarity": "SR"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "slug": "hydrangea",
+  "items": [
+    { "output": "01.png", "source": "IMG_7143.PNG", "box": [96, 1957, 288, 2149] },
+    { "output": "02.png", "source": "IMG_7144.PNG", "box": [96, 455, 288, 647] },
+    { "output": "03.png", "source": "IMG_7144.PNG", "box": [96, 821, 288, 1013] },
+    { "output": "04.png", "source": "IMG_7144.PNG", "box": [96, 1067, 288, 1259] },
+    { "output": "05.png", "source": "IMG_7144.PNG", "box": [96, 1313, 288, 1505] },
+    { "output": "06.png", "source": "IMG_7144.PNG", "box": [96, 1559, 288, 1751] },
+    { "output": "07.png", "source": "IMG_7144.PNG", "box": [96, 1805, 288, 1997] },
+    { "output": "08.png", "source": "IMG_7145.PNG", "box": [96, 494, 288, 686] },
+    { "output": "09.png", "source": "IMG_7145.PNG", "box": [96, 740, 288, 932] },
+    { "output": "10.png", "source": "IMG_7145.PNG", "box": [96, 986, 288, 1178] },
+    { "output": "11.png", "source": "IMG_7145.PNG", "box": [96, 1232, 288, 1424] },
+    { "output": "12.png", "source": "IMG_7145.PNG", "box": [96, 1598, 288, 1790] },
+    { "output": "13.png", "source": "IMG_7145.PNG", "box": [96, 1964, 288, 2156] },
+    { "output": "14.png", "source": "IMG_7145.PNG", "box": [96, 2210, 288, 2402] },
+    { "output": "15.png", "source": "IMG_7146.PNG", "box": [96, 1542, 288, 1734] },
+    { "output": "16.png", "source": "IMG_7146.PNG", "box": [96, 1788, 288, 1980] }
+  ]
+}

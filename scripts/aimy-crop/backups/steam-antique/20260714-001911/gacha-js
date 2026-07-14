@@ -1,0 +1,32 @@
+const gacha = {
+  id: 'steam-antique',
+  slug: 'steam-antique',
+  title: '蒸気仕掛けのアンティーク',
+  type: 'アイミーボックス',
+  banner: '/images/gacha/steam-antique/banner.jpg',
+  status: '開催中',
+  infoStatus: '情報収集中',
+  startDate: '2026/05/18 15:00',
+  endDate: '2026/07/13 14:59',
+  description: '蒸気仕掛けのアンティークの限定ガチャです。',
+  items: [
+    { id: 'steam-antique-explorer-steam-onepiece', rarity: 'SSR', category: '衣装', name: '探検家のスチームワンピ', image: 'placeholder' },
+    { id: 'steam-antique-windup-doll-aimy', rarity: 'SSR', category: '衣装', name: 'ネジ巻きドールアイミー', image: 'placeholder' },
+    { id: 'steam-antique-steampunk-eye-beige', rarity: 'SSR', category: '目', name: 'スチームパンクアイ(ベージュ)', image: 'placeholder' },
+    { id: 'steam-antique-doll-eye-white', rarity: 'SSR', category: '目', name: 'アンティークなドールアイ(白)', image: 'placeholder' },
+    { id: 'steam-antique-vertical-roll-twin-gold', rarity: 'SSR', category: '髪型', name: '七三分け縦ロールツイン(金)', image: 'placeholder' },
+    { id: 'steam-antique-down-bob-white', rarity: 'SSR', category: '髪型', name: '前下がりぱっつんボブ(白)', image: 'placeholder' },
+    { id: 'steam-antique-high-pony-red', rarity: 'SSR', category: '髪型', name: '高めポニー(赤)', image: 'placeholder' },
+    { id: 'steam-antique-vertical-roll-twin-beige', rarity: 'SSR', category: '髪型', name: '七三分け縦ロールツイン(ベージュ)', image: 'placeholder' },
+    { id: 'steam-antique-down-bob-black', rarity: 'SSR', category: '髪型', name: '前下がりぱっつんボブ(黒)', image: 'placeholder' },
+    { id: 'steam-antique-high-pony-brown', rarity: 'SSR', category: '髪型', name: '高めポニー(茶)', image: 'placeholder' },
+    { id: 'steam-antique-kikanshi-tsunagi-fuku', rarity: 'SR', category: '衣装', name: '機関士のつなぎ服', image: 'placeholder' },
+    { id: 'steam-antique-mechanical-drape', rarity: 'SR', category: 'チェキフレーム', name: 'メカニカル・ドレープ', image: 'placeholder' },
+    { id: 'steam-antique-haguruma-shikake-shouzouga', rarity: 'SR', category: 'チェキフレーム', name: '歯車仕掛けの肖像画', image: 'placeholder' },
+    { id: 'steam-antique-boukensha-memorial', rarity: 'SR', category: 'チェキフレーム', name: '冒険者のメモリアル', image: 'placeholder' },
+    { id: 'steam-antique-kinsei-europe-kougyou-chitai', rarity: 'SR', category: '背景', name: '近世ヨーロッパの工業地帯', image: 'placeholder' },
+    { id: 'steam-antique-clocktower-naibu', rarity: 'SR', category: '背景', name: '時計台の内部', image: 'placeholder' },
+  ],
+}
+
+export default gacha

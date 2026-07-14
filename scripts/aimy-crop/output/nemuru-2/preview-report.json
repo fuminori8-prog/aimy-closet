@@ -1,0 +1,23 @@
+{
+  "slug": "nemuru-2",
+  "title": "ねむるが2次元にやってきた！2",
+  "previewPath": "/Users/appleuser/Desktop/aimy-closet/scripts/aimy-crop/output/nemuru-2/preview.html",
+  "itemsCount": 11,
+  "outputImageCount": 11,
+  "okCount": 0,
+  "warningCount": 11,
+  "errorCount": 0,
+  "infoStatus": "情報収集中",
+  "allImagesSet": false,
+  "all192": true,
+  "noMissingNumbers": true,
+  "completionCandidate": true,
+  "categories": [
+    "目",
+    "背景",
+    "衣装",
+    "髪型",
+    "髪飾り"
+  ],
+  "localStorageKey": "aimy-crop-preview:nemuru-2:checks:v1"
+}

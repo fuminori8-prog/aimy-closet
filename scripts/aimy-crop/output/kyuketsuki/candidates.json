@@ -1,0 +1,486 @@
+{
+  "slug": "kyuketsuki",
+  "inputDir": "/Users/appleuser/Desktop/aimy-closet/public/images/gacha/kyuketsuki",
+  "candidateCount": 28,
+  "duplicateGroupCount": 6,
+  "candidates": [
+    {
+      "id": "c0001",
+      "source": "IMG_7138.PNG",
+      "box": [
+        96,
+        1867,
+        288,
+        2059
+      ],
+      "estimatedRarity": "SSR",
+      "orderFromTop": 1,
+      "dhash": "7e7071e8e8ccccf0",
+      "duplicateGroup": null,
+      "duplicateCandidateIds": []
+    },
+    {
+      "id": "c0002",
+      "source": "IMG_7138.PNG",
+      "box": [
+        96,
+        2113,
+        288,
+        2305
+      ],
+      "estimatedRarity": "SSR",
+      "orderFromTop": 2,
+      "dhash": "7e347169b2aa7171",
+      "duplicateGroup": null,
+      "duplicateCandidateIds": []
+    },
+    {
+      "id": "c0003",
+      "source": "IMG_7139.PNG",
+      "box": [
+        96,
+        445,
+        288,
+        637
+      ],
+      "estimatedRarity": "SSR",
+      "orderFromTop": 3,
+      "dhash": "7e1c0dcccc450171",
+      "duplicateGroup": "dup-01",
+      "duplicateCandidateIds": [
+        "c0004",
+        "c0005",
+        "c0006"
+      ]
+    },
+    {
+      "id": "c0004",
+      "source": "IMG_7139.PNG",
+      "box": [
+        96,
+        691,
+        288,
+        883
+      ],
+      "estimatedRarity": "SSR",
+      "orderFromTop": 4,
+      "dhash": "7e1c0dcccc4d0171",
+      "duplicateGroup": "dup-01",
+      "duplicateCandidateIds": [
+        "c0003",
+        "c0005",
+        "c0006"
+      ]
+    },
+    {
+      "id": "c0005",
+      "source": "IMG_7139.PNG",
+      "box": [
+        96,
+        937,
+        288,
+        1129
+      ],
+      "estimatedRarity": "SSR",
+      "orderFromTop": 5,
+      "dhash": "7e1c0d8ece070171",
+      "duplicateGroup": "dup-01",
+      "duplicateCandidateIds": [
+        "c0003",
+        "c0004",
+        "c0006"
+      ]
+    },
+    {
+      "id": "c0006",
+      "source": "IMG_7139.PNG",
+      "box": [
+        96,
+        1183,
+        288,
+        1375
+      ],
+      "estimatedRarity": "SSR",
+      "orderFromTop": 6,
+      "dhash": "7e1c0d8ece070171",
+      "duplicateGroup": "dup-01",
+      "duplicateCandidateIds": [
+        "c0003",
+        "c0004",
+        "c0005"
+      ]
+    },
+    {
+      "id": "c0007",
+      "source": "IMG_7139.PNG",
+      "box": [
+        96,
+        1549,
+        288,
+        1741
+      ],
+      "estimatedRarity": "SSR",
+      "orderFromTop": 7,
+      "dhash": "7e74e9d4d48e1786",
+      "duplicateGroup": "dup-02",
+      "duplicateCandidateIds": [
+        "c0008"
+      ]
+    },
+    {
+      "id": "c0008",
+      "source": "IMG_7139.PNG",
+      "box": [
+        96,
+        1795,
+        288,
+        1987
+      ],
+      "estimatedRarity": "SSR",
+      "orderFromTop": 8,
+      "dhash": "7e746dc4d48e3386",
+      "duplicateGroup": "dup-02",
+      "duplicateCandidateIds": [
+        "c0007"
+      ]
+    },
+    {
+      "id": "c0009",
+      "source": "IMG_7139.PNG",
+      "box": [
+        96,
+        2041,
+        288,
+        2233
+      ],
+      "estimatedRarity": "SSR",
+      "orderFromTop": 9,
+      "dhash": "7e7c4d4d4d69694d",
+      "duplicateGroup": null,
+      "duplicateCandidateIds": []
+    },
+    {
+      "id": "c0010",
+      "source": "IMG_7139.PNG",
+      "box": [
+        96,
+        2287,
+        288,
+        2479
+      ],
+      "estimatedRarity": "SSR",
+      "orderFromTop": 10,
+      "dhash": "767061cccccccccd",
+      "duplicateGroup": "dup-03",
+      "duplicateCandidateIds": [
+        "c0011",
+        "c0012"
+      ]
+    },
+    {
+      "id": "c0011",
+      "source": "IMG_7140.PNG",
+      "box": [
+        96,
+        363,
+        288,
+        555
+      ],
+      "estimatedRarity": "SSR",
+      "orderFromTop": 11,
+      "dhash": "767061e4c4cccc8e",
+      "duplicateGroup": "dup-03",
+      "duplicateCandidateIds": [
+        "c0010",
+        "c0012"
+      ]
+    },
+    {
+      "id": "c0012",
+      "source": "IMG_7140.PNG",
+      "box": [
+        96,
+        609,
+        288,
+        801
+      ],
+      "estimatedRarity": "SSR",
+      "orderFromTop": 12,
+      "dhash": "767061e4c4cccc8e",
+      "duplicateGroup": "dup-03",
+      "duplicateCandidateIds": [
+        "c0010",
+        "c0011"
+      ]
+    },
+    {
+      "id": "c0013",
+      "source": "IMG_7140.PNG",
+      "box": [
+        96,
+        1431,
+        288,
+        1623
+      ],
+      "estimatedRarity": "SR",
+      "orderFromTop": 13,
+      "dhash": "3d6d69cc8e86968e",
+      "duplicateGroup": null,
+      "duplicateCandidateIds": []
+    },
+    {
+      "id": "c0014",
+      "source": "IMG_7140.PNG",
+      "box": [
+        96,
+        1677,
+        288,
+        1869
+      ],
+      "estimatedRarity": "SR",
+      "orderFromTop": 14,
+      "dhash": "3d1df1c48e96968e",
+      "duplicateGroup": null,
+      "duplicateCandidateIds": []
+    },
+    {
+      "id": "c0015",
+      "source": "IMG_7140.PNG",
+      "box": [
+        96,
+        1923,
+        288,
+        2115
+      ],
+      "estimatedRarity": "SR",
+      "orderFromTop": 15,
+      "dhash": "7d0d67617919017f",
+      "duplicateGroup": null,
+      "duplicateCandidateIds": []
+    },
+    {
+      "id": "c0016",
+      "source": "IMG_7140.PNG",
+      "box": [
+        96,
+        2169,
+        288,
+        2361
+      ],
+      "estimatedRarity": "SR",
+      "orderFromTop": 16,
+      "dhash": "7d3571cccccc457f",
+      "duplicateGroup": null,
+      "duplicateCandidateIds": []
+    },
+    {
+      "id": "c0017",
+      "source": "IMG_7141.PNG",
+      "box": [
+        96,
+        471,
+        288,
+        663
+      ],
+      "estimatedRarity": "SR",
+      "orderFromTop": 17,
+      "dhash": "7db2f061e9e8e8d4",
+      "duplicateGroup": null,
+      "duplicateCandidateIds": []
+    },
+    {
+      "id": "c0018",
+      "source": "IMG_7141.PNG",
+      "box": [
+        96,
+        837,
+        288,
+        1029
+      ],
+      "estimatedRarity": "SR",
+      "orderFromTop": 18,
+      "dhash": "3571e1e8d4cccccc",
+      "duplicateGroup": "dup-04",
+      "duplicateCandidateIds": [
+        "c0019",
+        "c0020"
+      ]
+    },
+    {
+      "id": "c0019",
+      "source": "IMG_7141.PNG",
+      "box": [
+        96,
+        1083,
+        288,
+        1275
+      ],
+      "estimatedRarity": "SR",
+      "orderFromTop": 19,
+      "dhash": "3571e1e8d4cccccc",
+      "duplicateGroup": "dup-04",
+      "duplicateCandidateIds": [
+        "c0018",
+        "c0020"
+      ]
+    },
+    {
+      "id": "c0020",
+      "source": "IMG_7141.PNG",
+      "box": [
+        96,
+        1329,
+        288,
+        1521
+      ],
+      "estimatedRarity": "SR",
+      "orderFromTop": 20,
+      "dhash": "3571e1e8d4cccccc",
+      "duplicateGroup": "dup-04",
+      "duplicateCandidateIds": [
+        "c0018",
+        "c0019"
+      ]
+    },
+    {
+      "id": "c0021",
+      "source": "IMG_7141.PNG",
+      "box": [
+        96,
+        1695,
+        288,
+        1887
+      ],
+      "estimatedRarity": "SR",
+      "orderFromTop": 21,
+      "dhash": "3d0d8f8ecc45037f",
+      "duplicateGroup": "dup-05",
+      "duplicateCandidateIds": [
+        "c0022"
+      ]
+    },
+    {
+      "id": "c0022",
+      "source": "IMG_7141.PNG",
+      "box": [
+        96,
+        1941,
+        288,
+        2133
+      ],
+      "estimatedRarity": "SR",
+      "orderFromTop": 22,
+      "dhash": "7d0d8f8ccc4d017f",
+      "duplicateGroup": "dup-05",
+      "duplicateCandidateIds": [
+        "c0021"
+      ]
+    },
+    {
+      "id": "c0023",
+      "source": "IMG_7141.PNG",
+      "box": [
+        96,
+        2307,
+        288,
+        2499
+      ],
+      "estimatedRarity": "SR",
+      "orderFromTop": 23,
+      "dhash": "7d69cdcdcdcd4979",
+      "duplicateGroup": "dup-06",
+      "duplicateCandidateIds": [
+        "c0024",
+        "c0025",
+        "c0026"
+      ]
+    },
+    {
+      "id": "c0024",
+      "source": "IMG_7142.PNG",
+      "box": [
+        96,
+        560,
+        288,
+        752
+      ],
+      "estimatedRarity": "SR",
+      "orderFromTop": 24,
+      "dhash": "7d69cdcdcdcd4979",
+      "duplicateGroup": "dup-06",
+      "duplicateCandidateIds": [
+        "c0023",
+        "c0025",
+        "c0026"
+      ]
+    },
+    {
+      "id": "c0025",
+      "source": "IMG_7142.PNG",
+      "box": [
+        96,
+        806,
+        288,
+        998
+      ],
+      "estimatedRarity": "SR",
+      "orderFromTop": 25,
+      "dhash": "7d69cdcdcddd7179",
+      "duplicateGroup": "dup-06",
+      "duplicateCandidateIds": [
+        "c0023",
+        "c0024",
+        "c0026"
+      ]
+    },
+    {
+      "id": "c0026",
+      "source": "IMG_7142.PNG",
+      "box": [
+        96,
+        1052,
+        288,
+        1244
+      ],
+      "estimatedRarity": "SR",
+      "orderFromTop": 26,
+      "dhash": "7d69cdcdcd69717d",
+      "duplicateGroup": "dup-06",
+      "duplicateCandidateIds": [
+        "c0023",
+        "c0024",
+        "c0025"
+      ]
+    },
+    {
+      "id": "c0027",
+      "source": "IMG_7142.PNG",
+      "box": [
+        96,
+        1418,
+        288,
+        1610
+      ],
+      "estimatedRarity": "SR",
+      "orderFromTop": 27,
+      "dhash": "9181878e968e8ece",
+      "duplicateGroup": null,
+      "duplicateCandidateIds": []
+    },
+    {
+      "id": "c0028",
+      "source": "IMG_7142.PNG",
+      "box": [
+        96,
+        1664,
+        288,
+        1856
+      ],
+      "estimatedRarity": "SR",
+      "orderFromTop": 28,
+      "dhash": "d18186a6b4828286",
+      "duplicateGroup": null,
+      "duplicateCandidateIds": []
+    }
+  ]
+}
