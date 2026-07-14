@@ -872,4 +872,48 @@ footer p {
   .logo-description{
     font-size:11px;
   }
+
+  /* スマホ：アイテムを横2列にする */
+@media (max-width: 599px) {
+  .item-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .item-card {
+    min-width: 0;
+    padding: 8px;
+    border-radius: 12px;
+  }
+
+  .item-card .item-image {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    height: auto;
+    object-fit: contain;
+  }
+
+  .item-card h3 {
+    margin: 6px 0 4px;
+    font-size: 12px;
+    line-height: 1.35;
+  }
+
+  .item-card p {
+    font-size: 11px;
+    line-height: 1.3;
+  }
+
+  .rarity-badge {
+    font-size: 10px;
+    padding: 3px 6px;
+  }
+}
+/* 大型スマホ〜小型タブレット：横3列 */
+@media (min-width: 600px) and (max-width: 900px) {
+  .item-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+  }
+}
 }
