@@ -63,8 +63,6 @@ const latestGacha = [...gachas].sort((a, b) => {
 
 const latestItems = latestGacha.items.slice(0, 5)
 
-const latestItems = latestGacha.items.slice(0, 5)
-
 function App() {
   return (
     <div className="page">
