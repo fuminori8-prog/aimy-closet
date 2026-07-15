@@ -8,9 +8,9 @@ export const MAIN_CATEGORIES = [
 
 export const CATEGORY_ICONS = {
   服: '👗',
-  髪型: '💇',
+  髪型: '💇‍♀️',
   アクセサリー: '🎀',
-  パーツ: '✨',
+  パーツ: '👁️',
   背景: '🌈',
 }
 
@@ -76,8 +76,24 @@ export function getSubCategory(category) {
     return 'ピアス'
   }
 
-  if (['メイク', '目', '口', '鼻', 'まゆげ', '眉毛'].includes(value)) {
-    return value === '眉毛' ? 'まゆげ' : value
+  if (value === 'メイク') {
+    return 'メイク'
+  }
+
+  if (value === '目') {
+    return '目'
+  }
+
+  if (value === '口') {
+    return '口'
+  }
+
+  if (value === '鼻') {
+    return '鼻'
+  }
+
+  if (['まゆげ', '眉毛'].includes(value)) {
+    return 'まゆげ'
   }
 
   return ''
