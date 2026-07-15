@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import './App.css'
 import Header from './components/Header'
 import SearchBar from './components/SearchBar'
@@ -64,6 +65,22 @@ const latestGacha = [...gachas].sort((a, b) => {
 const latestItems = latestGacha.items.slice(0, 5)
 
 function App() {
+
+  useEffect(() => {
+    document.title = 'Aimy Closet｜Aimy非公式アイテム図鑑・ガチャデータベース'
+
+    let meta = document.querySelector('meta[name="description"]')
+
+    if (!meta) {
+      meta = document.createElement('meta')
+      meta.name = 'description'
+      document.head.appendChild(meta)
+    }
+
+    meta.content =
+      'Aimyの衣装・髪型・背景などのアイテム図鑑や、開催中・終了済みガチャの排出アイテムを掲載している非公式データベースです。'
+  }, [])
+
   return (
     <div className="page">
       <Header />
