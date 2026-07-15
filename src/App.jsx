@@ -8,25 +8,20 @@ import ItemSection from './components/ItemSection'
 import AdBanner from './components/AdBanner'
 import Footer from './components/Footer'
 import { gachas } from './data/gachas'
+import {
+  MAIN_CATEGORIES,
+  getMainCategory,
+} from './utils/itemCategory'
 
 const categoryConfig = [
-  { name: '衣装', icon: '👗' },
+  { name: '服', icon: '👗' },
   { name: '髪型', icon: '💇' },
-  { name: '目', icon: '👁️' },
-  { name: '髪飾り', icon: '🎀' },
-  { name: '耳飾り', icon: '✨' },
-  { name: 'メガネ', icon: '🕶️' },
-  { name: 'メイク', icon: '💄' },
-  { name: 'チェキフレーム', icon: '🖼️' },
+  { name: 'アクセサリー', icon: '🎀' },
+  { name: 'パーツ', icon: '✨' },
   { name: '背景', icon: '🌈' },
 ]
 
-const categoryAliases = {
-  服: '衣装',
-  髪: '髪型',
-}
-
-const categorySet = new Set(categoryConfig.map((category) => category.name))
+const categorySet = new Set(MAIN_CATEGORIES)
 
 const countByCategory = (() => {
   const counts = Object.fromEntries(categoryConfig.map((category) => [category.name, 0]))
@@ -39,8 +34,7 @@ const countByCategory = (() => {
       }
       seenItemIds.add(item.id)
 
-      const rawCategory = (item.category || '').trim()
-      const normalizedCategory = categoryAliases[rawCategory] || rawCategory
+      const normalizedCategory = getMainCategory(item.category)
 
       if (categorySet.has(normalizedCategory)) {
         counts[normalizedCategory] += 1
@@ -78,8 +72,8 @@ function App() {
     }
 
     meta.content =
-      'Aimyの衣装・髪型・背景などのアイテム図鑑や、開催中・終了済みガチャの排出アイテムを掲載している非公式データベースです。'
-  }, [])
+  'Aimyの服・髪型・アクセサリー・パーツ・背景のアイテム図鑑や、開催中・終了済みガチャの排出アイテムを掲載している非公式データベースです。'
+ }, [])
 
   return (
     <div className="page">

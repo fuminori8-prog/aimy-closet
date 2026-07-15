@@ -6,26 +6,14 @@ import GachaItemCard from '../components/GachaItemCard'
 import GachaBanner from '../components/GachaBanner'
 import { gachas } from '../data/gachas'
 import { Link, useNavigate, useParams } from 'react-router-dom'
+import { MAIN_CATEGORIES, getMainCategory } from '../utils/itemCategory'
 
 const raritySections = ['SSR', 'SR', 'NR']
-
-const categoryOrder = [
-  '衣装',
-  '髪型',
-  '目',
-  '髪飾り',
-  '耳飾り',
-  'アクセサリー',
-  'メガネ',
-  'メイク',
-  'チェキフレーム',
-  '背景',
-  'その他',
-]
+const categoryOrder = MAIN_CATEGORIES
 
 const groupItemsByCategory = (items) => {
   const groups = items.reduce((result, item) => {
-    const category = item.category || 'その他'
+    const category = getMainCategory(item.category)
 
     if (!result[category]) {
       result[category] = []

@@ -7,38 +7,12 @@ import Footer from '../components/Footer'
 import AdBanner from '../components/AdBanner'
 import SearchBar from '../components/SearchBar'
 import { gachas } from '../data/gachas'
+import {
+  MAIN_CATEGORIES,
+  getMainCategory,
+} from '../utils/itemCategory'
 
-const CATEGORY_LABELS = [
-  '衣装',
-  '髪型',
-  '目',
-  '髪飾り',
-  '耳飾り',
-  'メガネ',
-  'メイク',
-  'チェキフレーム',
-  '背景',
-]
-
-const CATEGORY_ALIASES = {
-  服: '衣装',
-  髪: '髪型',
-  アクセ: 'アクセサリー',
-}
-
-function normalizeCategory(category) {
-  const trimmed = (category || '').trim()
-
-  if (CATEGORY_ALIASES[trimmed]) {
-    return CATEGORY_ALIASES[trimmed]
-  }
-
-  if (CATEGORY_LABELS.includes(trimmed)) {
-    return trimmed
-  }
-
-  return 'その他'
-}
+const CATEGORY_LABELS = MAIN_CATEGORIES
 
 function ItemList() {
   const [searchParams] = useSearchParams()
@@ -51,7 +25,7 @@ function ItemList() {
           ...item,
           gachaSlug: gacha.slug,
           gachaTitle: gacha.title,
-          normalizedCategory: normalizeCategory(item.category),
+          normalizedCategory: getMainCategory(item.category),
         })),
       ),
     [],
@@ -71,8 +45,13 @@ function ItemList() {
       return
     }
 
-    const normalized = CATEGORY_ALIASES[categoryQuery]
-    setSelectedCategory(normalized && CATEGORY_LABELS.includes(normalized) ? normalized : 'すべて')
+    const normalized = getMainCategory(categoryQuery)
+
+setSelectedCategory(
+  CATEGORY_LABELS.includes(normalized)
+    ? normalized
+    : 'すべて',
+)
   }, [categoryQuery])
 
 useEffect(() => {
@@ -87,7 +66,7 @@ useEffect(() => {
   }
 
   meta.content =
-    'Aimyの衣装・髪型・目・背景などのアイテムを検索・一覧表示できる非公式アイテム図鑑です。'
+    'Aimyの服・髪型・アクセサリー・パーツ・背景を検索・一覧表示できる非公式アイテム図鑑です。'
 }, [])
 
   const filteredItems = useMemo(
