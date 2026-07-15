@@ -6,6 +6,10 @@ import Footer from '../components/Footer'
 import AdBanner from '../components/AdBanner'
 import GachaItemCard from '../components/GachaItemCard'
 import { gachas } from '../data/gachas'
+import {
+  getMainCategory,
+  getSubCategory,
+} from '../utils/itemCategory'
 
 function ItemDetail() {
   const { itemId } = useParams()
@@ -108,7 +112,15 @@ function ItemDetail() {
               <p className="gacha-label">アイテム詳細</p>
               <h1>{item.name}</h1>
               <p className="gacha-meta">レアリティ: {item.rarity}</p>
-              <p className="gacha-meta">カテゴリ: {item.category}</p>
+              <p className="gacha-meta">
+                  カテゴリ: {getMainCategory(item.category)}
+              </p>
+
+              {getSubCategory(item.category) ? (
+              <p className="gacha-meta">
+                 種類: {getSubCategory(item.category)}
+              </p>
+              ) : null}
               <p className="gacha-meta">排出ガチャ: {gacha.title}</p>
               <p className="gacha-meta">開催期間: {gacha.startDate} ～ {gacha.endDate}</p>
               <div className="status-group">
