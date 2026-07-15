@@ -1,5 +1,5 @@
 import '../App.css'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useSearchParams } from 'react-router-dom'
 import Header from '../components/Header'
@@ -51,6 +51,21 @@ function GachaList() {
       }),
     [],
   )
+
+useEffect(() => {
+  document.title = 'ガチャ履歴｜Aimy Closet'
+
+  let meta = document.querySelector('meta[name="description"]')
+
+  if (!meta) {
+    meta = document.createElement('meta')
+    meta.name = 'description'
+    document.head.appendChild(meta)
+  }
+
+  meta.content =
+    'Aimyの開催中・終了済みガチャの開催期間や排出アイテムを確認できる非公式ガチャデータベースです。'
+}, [])
 
   const filteredGachas = useMemo(
     () =>

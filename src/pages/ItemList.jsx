@@ -75,6 +75,21 @@ function ItemList() {
     setSelectedCategory(normalized && CATEGORY_LABELS.includes(normalized) ? normalized : 'すべて')
   }, [categoryQuery])
 
+useEffect(() => {
+  document.title = 'アイテム図鑑｜Aimy Closet'
+
+  let meta = document.querySelector('meta[name="description"]')
+
+  if (!meta) {
+    meta = document.createElement('meta')
+    meta.name = 'description'
+    document.head.appendChild(meta)
+  }
+
+  meta.content =
+    'Aimyの衣装・髪型・目・背景などのアイテムを検索・一覧表示できる非公式アイテム図鑑です。'
+}, [])
+
   const filteredItems = useMemo(
     () =>
       allItems.filter((item) => {
