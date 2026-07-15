@@ -15,9 +15,9 @@ import {
 
 const categoryConfig = [
   { name: '服', icon: '👗' },
-  { name: '髪型', icon: '💇' },
+  { name: '髪型', icon: '💇‍♀️' },
   { name: 'アクセサリー', icon: '🎀' },
-  { name: 'パーツ', icon: '✨' },
+  { name: 'パーツ', icon: '👁️' },
   { name: '背景', icon: '🌈' },
 ]
 
