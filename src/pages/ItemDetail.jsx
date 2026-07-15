@@ -56,6 +56,25 @@ function ItemDetail() {
   const hasImage = Boolean(item.image) && item.image !== 'placeholder' && !hasImageError
   const relatedItems = (gacha.items || []).filter((currentItem) => currentItem.id !== item.id).slice(0, 4)
 
+ useEffect(() => {
+  const pageTitle = `${item.name}｜入手ガチャ・アイテム情報｜Aimy Closet`
+
+  document.title = pageTitle
+
+  const pageDescription =
+    `${item.name}の入手方法、排出ガチャ、レアリティ、カテゴリを掲載しています。`
+
+  let meta = document.querySelector('meta[name="description"]')
+
+  if (!meta) {
+    meta = document.createElement('meta')
+    meta.name = 'description'
+    document.head.appendChild(meta)
+  }
+
+  meta.content = pageDescription
+}, [item, gacha])
+  
   return (
     <div className="page">
       <Header />
