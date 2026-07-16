@@ -21,7 +21,9 @@ function ItemSection({ title, items, showRarity }) {
             <p>
               {showRarity
                 ? item.category
-                : `♡ ${item.hearts}`}
+                : item.hearts != null
+                  ? `♡ ${item.hearts}`
+                  : item.category}
             </p>
           </div>
         ))}
