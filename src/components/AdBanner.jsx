@@ -1,5 +1,5 @@
-function AdBanner({ text }) {
-  return <section className="ad-banner">{text}</section>
+function AdBanner() {
+  return null
 }
 
 export default AdBanner
