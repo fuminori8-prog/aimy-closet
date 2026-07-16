@@ -19,6 +19,7 @@ const categoryConfig = [
   { name: 'アクセサリー', icon: '🎀' },
   { name: 'パーツ', icon: '👁️' },
   { name: '背景', icon: '🌈' },
+  { name: 'チェキフレーム', icon: '🖼️' },
 ]
 
 const categorySet = new Set(MAIN_CATEGORIES)
@@ -72,7 +73,7 @@ function App() {
     }
 
     meta.content =
-  'Aimyの服・髪型・アクセサリー・パーツ・背景のアイテム図鑑や、開催中・終了済みガチャの排出アイテムを掲載している非公式データベースです。'
+  'Aimyの服・髪型・アクセサリー・パーツ・背景・チェキフレームのアイテム図鑑や、開催中・終了済みガチャの排出アイテムを掲載している非公式データベースです。'
  }, [])
 
   return (

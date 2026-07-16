@@ -4,6 +4,7 @@ export const MAIN_CATEGORIES = [
   'アクセサリー',
   'パーツ',
   '背景',
+  'チェキフレーム',
 ]
 
 export const CATEGORY_ICONS = {
@@ -12,6 +13,7 @@ export const CATEGORY_ICONS = {
   アクセサリー: '🎀',
   パーツ: '👁️',
   背景: '🌈',
+  チェキフレーム: '🖼️',
 }
 
 export function getMainCategory(category) {
@@ -52,6 +54,10 @@ export function getMainCategory(category) {
     ].includes(value)
   ) {
     return 'パーツ'
+  }
+
+  if (value === 'チェキフレーム') {
+    return 'チェキフレーム'
   }
 
   if (value === '背景') {
