@@ -1,0 +1,27 @@
+{
+  "slug": "friend-point",
+  "title": "フレンドポイントガチャ",
+  "previewPath": "/Users/appleuser/Desktop/aimy-closet/scripts/aimy-crop/output/friend-point/preview.html",
+  "itemsCount": 41,
+  "outputImageCount": 41,
+  "okCount": 41,
+  "warningCount": 0,
+  "errorCount": 0,
+  "infoStatus": "確認済み",
+  "allImagesSet": true,
+  "all192": true,
+  "noMissingNumbers": true,
+  "completionCandidate": true,
+  "categories": [
+    "あたま",
+    "めがね",
+    "イベント",
+    "チェキフレーム",
+    "メイク",
+    "目",
+    "背景",
+    "衣装",
+    "髪型"
+  ],
+  "localStorageKey": "aimy-crop-preview:friend-point:checks:v1"
+}

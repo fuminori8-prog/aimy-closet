@@ -15,6 +15,7 @@ import nemuru2 from './gachas/nemuru-2'
 import usagiAmaete from './gachas/usagi-amaete'
 import steamAntique from './gachas/steam-antique'
 import kimiNoTokubetsu from './gachas/kimi-no-tokubetsu'
+import friendPoint from './gachas/friend-point'
 
 export const gachas = [
   namahamukoFutariKiri,
@@ -34,4 +35,5 @@ export const gachas = [
   usagiAmaete,
   steamAntique,
   kimiNoTokubetsu,
+  friendPoint,
 ]

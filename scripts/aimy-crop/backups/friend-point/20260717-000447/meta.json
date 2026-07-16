@@ -1,0 +1,8 @@
+{
+  "slug": "friend-point",
+  "createdAt": "20260717-000447",
+  "hadProdImages": true,
+  "hadDataFile": true,
+  "prodItemsDir": "/Users/appleuser/Desktop/aimy-closet/public/images/items/friend-point",
+  "dataFile": "/Users/appleuser/Desktop/aimy-closet/src/data/gachas/friend-point.js"
+}
