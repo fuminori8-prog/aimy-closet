@@ -18,18 +18,30 @@ function ItemList() {
   const [searchParams] = useSearchParams()
   const [selectedCategory, setSelectedCategory] = useState('すべて')
 
-  const allItems = useMemo(
-    () =>
-      gachas.flatMap((gacha) =>
-        (gacha.items || []).map((item) => ({
-          ...item,
-          gachaSlug: gacha.slug,
-          gachaTitle: gacha.title,
-          normalizedCategory: getMainCategory(item.category),
-        })),
-      ),
-    [],
+console.log('gacha count', gachas.length)
+console.log('item count', gachas.flatMap((gacha) => gacha.items || []).length)
+console.log(
+  'kimi no tokubetsu',
+  gachas.find((gacha) => gacha.slug === 'kimi-no-tokubetsu'),
+)
+
+const allItems = useMemo(() => {
+  const sortedGachas = [...gachas].sort((a, b) => {
+    const toDate = (value) =>
+      new Date(String(value || '').replace(/\//g, '-')).getTime()
+
+    return toDate(b.startDate) - toDate(a.startDate)
+  })
+
+  return sortedGachas.flatMap((gacha) =>
+    (gacha.items || []).map((item) => ({
+      ...item,
+      gachaSlug: gacha.slug,
+      gachaTitle: gacha.title,
+      normalizedCategory: getMainCategory(item.category),
+    })),
   )
+}, [])
 
   const query = (searchParams.get('q') || '').trim().toLowerCase()
   const categoryQuery = (searchParams.get('category') || '').trim()
