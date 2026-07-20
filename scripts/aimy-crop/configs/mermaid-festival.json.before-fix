@@ -1,0 +1,265 @@
+{
+  "slug": "mermaid-festival",
+  "items": [
+    {
+      "output": "01.png",
+      "source": "IMG_7472.PNG",
+      "box": [
+        96,
+        1867,
+        288,
+        2059
+      ],
+      "candidateId": "c0001",
+      "candidateIndex": 1,
+      "estimatedRarity": "SSR"
+    },
+    {
+      "output": "02.png",
+      "source": "IMG_7472.PNG",
+      "box": [
+        96,
+        2113,
+        288,
+        2305
+      ],
+      "candidateId": "c0002",
+      "candidateIndex": 2,
+      "estimatedRarity": "SSR"
+    },
+    {
+      "output": "03.png",
+      "source": "IMG_7473.PNG",
+      "box": [
+        96,
+        446,
+        288,
+        638
+      ],
+      "candidateId": "c0003",
+      "candidateIndex": 3,
+      "estimatedRarity": "SSR"
+    },
+    {
+      "output": "04.png",
+      "source": "IMG_7473.PNG",
+      "box": [
+        96,
+        1058,
+        288,
+        1250
+      ],
+      "candidateId": "c0005",
+      "candidateIndex": 5,
+      "estimatedRarity": "SSR"
+    },
+    {
+      "output": "05.png",
+      "source": "IMG_7473.PNG",
+      "box": [
+        96,
+        1304,
+        288,
+        1496
+      ],
+      "candidateId": "c0006",
+      "candidateIndex": 6,
+      "estimatedRarity": "SSR"
+    },
+    {
+      "output": "06.png",
+      "source": "IMG_7473.PNG",
+      "box": [
+        96,
+        1550,
+        288,
+        1742
+      ],
+      "candidateId": "c0007",
+      "candidateIndex": 7,
+      "estimatedRarity": "SSR"
+    },
+    {
+      "output": "07.png",
+      "source": "IMG_7473.PNG",
+      "box": [
+        96,
+        1796,
+        288,
+        1988
+      ],
+      "candidateId": "c0008",
+      "candidateIndex": 8,
+      "estimatedRarity": "SSR"
+    },
+    {
+      "output": "08.png",
+      "source": "IMG_7473.PNG",
+      "box": [
+        96,
+        2042,
+        288,
+        2234
+      ],
+      "candidateId": "c0009",
+      "candidateIndex": 9,
+      "estimatedRarity": "SSR"
+    },
+    {
+      "output": "09.png",
+      "source": "IMG_7474.PNG",
+      "box": [
+        96,
+        439,
+        288,
+        631
+      ],
+      "candidateId": "c0010",
+      "candidateIndex": 10,
+      "estimatedRarity": "SR"
+    },
+    {
+      "output": "10.png",
+      "source": "IMG_7474.PNG",
+      "box": [
+        96,
+        685,
+        288,
+        877
+      ],
+      "candidateId": "c0011",
+      "candidateIndex": 11,
+      "estimatedRarity": "SR"
+    },
+    {
+      "output": "11.png",
+      "source": "IMG_7474.PNG",
+      "box": [
+        96,
+        931,
+        288,
+        1123
+      ],
+      "candidateId": "c0012",
+      "candidateIndex": 12,
+      "estimatedRarity": "SR"
+    },
+    {
+      "output": "12.png",
+      "source": "IMG_7474.PNG",
+      "box": [
+        96,
+        1297,
+        288,
+        1489
+      ],
+      "candidateId": "c0013",
+      "candidateIndex": 13,
+      "estimatedRarity": "SR"
+    },
+    {
+      "output": "13.png",
+      "source": "IMG_7474.PNG",
+      "box": [
+        96,
+        1663,
+        288,
+        1855
+      ],
+      "candidateId": "c0014",
+      "candidateIndex": 14,
+      "estimatedRarity": "SR"
+    },
+    {
+      "output": "14.png",
+      "source": "IMG_7474.PNG",
+      "box": [
+        96,
+        1909,
+        288,
+        2101
+      ],
+      "candidateId": "c0015",
+      "candidateIndex": 15,
+      "estimatedRarity": "SR"
+    },
+    {
+      "output": "15.png",
+      "source": "IMG_7474.PNG",
+      "box": [
+        96,
+        2275,
+        288,
+        2467
+      ],
+      "candidateId": "c0016",
+      "candidateIndex": 16,
+      "estimatedRarity": "SR"
+    },
+    {
+      "output": "16.png",
+      "source": "IMG_7475.PNG",
+      "box": [
+        96,
+        468,
+        288,
+        660
+      ],
+      "candidateId": "c0017",
+      "candidateIndex": 17,
+      "estimatedRarity": "SR"
+    },
+    {
+      "output": "17.png",
+      "source": "IMG_7475.PNG",
+      "box": [
+        96,
+        714,
+        288,
+        906
+      ],
+      "candidateId": "c0018",
+      "candidateIndex": 18,
+      "estimatedRarity": "SR"
+    },
+    {
+      "output": "18.png",
+      "source": "IMG_7475.PNG",
+      "box": [
+        96,
+        960,
+        288,
+        1152
+      ],
+      "candidateId": "c0019",
+      "candidateIndex": 19,
+      "estimatedRarity": "SR"
+    },
+    {
+      "output": "19.png",
+      "source": "IMG_7475.PNG",
+      "box": [
+        96,
+        1326,
+        288,
+        1518
+      ],
+      "candidateId": "c0020",
+      "candidateIndex": 20,
+      "estimatedRarity": "SR"
+    },
+    {
+      "output": "20.png",
+      "source": "IMG_7475.PNG",
+      "box": [
+        96,
+        1572,
+        288,
+        1764
+      ],
+      "candidateId": "c0021",
+      "candidateIndex": 21,
+      "estimatedRarity": "SR"
+    }
+  ]
+}

@@ -1,0 +1,339 @@
+{
+  "slug": "mermaid-festival",
+  "inputDir": "/Users/appleuser/Desktop/aimy-closet/public/images/gacha/mermaid-festival",
+  "candidateCount": 21,
+  "duplicateGroupCount": 4,
+  "candidates": [
+    {
+      "id": "c0001",
+      "source": "IMG_7472.PNG",
+      "box": [
+        96,
+        1867,
+        288,
+        2059
+      ],
+      "estimatedRarity": "SSR",
+      "orderFromTop": 1,
+      "dhash": "7e3c7169694dcce1",
+      "duplicateGroup": null,
+      "duplicateCandidateIds": []
+    },
+    {
+      "id": "c0002",
+      "source": "IMG_7472.PNG",
+      "box": [
+        96,
+        2113,
+        288,
+        2305
+      ],
+      "estimatedRarity": "SSR",
+      "orderFromTop": 2,
+      "dhash": "7e6c696971713169",
+      "duplicateGroup": null,
+      "duplicateCandidateIds": []
+    },
+    {
+      "id": "c0003",
+      "source": "IMG_7473.PNG",
+      "box": [
+        96,
+        446,
+        288,
+        638
+      ],
+      "estimatedRarity": "SSR",
+      "orderFromTop": 3,
+      "dhash": "7e1c4dcccc4d2171",
+      "duplicateGroup": "dup-01",
+      "duplicateCandidateIds": [
+        "c0004"
+      ]
+    },
+    {
+      "id": "c0004",
+      "source": "IMG_7473.PNG",
+      "box": [
+        96,
+        692,
+        288,
+        884
+      ],
+      "estimatedRarity": "SSR",
+      "orderFromTop": 4,
+      "dhash": "7e1c4dccce050171",
+      "duplicateGroup": "dup-01",
+      "duplicateCandidateIds": [
+        "c0003"
+      ]
+    },
+    {
+      "id": "c0005",
+      "source": "IMG_7473.PNG",
+      "box": [
+        96,
+        1058,
+        288,
+        1250
+      ],
+      "estimatedRarity": "SSR",
+      "orderFromTop": 5,
+      "dhash": "767469cdcccceccc",
+      "duplicateGroup": null,
+      "duplicateCandidateIds": []
+    },
+    {
+      "id": "c0006",
+      "source": "IMG_7473.PNG",
+      "box": [
+        96,
+        1304,
+        288,
+        1496
+      ],
+      "estimatedRarity": "SSR",
+      "orderFromTop": 6,
+      "dhash": "5edccdcccccd7103",
+      "duplicateGroup": null,
+      "duplicateCandidateIds": []
+    },
+    {
+      "id": "c0007",
+      "source": "IMG_7473.PNG",
+      "box": [
+        96,
+        1550,
+        288,
+        1742
+      ],
+      "estimatedRarity": "SSR",
+      "orderFromTop": 7,
+      "dhash": "7edccccccccc550f",
+      "duplicateGroup": null,
+      "duplicateCandidateIds": []
+    },
+    {
+      "id": "c0008",
+      "source": "IMG_7473.PNG",
+      "box": [
+        96,
+        1796,
+        288,
+        1988
+      ],
+      "estimatedRarity": "SSR",
+      "orderFromTop": 8,
+      "dhash": "7e6c4ddd4dcccc8e",
+      "duplicateGroup": "dup-02",
+      "duplicateCandidateIds": [
+        "c0009"
+      ]
+    },
+    {
+      "id": "c0009",
+      "source": "IMG_7473.PNG",
+      "box": [
+        96,
+        2042,
+        288,
+        2234
+      ],
+      "estimatedRarity": "SSR",
+      "orderFromTop": 9,
+      "dhash": "7e6c4ddd4dcccc8e",
+      "duplicateGroup": "dup-02",
+      "duplicateCandidateIds": [
+        "c0008"
+      ]
+    },
+    {
+      "id": "c0010",
+      "source": "IMG_7474.PNG",
+      "box": [
+        96,
+        439,
+        288,
+        631
+      ],
+      "estimatedRarity": "SR",
+      "orderFromTop": 10,
+      "dhash": "7d0d3d794d4d017f",
+      "duplicateGroup": null,
+      "duplicateCandidateIds": []
+    },
+    {
+      "id": "c0011",
+      "source": "IMG_7474.PNG",
+      "box": [
+        96,
+        685,
+        288,
+        877
+      ],
+      "estimatedRarity": "SR",
+      "orderFromTop": 11,
+      "dhash": "3d6561697121217f",
+      "duplicateGroup": null,
+      "duplicateCandidateIds": []
+    },
+    {
+      "id": "c0012",
+      "source": "IMG_7474.PNG",
+      "box": [
+        96,
+        931,
+        288,
+        1123
+      ],
+      "estimatedRarity": "SR",
+      "orderFromTop": 12,
+      "dhash": "7d6571793131197f",
+      "duplicateGroup": null,
+      "duplicateCandidateIds": []
+    },
+    {
+      "id": "c0013",
+      "source": "IMG_7474.PNG",
+      "box": [
+        96,
+        1297,
+        288,
+        1489
+      ],
+      "estimatedRarity": "SR",
+      "orderFromTop": 13,
+      "dhash": "7d355569692bccf1",
+      "duplicateGroup": null,
+      "duplicateCandidateIds": []
+    },
+    {
+      "id": "c0014",
+      "source": "IMG_7474.PNG",
+      "box": [
+        96,
+        1663,
+        288,
+        1855
+      ],
+      "estimatedRarity": "SR",
+      "orderFromTop": 14,
+      "dhash": "3571e1e8d4cccccc",
+      "duplicateGroup": "dup-03",
+      "duplicateCandidateIds": [
+        "c0015"
+      ]
+    },
+    {
+      "id": "c0015",
+      "source": "IMG_7474.PNG",
+      "box": [
+        96,
+        1909,
+        288,
+        2101
+      ],
+      "estimatedRarity": "SR",
+      "orderFromTop": 15,
+      "dhash": "3571e1e8d4cccccc",
+      "duplicateGroup": "dup-03",
+      "duplicateCandidateIds": [
+        "c0014"
+      ]
+    },
+    {
+      "id": "c0016",
+      "source": "IMG_7474.PNG",
+      "box": [
+        96,
+        2275,
+        288,
+        2467
+      ],
+      "estimatedRarity": "SR",
+      "orderFromTop": 16,
+      "dhash": "7d5d4d4d4d4d717d",
+      "duplicateGroup": "dup-04",
+      "duplicateCandidateIds": [
+        "c0017"
+      ]
+    },
+    {
+      "id": "c0017",
+      "source": "IMG_7475.PNG",
+      "box": [
+        96,
+        468,
+        288,
+        660
+      ],
+      "estimatedRarity": "SR",
+      "orderFromTop": 17,
+      "dhash": "7d5d4d4d4d4d717d",
+      "duplicateGroup": "dup-04",
+      "duplicateCandidateIds": [
+        "c0016"
+      ]
+    },
+    {
+      "id": "c0018",
+      "source": "IMG_7475.PNG",
+      "box": [
+        96,
+        714,
+        288,
+        906
+      ],
+      "estimatedRarity": "SR",
+      "orderFromTop": 18,
+      "dhash": "7d6d4d454d49497f",
+      "duplicateGroup": null,
+      "duplicateCandidateIds": []
+    },
+    {
+      "id": "c0019",
+      "source": "IMG_7475.PNG",
+      "box": [
+        96,
+        960,
+        288,
+        1152
+      ],
+      "estimatedRarity": "SR",
+      "orderFromTop": 19,
+      "dhash": "7d49cdcd5d5d797d",
+      "duplicateGroup": null,
+      "duplicateCandidateIds": []
+    },
+    {
+      "id": "c0020",
+      "source": "IMG_7475.PNG",
+      "box": [
+        96,
+        1326,
+        288,
+        1518
+      ],
+      "estimatedRarity": "SR",
+      "orderFromTop": 20,
+      "dhash": "b9b1b8b2b6b6b6ee",
+      "duplicateGroup": null,
+      "duplicateCandidateIds": []
+    },
+    {
+      "id": "c0021",
+      "source": "IMG_7475.PNG",
+      "box": [
+        96,
+        1572,
+        288,
+        1764
+      ],
+      "estimatedRarity": "SR",
+      "orderFromTop": 21,
+      "dhash": "9b199e8f8f9b9ab2",
+      "duplicateGroup": null,
+      "duplicateCandidateIds": []
+    }
+  ]
+}

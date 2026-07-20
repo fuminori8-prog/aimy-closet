@@ -6,6 +6,7 @@ import baraOchakai from './gachas/bara-ochakai'
 import monochromeRendezvous from './gachas/monochrome-rendezvous'
 import kyuketsuki from './gachas/kyuketsuki'
 import hydrangea from './gachas/hydrangea'
+import mermaidFestival from './gachas/mermaid-festival'
 import dokidokiDousei from './gachas/dokidoki-dousei'
 import chuuniKanojo from './gachas/chuuni-kanojo'
 import hanayomeSecretNight from './gachas/hanayome-secret-night'
@@ -26,6 +27,7 @@ export const gachas = [
   monochromeRendezvous,
   kyuketsuki,
   hydrangea,
+  mermaidFestival,
   dokidokiDousei,
   chuuniKanojo,
   hanayomeSecretNight,
