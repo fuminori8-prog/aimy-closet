@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { gachas } from '../data/gachas'
 import { useNavigate } from 'react-router-dom'
 import GachaCard from './GachaCard'
@@ -24,6 +24,15 @@ const parseStartDate = (value) => {
 
 function LatestGacha() {
   const navigate = useNavigate()
+  const [currentTime, setCurrentTime] = useState(Date.now())
+
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      setCurrentTime(Date.now())
+    }, 30_000)
+
+    return () => window.clearInterval(timer)
+  }, [])
   const latestThreeGachas = useMemo(
     () =>
       [...gachas]
@@ -43,7 +52,12 @@ function LatestGacha() {
       </div>
       <div className="gacha-grid">
         {latestThreeGachas.map((gacha) => (
-          <GachaCard key={gacha.id} gacha={gacha} onView={() => navigate(`/gacha/${gacha.slug}`)} />
+          <GachaCard
+            key={gacha.id}
+            gacha={gacha}
+            currentTime={currentTime}
+            onView={() => navigate(`/gacha/${gacha.slug}`)}
+          />
         ))}
       </div>
     </section>

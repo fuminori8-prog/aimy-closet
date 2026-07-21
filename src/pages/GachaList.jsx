@@ -8,11 +8,12 @@ import AdBanner from '../components/AdBanner'
 import Footer from '../components/Footer'
 import GachaCard from '../components/GachaCard'
 import { gachas } from '../data/gachas'
+import { getGachaStatus } from '../utils/gachaStatus'
 
 const GACHA_FILTERS = [
   { key: 'all', label: 'すべて' },
   { key: 'active', label: '開催中' },
-  { key: 'ended', label: '終了済み' },
+  { key: 'ended', label: '開催終了' },
   { key: 'collecting', label: '情報収集中' },
 ]
 
@@ -39,8 +40,17 @@ function GachaList() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const [selectedFilter, setSelectedFilter] = useState('all')
+  const [currentTime, setCurrentTime] = useState(Date.now())
 
   const query = (searchParams.get('q') || '').trim().toLowerCase()
+
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      setCurrentTime(Date.now())
+    }, 30_000)
+
+    return () => window.clearInterval(timer)
+  }, [])
 
   const sortedGachas = useMemo(
     () =>
@@ -70,10 +80,11 @@ useEffect(() => {
   const filteredGachas = useMemo(
     () =>
       sortedGachas.filter((gacha) => {
+        const status = getGachaStatus(gacha, currentTime)
         const byStatus =
           selectedFilter === 'all' ||
-          (selectedFilter === 'active' && gacha.status === '開催中') ||
-          (selectedFilter === 'ended' && gacha.status === '終了済み') ||
+          (selectedFilter === 'active' && status === '開催中') ||
+          (selectedFilter === 'ended' && status === '開催終了') ||
           (selectedFilter === 'collecting' && gacha.infoStatus === '情報収集中')
 
         if (!byStatus) {
@@ -84,10 +95,10 @@ useEffect(() => {
           return true
         }
 
-        const searchableFields = [gacha.title, gacha.type, gacha.status, gacha.infoStatus]
+        const searchableFields = [gacha.title, gacha.type, status, gacha.infoStatus]
         return searchableFields.some((field) => String(field || '').toLowerCase().includes(query))
       }),
-    [query, selectedFilter, sortedGachas],
+    [currentTime, query, selectedFilter, sortedGachas],
   )
 
   return (
@@ -125,6 +136,7 @@ useEffect(() => {
                   key={gacha.id}
                   gacha={gacha}
                   onView={() => navigate(`/gacha/${gacha.slug}`)}
+                  currentTime={currentTime}
                 />
               ))}
             </div>

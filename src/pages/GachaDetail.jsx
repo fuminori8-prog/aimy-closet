@@ -1,4 +1,5 @@
 import '../App.css'
+import { useEffect, useState } from 'react'
 import Header from '../components/Header'
 import AdBanner from '../components/AdBanner'
 import Footer from '../components/Footer'
@@ -7,6 +8,7 @@ import GachaBanner from '../components/GachaBanner'
 import { gachas } from '../data/gachas'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { MAIN_CATEGORIES, getMainCategory } from '../utils/itemCategory'
+import { getGachaStatus } from '../utils/gachaStatus'
 
 const raritySections = ['SSR', 'SR', 'NR']
 const categoryOrder = MAIN_CATEGORIES
@@ -31,6 +33,15 @@ const groupItemsByCategory = (items) => {
 function GachaDetail() {
   const { slug } = useParams()
   const navigate = useNavigate()
+  const [currentTime, setCurrentTime] = useState(Date.now())
+
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      setCurrentTime(Date.now())
+    }, 30_000)
+
+    return () => window.clearInterval(timer)
+  }, [])
 
   const gacha = gachas.find((item) => item.slug === slug)
 
@@ -39,6 +50,7 @@ function GachaDetail() {
   }
 
   const hasLineup = gacha.items?.length > 0
+  const status = getGachaStatus(gacha, currentTime)
 
   const pageTitle = `${gacha.title}｜排出アイテム・開催期間｜Aimy Closet`
 
@@ -92,7 +104,7 @@ function GachaDetail() {
             </div>
 
             <div className="status-group">
-              <span className="status-badge">{gacha.status}</span>
+              <span className={`status-badge ${status === '開催終了' ? 'status-badge--ended' : ''}`}>{status}</span>
 
               {gacha.infoStatus === '情報収集中' ? (
                 <span className="info-badge">{gacha.infoStatus}</span>

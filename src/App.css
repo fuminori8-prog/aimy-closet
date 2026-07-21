@@ -417,6 +417,11 @@ main {
   white-space: nowrap;
 }
 
+.status-badge--ended {
+  background: #f1eef1;
+  color: #77717a;
+}
+
 .info-badge {
   padding: 6px 10px;
   border-radius: 999px;

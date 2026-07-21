@@ -1,9 +1,11 @@
 import GachaBanner from './GachaBanner'
 import { Link, useNavigate } from 'react-router-dom'
+import { getGachaStatus } from '../utils/gachaStatus'
 
-function GachaCard({ gacha, onView }) {
+function GachaCard({ gacha, onView, currentTime }) {
   const navigate = useNavigate()
   const detailPath = `/gacha/${gacha.slug}`
+  const status = getGachaStatus(gacha, currentTime)
 
   const handleView = () => {
     if (onView) {
@@ -30,7 +32,7 @@ function GachaCard({ gacha, onView }) {
         <p className="gacha-card-date">終了: {gacha.endDate}</p>
         <div className="gacha-card-footer">
           <div className="status-group">
-            <span className="status-badge">{gacha.status}</span>
+            <span className={`status-badge ${status === '開催終了' ? 'status-badge--ended' : ''}`}>{status}</span>
             {gacha.infoStatus === '情報収集中' ? <span className="info-badge">{gacha.infoStatus}</span> : null}
           </div>
           <span className="item-count">確認済みアイテム: {gacha.items.length}</span>
