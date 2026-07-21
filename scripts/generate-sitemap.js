@@ -85,6 +85,7 @@ function createUrlSet(gachas) {
     '/',
     '/item',
     '/gacha',
+    '/image-search',
     '/contact',
     '/disclaimer',
     '/privacy',

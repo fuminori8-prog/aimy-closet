@@ -22,6 +22,10 @@ function Header() {
           🎲 ガチャ履歴
         </NavLink>
 
+        <NavLink to="/image-search" className="nav-button">
+          🔎 画像検索
+        </NavLink>
+
         <NavLink to="/favorites" className="nav-button">
           ♡ お気に入り
         </NavLink>

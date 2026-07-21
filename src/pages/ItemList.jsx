@@ -115,6 +115,10 @@ function ItemList() {
             <p>確認済みのアイテムを一覧で確認できます。</p>
           </div>
 
+          <Link to="/image-search" className="image-search-entry-link">
+            📷 名前が分からないアイテムを画像から探す
+          </Link>
+
           <SearchBar targetPath="/item" />
 
           <div className="filter-group" aria-label="item category filters">

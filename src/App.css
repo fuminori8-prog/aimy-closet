@@ -1176,3 +1176,249 @@ footer p {
   }
 }
 
+/* 画像からアイテム検索 */
+.image-search-entry-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 18px;
+  padding: 10px 16px;
+  border: 1px solid #edc8d8;
+  border-radius: 999px;
+  background: #fff7fa;
+  color: #c64f80;
+  font-size: 14px;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.image-search-entry-link:hover {
+  background: #fff0f6;
+  transform: translateY(-1px);
+}
+
+.image-search-page {
+  width: min(100%, 1120px);
+  margin: 0 auto;
+}
+
+.image-search-privacy {
+  margin: 0 0 18px;
+  padding: 12px 16px;
+  border: 1px solid #dce9f1;
+  border-radius: 14px;
+  background: #f4faff;
+  color: #55718a;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.image-search-controls {
+  display: grid;
+  grid-template-columns: minmax(180px, 0.75fr) minmax(240px, 1.25fr);
+  gap: 18px;
+  align-items: end;
+  padding: 22px;
+  margin-bottom: 22px;
+}
+
+.image-search-field,
+.image-upload-button {
+  display: grid;
+  gap: 8px;
+  color: #675768;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.image-search-field select {
+  width: 100%;
+  padding: 11px 13px;
+  border: 1px solid #ded6df;
+  border-radius: 12px;
+  background: #ffffff;
+  color: #554758;
+  font: inherit;
+}
+
+.image-upload-button {
+  padding: 11px 15px;
+  border: 1px dashed #de9fba;
+  border-radius: 14px;
+  background: #fff7fa;
+  color: #bd4d7b;
+  cursor: pointer;
+}
+
+.image-upload-button input {
+  width: 100%;
+  color: #665967;
+  font-weight: 600;
+}
+
+.selected-file-name {
+  grid-column: 1 / -1;
+  margin: -4px 0 0;
+  color: #8a8190;
+  font-size: 12px;
+}
+
+.image-crop-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 260px;
+  gap: 22px;
+  align-items: start;
+  margin-bottom: 24px;
+}
+
+.image-crop-area h2,
+.image-crop-preview h2,
+.image-search-results h2 {
+  margin: 0 0 8px;
+  color: #604f62;
+  font-size: 20px;
+}
+
+.image-crop-area > p {
+  margin: 0 0 12px;
+  color: #78717d;
+  font-size: 13px;
+}
+
+.image-crop-canvas {
+  display: block;
+  width: 100%;
+  max-height: 650px;
+  border: 1px solid #e5d9e1;
+  border-radius: 16px;
+  background: #efe9ed;
+  cursor: crosshair;
+  touch-action: none;
+  box-shadow: 0 8px 22px rgba(102, 75, 95, 0.1);
+}
+
+.image-crop-preview {
+  position: sticky;
+  top: 92px;
+  padding: 18px;
+}
+
+.image-crop-preview canvas {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  border: 1px solid #eadfe5;
+  border-radius: 14px;
+  background: #f4eff2;
+}
+
+.image-search-submit {
+  width: 100%;
+  margin-top: 14px;
+  padding: 12px 16px;
+  border: 0;
+  border-radius: 999px;
+  background: #ec5f98;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 8px 18px rgba(236, 95, 152, 0.22);
+}
+
+.image-search-submit:disabled {
+  opacity: 0.58;
+  cursor: wait;
+}
+
+.image-search-progress {
+  display: grid;
+  gap: 7px;
+  margin-top: 12px;
+  color: #7d7280;
+  font-size: 12px;
+  text-align: center;
+}
+
+.image-search-progress progress {
+  width: 100%;
+  accent-color: #ec5f98;
+}
+
+.image-search-error {
+  margin: 18px 0;
+  padding: 13px 16px;
+  border: 1px solid #efb7c8;
+  border-radius: 14px;
+  background: #fff3f6;
+  color: #a93d63;
+  font-weight: 700;
+}
+
+.image-search-results {
+  margin-top: 28px;
+}
+
+.image-search-results-heading {
+  margin-bottom: 16px;
+}
+
+.image-search-results-heading p {
+  margin: 0;
+  color: #85808a;
+  font-size: 13px;
+}
+
+.image-search-result {
+  position: relative;
+}
+
+.image-search-rank {
+  position: relative;
+  z-index: 1;
+  width: fit-content;
+  margin: 0 auto -10px;
+  padding: 5px 11px;
+  border: 1px solid #efc5d5;
+  border-radius: 999px;
+  background: #fff4f8;
+  color: #bd4f7b;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+@media (max-width: 760px) {
+  .image-search-controls,
+  .image-crop-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .image-search-controls {
+    padding: 17px;
+  }
+
+  .image-crop-preview {
+    position: static;
+    display: grid;
+    grid-template-columns: 120px minmax(0, 1fr);
+    gap: 14px;
+    align-items: center;
+  }
+
+  .image-crop-preview h2 {
+    grid-column: 1 / -1;
+  }
+
+  .image-crop-preview canvas {
+    width: 120px;
+  }
+
+  .image-search-submit {
+    margin-top: 0;
+  }
+
+  .image-search-progress {
+    grid-column: 1 / -1;
+  }
+}
+
