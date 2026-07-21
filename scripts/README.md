@@ -1,31 +1,18 @@
-# Image Extraction Scripts
+# Aimy Closet scripts
 
-## Overview
-`scripts/extract-gacha-items.py` helps reuse the validated card-frame extraction flow.
+現在使用している主なスクリプトです。
 
-It does the following:
-- checks `items` count in `src/data/gachas/{slug}.js`
-- lists card candidates from screenshots and outputs a candidate sheet
-- generates 192x192 PNGs from a mapping JSON
-- verifies output count and output dimensions
+- `generate-sitemap.js`: ビルド前にサイトマップを生成
+- `aimy-crop/add_gacha_app.py`: スクショからガチャページを生成・公開するローカルツール
+- `aimy-crop/add_gacha.html`: ガチャ追加ツールの確認画面
+- `aimy-crop/detect_cards.py`: アイテム画像の検出処理
+- `aimy-crop/export_cards.py`: 画像切り抜きの共通処理
+- `aimy-crop/macos_ocr.m`: macOS Vision OCR
 
-## Required files
-- script: `scripts/extract-gacha-items.py`
-- config: `scripts/gacha-configs/{slug}.json`
+ガチャ追加は、プロジェクト直下の `ガチャ追加.command` を開くか、次を実行します。
 
-## Config format (minimum)
-- `slug`
-- `sourceScreenshots`
-- `mappings`
-  - `index`
-  - `source`
-  - `cropBox` (`[left, top, right, bottom]`)
-  - `output`
-
-## Example run
 ```bash
-python3 scripts/extract-gacha-items.py monochrome-rendezvous
+npm run add-gacha
 ```
 
-This script intentionally does **not** auto-map item order from detected candidates.
-Use config mapping to avoid wrong registrations.
+`workspace` と `.bin` は自動生成され、Gitには保存しません。

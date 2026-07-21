@@ -88,10 +88,27 @@ def _hamming_distance(hex_a: str, hex_b: str) -> int:
 
 
 def _detect_boxes(image: Image.Image) -> List[BBox]:
+    """Detect item-card squares at any screenshot resolution.
+
+    The original detector was tuned to 1179px-wide iPhone screenshots and used
+    fixed pixel sizes. Card geometry follows image width even when the screenshot
+    is vertically cropped, so thresholds must be scaled from width only.
+    """
     rgb = image.convert("RGB")
     w, h = rgb.size
     px = rgb.load()
-    max_x = min(380, w)
+
+    reference_w = 1179.0
+    reference_h = 2556.0
+    scale = w / reference_w
+    # Avoid extreme thresholds for unusual but still usable images.
+    scale = max(0.35, min(2.0, scale))
+
+    max_x = min(max(1, round(380 * scale)), w)
+    min_component_pixels = max(200, round(2800 * scale * scale))
+    min_card_size = max(45, round(165 * scale))
+    max_card_size = max(min_card_size + 10, round(230 * scale))
+    max_card_left = round(180 * scale)
 
     mask = [[False] * max_x for _ in range(h)]
     for y in range(h):
@@ -132,14 +149,14 @@ def _detect_boxes(image: Image.Image) -> List[BBox]:
 
             bw = max_x2 - min_x + 1
             bh = max_y - min_y + 1
-            if count < 2800:
+            if count < min_component_pixels:
                 continue
-            if not (165 <= bw <= 230 and 165 <= bh <= 230):
+            if not (min_card_size <= bw <= max_card_size and min_card_size <= bh <= max_card_size):
                 continue
             aspect = bw / max(1, bh)
             if not (0.85 <= aspect <= 1.15):
                 continue
-            if min_x > 180:
+            if min_x > max_card_left:
                 continue
             components.append((min_x, min_y, max_x2 + 1, max_y + 1))
 

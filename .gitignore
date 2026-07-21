@@ -25,3 +25,14 @@ dist-ssr
 # Local screenshots watched by the gacha addition tool
 /ガチャスクショ投入/*
 !/ガチャスクショ投入/ここにスクショを入れる.txt
+
+# Aimy local tool generated files
+/scripts/aimy-crop/workspace/
+/scripts/aimy-crop/.bin/
+/.favorite-patch/
+/.folder-watch-patch/
+/.cleanup-patch/
+/.ended-status-backup-*/
+/Aimy_*パッチ*.zip
+/Aimy_*パッチ*/
+/archive/*-patch-backup-*/

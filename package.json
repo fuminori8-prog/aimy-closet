@@ -9,7 +9,7 @@
     "build": "npm run generate:sitemap && vite build",
     "lint": "oxlint src scripts",
     "preview": "vite preview",
-    "add-gacha": "python3 scripts/add_gacha.py"
+    "add-gacha": "python3 scripts/aimy-crop/add_gacha_app.py"
   },
   "dependencies": {
     "firebase": "^12.11.0",
