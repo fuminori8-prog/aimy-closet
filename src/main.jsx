@@ -8,6 +8,9 @@ import GachaList from './pages/GachaList.jsx'
 import ItemList from './pages/ItemList.jsx'
 import ItemDetail from './pages/ItemDetail.jsx'
 import Favorites from './pages/Favorites.jsx'
+import PrivacyPolicy from './pages/PrivacyPolicy.jsx'
+import Disclaimer from './pages/Disclaimer.jsx'
+import Contact from './pages/Contact.jsx'
 import ScrollToTop from './components/ScrollToTop'
 import { FavoritesProvider } from './contexts/FavoritesContext.jsx'
 
@@ -24,6 +27,9 @@ createRoot(document.getElementById('root')).render(
           <Route path="/gacha" element={<GachaList />} />
           <Route path="/gacha/:slug" element={<GachaDetail />} />
           <Route path="/favorites" element={<Favorites />} />
+          <Route path="/privacy" element={<PrivacyPolicy />} />
+          <Route path="/disclaimer" element={<Disclaimer />} />
+          <Route path="/contact" element={<Contact />} />
         </Routes>
       </FavoritesProvider>
     </BrowserRouter>

@@ -1072,3 +1072,107 @@ footer p {
   line-height: 1.7;
 }
 
+/* 法務・運営情報ページ */
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px 18px;
+  margin: 16px 0 4px;
+}
+
+.footer-links a {
+  color: #696f83;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.footer-links a:hover {
+  color: #df6497;
+  text-decoration: underline;
+}
+
+.legal-page {
+  width: min(100%, 900px);
+  margin: 0 auto;
+  padding: 30px 34px;
+  border: 1px solid #eadfe6;
+  border-radius: 22px;
+  background: #ffffff;
+  box-shadow: 0 10px 26px rgba(145, 116, 137, 0.08);
+}
+
+.legal-page h1 {
+  margin: 0 0 8px;
+  color: #604d61;
+  font-size: 28px;
+}
+
+.legal-page p,
+.legal-page li {
+  color: #626675;
+  line-height: 1.9;
+}
+
+.legal-page a {
+  color: #5e8fb4;
+  font-weight: 700;
+}
+
+.legal-updated {
+  margin: 0 0 24px;
+  color: #9295a2 !important;
+  font-size: 13px;
+}
+
+.legal-section {
+  margin-top: 30px;
+  padding-top: 2px;
+}
+
+.legal-section h2 {
+  margin: 0 0 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #eee4ea;
+  color: #664f65;
+  font-size: 19px;
+}
+
+.legal-section ul {
+  margin: 10px 0;
+  padding-left: 1.5em;
+}
+
+.legal-notice {
+  margin-top: 30px;
+  padding: 16px 18px;
+  border: 1px solid #efcbd8;
+  border-radius: 16px;
+  background: #fff5f8;
+  color: #765264;
+}
+
+.legal-notice p {
+  margin: 6px 0 0;
+}
+
+@media (max-width: 700px) {
+  .legal-page {
+    padding: 22px 18px;
+    border-radius: 18px;
+  }
+
+  .legal-page h1 {
+    font-size: 23px;
+  }
+
+  .legal-section h2 {
+    font-size: 17px;
+  }
+
+  .footer-links {
+    gap: 8px 14px;
+  }
+}
+
