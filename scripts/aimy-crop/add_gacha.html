@@ -1,0 +1,492 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Aimy ガチャ追加</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", sans-serif;
+      background: #f5f6f8;
+      color: #20242b;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; }
+    main { width: min(1100px, calc(100% - 28px)); margin: 28px auto 80px; }
+    h1 { margin: 0 0 6px; font-size: 28px; }
+    h2 { margin: 0 0 16px; font-size: 21px; }
+    p { line-height: 1.6; }
+    .muted { color: #69717d; font-size: 14px; }
+    .panel { background: #fff; border: 1px solid #dfe3e8; border-radius: 16px; padding: 20px; margin-top: 18px; }
+    .drop-zone { border: 2px dashed #9ba4b0; border-radius: 14px; padding: 38px 20px; text-align: center; cursor: pointer; transition: .15s; }
+    .drop-zone.drag { border-color: #2869d8; background: #eef5ff; }
+    .drop-zone strong { display: block; font-size: 19px; margin-bottom: 6px; }
+    input[type=file] { display: none; }
+    button { appearance: none; border: 0; border-radius: 10px; padding: 11px 18px; font-size: 15px; font-weight: 700; cursor: pointer; }
+    button:disabled { cursor: not-allowed; opacity: .5; }
+    .primary { color: #fff; background: #2869d8; }
+    .publish { color: #fff; background: #16794b; padding: 14px 24px; font-size: 17px; }
+    .subtle { background: #eceff3; color: #303640; }
+    .danger { background: #fff0f0; color: #b42318; }
+    .file-list { display: grid; gap: 7px; margin: 14px 0; padding: 0; list-style: none; }
+    .file-list li { background: #f4f6f8; border-radius: 8px; padding: 8px 10px; font-size: 14px; }
+    .actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
+    .status { min-height: 24px; margin-top: 14px; font-weight: 700; }
+    .status.error { color: #b42318; white-space: pre-wrap; }
+    .status.success { color: #16794b; }
+    .progress { height: 9px; background: #e5e8ed; border-radius: 999px; overflow: hidden; margin-top: 12px; }
+    .progress > span { display: block; height: 100%; width: 0; background: #2869d8; transition: width .2s; }
+    .hidden { display: none !important; }
+    .warnings { background: #fff8df; border: 1px solid #ecd98d; border-radius: 10px; padding: 12px 16px; }
+    .warnings:empty { display: none; }
+    .banner { display: block; max-width: 100%; width: auto; border: 1px solid #dfe3e8; border-radius: 12px; margin-bottom: 18px; }
+    .form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+    label { display: grid; gap: 6px; font-size: 14px; font-weight: 700; }
+    input[type=text], select, textarea { width: 100%; border: 1px solid #c8cdd4; border-radius: 9px; padding: 10px 11px; font: inherit; background: #fff; }
+    textarea { min-height: 78px; resize: vertical; }
+    .wide { grid-column: 1 / -1; }
+    .items-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 14px; }
+    .items-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(310px, 1fr)); gap: 13px; }
+    .item-card { display: grid; grid-template-columns: 112px minmax(0, 1fr); gap: 13px; border: 1px solid #dfe3e8; border-radius: 13px; padding: 12px; background: #fff; }
+    .item-image-wrap { text-align: center; }
+    .item-image { width: 112px; height: 112px; object-fit: contain; border-radius: 10px; background: #f2f3f5; }
+    .item-number { font-weight: 800; margin-top: 5px; }
+    .item-fields { display: grid; gap: 8px; }
+    .item-fields label { font-size: 12px; }
+    .item-row { display: grid; grid-template-columns: 1fr 1.35fr; gap: 8px; }
+    .item-tools { display: flex; gap: 6px; margin-top: 2px; }
+    .item-tools button { padding: 7px 10px; font-size: 13px; }
+    .confidence-low { color: #b42318; font-size: 12px; font-weight: 700; }
+    .result-box { background: #ecf8f1; border: 1px solid #9dd7b7; border-radius: 12px; padding: 18px; }
+    .result-box pre { white-space: pre-wrap; word-break: break-word; }
+    .folder-flow { display: grid; gap: 12px; }
+    .folder-path { display: block; padding: 10px 12px; border-radius: 9px; background: #f1f3f6; word-break: break-all; font-size: 13px; }
+    .watch-indicator { display: flex; align-items: center; gap: 9px; min-height: 25px; font-weight: 700; }
+    .watch-dot { width: 10px; height: 10px; border-radius: 50%; background: #9ba4b0; flex: none; }
+    .watch-dot.active { background: #2869d8; animation: pulse 1.2s infinite; }
+    .watch-dot.ready { background: #16794b; }
+    .watch-dot.error { background: #b42318; }
+    @keyframes pulse { 50% { opacity: .35; } }
+    @media (max-width: 650px) {
+      main { width: min(100% - 18px, 1100px); margin-top: 16px; }
+      .panel { padding: 15px; }
+      .form-grid { grid-template-columns: 1fr; }
+      .wide { grid-column: auto; }
+      .items-grid { grid-template-columns: 1fr; }
+      .item-card { grid-template-columns: 96px minmax(0, 1fr); }
+      .item-image { width: 96px; height: 96px; }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <h1>Aimy ガチャ追加</h1>
+  <p class="muted">監視フォルダへスクショを入れると、自動でページ案を作ります。確認後に「公開」を押してください。</p>
+
+  <section class="panel" id="folderPanel">
+    <h2>1. フォルダへスクショを入れる</h2>
+    <div class="folder-flow">
+      <p style="margin:0">新しいガチャのスクショを、次のフォルダへまとめて入れてください。</p>
+      <code class="folder-path" id="folderPath">読み込み中…</code>
+      <div class="actions" style="margin-top:0">
+        <button class="primary" id="openFolderButton" type="button">投入フォルダを開く</button>
+        <button class="subtle hidden" id="retryFolderButton" type="button">同じ画像で再試行</button>
+      </div>
+      <div class="watch-indicator" aria-live="polite">
+        <span class="watch-dot" id="watchDot"></span>
+        <span id="folderStatus">スクショ待ちです。</span>
+      </div>
+      <ul class="file-list" id="folderFileList"></ul>
+      <p class="muted" style="margin:0">画像の追加が止まってから約6秒後に、自動で読み取りを開始します。</p>
+    </div>
+  </section>
+
+  <section class="panel" id="uploadPanel">
+    <h2>手動で選ぶ（予備）</h2>
+    <div class="drop-zone" id="dropZone" role="button" tabindex="0">
+      <strong>スクショをここへまとめてドラッグ</strong>
+      <span>またはクリックして選択</span>
+    </div>
+    <input id="fileInput" type="file" accept="image/png,image/jpeg,image/webp" multiple>
+    <ul class="file-list" id="fileList"></ul>
+    <div class="actions">
+      <button class="primary" id="processButton" type="button" disabled>自動で読み取る</button>
+      <button class="subtle" id="clearButton" type="button" disabled>選び直す</button>
+    </div>
+    <div class="progress hidden" id="progress"><span></span></div>
+    <div class="status" id="uploadStatus" aria-live="polite"></div>
+  </section>
+
+  <section class="panel hidden" id="reviewPanel">
+    <h2>2. 確認</h2>
+    <div class="warnings" id="warnings"></div>
+    <p><strong>バナー</strong></p>
+    <img class="banner" id="banner" alt="自動切り抜きされたガチャバナー">
+
+    <div class="form-grid">
+      <label class="wide">ガチャタイトル
+        <input id="title" type="text">
+      </label>
+      <label>slug（URL用）
+        <input id="slug" type="text" pattern="[a-z0-9-]+">
+      </label>
+      <label>種類
+        <input id="type" type="text">
+      </label>
+      <label>開始日時
+        <input id="startDate" type="text" placeholder="2026/07/17 15:00">
+      </label>
+      <label>終了日時
+        <input id="endDate" type="text" placeholder="2026/09/18 14:59">
+      </label>
+      <label class="wide">説明
+        <textarea id="description"></textarea>
+      </label>
+    </div>
+
+    <div class="items-head" style="margin-top:24px">
+      <h2 style="margin:0">アイテム</h2>
+      <span class="muted" id="itemCount"></span>
+    </div>
+    <div class="items-grid" id="items"></div>
+
+    <div class="actions" style="margin-top:24px">
+      <button class="publish" id="publishButton" type="button">確認した内容で公開する</button>
+      <button class="subtle" id="backButton" type="button">スクショを選び直す</button>
+    </div>
+    <div class="status" id="publishStatus" aria-live="polite"></div>
+  </section>
+
+  <section class="panel hidden" id="donePanel">
+    <h2>完了</h2>
+    <div class="result-box" id="resultBox"></div>
+  </section>
+</main>
+<script>
+(() => {
+  const state = { files: [], sessionId: '', draft: null, inboxSessionId: '' };
+  const $ = (id) => document.getElementById(id);
+  const dropZone = $('dropZone');
+  const fileInput = $('fileInput');
+  const fileList = $('fileList');
+  const processButton = $('processButton');
+  const clearButton = $('clearButton');
+  const uploadStatus = $('uploadStatus');
+  const progress = $('progress');
+  const progressBar = progress.querySelector('span');
+  const reviewPanel = $('reviewPanel');
+  const uploadPanel = $('uploadPanel');
+  const donePanel = $('donePanel');
+  const folderPath = $('folderPath');
+  const folderStatus = $('folderStatus');
+  const folderFileList = $('folderFileList');
+  const watchDot = $('watchDot');
+  const retryFolderButton = $('retryFolderButton');
+
+  function setStatus(el, text, kind = '') {
+    el.className = `status ${kind}`;
+    el.textContent = text;
+  }
+
+  function setFiles(files) {
+    state.files = [...files]
+      .filter(file => /^image\//.test(file.type))
+      .sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }));
+    fileList.innerHTML = '';
+    for (const file of state.files) {
+      const li = document.createElement('li');
+      li.textContent = `${file.name}（${(file.size / 1024 / 1024).toFixed(1)} MB）`;
+      fileList.appendChild(li);
+    }
+    processButton.disabled = state.files.length === 0;
+    clearButton.disabled = state.files.length === 0;
+    setStatus(uploadStatus, state.files.length ? `${state.files.length}枚を選択しました。` : '');
+  }
+
+  dropZone.addEventListener('click', () => fileInput.click());
+  dropZone.addEventListener('keydown', event => {
+    if (event.key === 'Enter' || event.key === ' ') fileInput.click();
+  });
+  fileInput.addEventListener('change', () => setFiles(fileInput.files));
+  for (const type of ['dragenter', 'dragover']) {
+    dropZone.addEventListener(type, event => {
+      event.preventDefault();
+      dropZone.classList.add('drag');
+    });
+  }
+  for (const type of ['dragleave', 'drop']) {
+    dropZone.addEventListener(type, event => {
+      event.preventDefault();
+      dropZone.classList.remove('drag');
+    });
+  }
+  dropZone.addEventListener('drop', event => setFiles(event.dataTransfer.files));
+  clearButton.addEventListener('click', () => {
+    fileInput.value = '';
+    setFiles([]);
+  });
+
+  async function jsonFetch(url, options = {}) {
+    const response = await fetch(url, options);
+    let body;
+    try { body = await response.json(); } catch { body = {}; }
+    if (!response.ok || body.ok === false) throw new Error(body.error || `HTTP ${response.status}`);
+    return body;
+  }
+
+  function renderFolderState(body) {
+    folderPath.textContent = body.folder || '';
+    folderStatus.textContent = body.message || 'スクショ待ちです。';
+    folderFileList.innerHTML = '';
+    for (const name of body.files || []) {
+      const li = document.createElement('li');
+      li.textContent = name;
+      folderFileList.appendChild(li);
+    }
+    watchDot.className = 'watch-dot';
+    if (['settling', 'processing'].includes(body.status)) watchDot.classList.add('active');
+    if (['ready', 'published'].includes(body.status)) watchDot.classList.add('ready');
+    if (body.status === 'error') watchDot.classList.add('error');
+    retryFolderButton.classList.toggle('hidden', body.status !== 'error');
+
+    if (body.status === 'ready' && body.sessionId && body.draft && body.sessionId !== state.inboxSessionId) {
+      state.inboxSessionId = body.sessionId;
+      state.sessionId = body.sessionId;
+      state.draft = body.draft;
+      renderDraft();
+      reviewPanel.classList.remove('hidden');
+      donePanel.classList.add('hidden');
+      reviewPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+
+  async function pollFolder() {
+    try {
+      const body = await jsonFetch('/api/inbox-status');
+      renderFolderState(body);
+    } catch (error) {
+      folderStatus.textContent = `監視状態を取得できません: ${error.message}`;
+      watchDot.className = 'watch-dot error';
+    }
+  }
+
+  $('openFolderButton').addEventListener('click', async () => {
+    try { await jsonFetch('/api/open-inbox', { method: 'POST' }); } catch (error) { alert(error.message); }
+  });
+
+  retryFolderButton.addEventListener('click', async () => {
+    retryFolderButton.disabled = true;
+    try {
+      await jsonFetch('/api/inbox-retry', { method: 'POST' });
+      await pollFolder();
+    } catch (error) {
+      alert(error.message);
+    } finally {
+      retryFolderButton.disabled = false;
+    }
+  });
+
+  pollFolder();
+  setInterval(pollFolder, 1000);
+
+  async function uploadFiles() {
+    const session = await jsonFetch('/api/session', { method: 'POST' });
+    state.sessionId = session.sessionId;
+    progress.classList.remove('hidden');
+    progressBar.style.width = '0%';
+    for (let i = 0; i < state.files.length; i++) {
+      const file = state.files[i];
+      setStatus(uploadStatus, `アップロード中 ${i + 1}/${state.files.length}: ${file.name}`);
+      await jsonFetch(`/api/upload?session=${encodeURIComponent(state.sessionId)}&name=${encodeURIComponent(file.name)}`, {
+        method: 'POST',
+        headers: { 'Content-Type': file.type || 'application/octet-stream' },
+        body: file,
+      });
+      progressBar.style.width = `${Math.round(((i + 1) / state.files.length) * 55)}%`;
+    }
+    setStatus(uploadStatus, 'タイトル・バナー・アイテムを読み取っています。少し待ってください。');
+    progressBar.style.width = '65%';
+    const result = await jsonFetch('/api/process', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sessionId: state.sessionId }),
+    });
+    progressBar.style.width = '100%';
+    state.draft = result.draft;
+    renderDraft();
+    setTimeout(() => progress.classList.add('hidden'), 350);
+  }
+
+  processButton.addEventListener('click', async () => {
+    processButton.disabled = true;
+    clearButton.disabled = true;
+    try {
+      await uploadFiles();
+      setStatus(uploadStatus, '読み取りが完了しました。', 'success');
+      reviewPanel.classList.remove('hidden');
+      reviewPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } catch (error) {
+      setStatus(uploadStatus, error.message, 'error');
+    } finally {
+      processButton.disabled = false;
+      clearButton.disabled = false;
+    }
+  });
+
+  function option(value, label, selected) {
+    const o = document.createElement('option');
+    o.value = value;
+    o.textContent = label;
+    o.selected = value === selected;
+    return o;
+  }
+
+  const categories = ['衣装', '目', '髪型', '髪飾り', '耳', '耳飾り', 'チェキフレーム', '背景', 'メイク', 'めがね', 'あたま', 'イベント', '未分類'];
+  const rarities = ['SSR', 'SR', 'NR', 'R', 'N'];
+
+  function renderItems() {
+    const container = $('items');
+    container.innerHTML = '';
+    $('itemCount').textContent = `${state.draft.items.length}件`;
+    state.draft.items.forEach((item, index) => {
+      const card = document.createElement('article');
+      card.className = 'item-card';
+
+      const imageWrap = document.createElement('div');
+      imageWrap.className = 'item-image-wrap';
+      const img = document.createElement('img');
+      img.className = 'item-image';
+      img.src = item.imageUrl;
+      img.alt = item.name;
+      const number = document.createElement('div');
+      number.className = 'item-number';
+      number.textContent = String(index + 1).padStart(2, '0');
+      imageWrap.append(img, number);
+      if ((item.confidence || 0) < 0.55) {
+        const low = document.createElement('div');
+        low.className = 'confidence-low';
+        low.textContent = '名前を要確認';
+        imageWrap.appendChild(low);
+      }
+
+      const fields = document.createElement('div');
+      fields.className = 'item-fields';
+      const nameLabel = document.createElement('label');
+      nameLabel.textContent = 'アイテム名';
+      const nameInput = document.createElement('input');
+      nameInput.type = 'text';
+      nameInput.value = item.name;
+      nameInput.addEventListener('input', () => { item.name = nameInput.value; img.alt = item.name; });
+      nameLabel.appendChild(nameInput);
+
+      const row = document.createElement('div');
+      row.className = 'item-row';
+      const rarityLabel = document.createElement('label');
+      rarityLabel.textContent = 'レアリティ';
+      const raritySelect = document.createElement('select');
+      rarities.forEach(value => raritySelect.appendChild(option(value, value, item.rarity)));
+      raritySelect.addEventListener('change', () => { item.rarity = raritySelect.value; });
+      rarityLabel.appendChild(raritySelect);
+
+      const categoryLabel = document.createElement('label');
+      categoryLabel.textContent = 'カテゴリ';
+      const categorySelect = document.createElement('select');
+      categories.forEach(value => categorySelect.appendChild(option(value, value, item.category)));
+      categorySelect.addEventListener('change', () => { item.category = categorySelect.value; });
+      categoryLabel.appendChild(categorySelect);
+      row.append(rarityLabel, categoryLabel);
+
+      const tools = document.createElement('div');
+      tools.className = 'item-tools';
+      const up = document.createElement('button');
+      up.type = 'button'; up.className = 'subtle'; up.textContent = '↑'; up.title = '一つ上へ'; up.disabled = index === 0;
+      up.addEventListener('click', () => {
+        [state.draft.items[index - 1], state.draft.items[index]] = [state.draft.items[index], state.draft.items[index - 1]];
+        renderItems();
+      });
+      const down = document.createElement('button');
+      down.type = 'button'; down.className = 'subtle'; down.textContent = '↓'; down.title = '一つ下へ'; down.disabled = index === state.draft.items.length - 1;
+      down.addEventListener('click', () => {
+        [state.draft.items[index + 1], state.draft.items[index]] = [state.draft.items[index], state.draft.items[index + 1]];
+        renderItems();
+      });
+      const remove = document.createElement('button');
+      remove.type = 'button'; remove.className = 'danger'; remove.textContent = '削除';
+      remove.addEventListener('click', () => {
+        if (confirm(`${String(index + 1).padStart(2, '0')}番を削除しますか？`)) {
+          state.draft.items.splice(index, 1);
+          renderItems();
+        }
+      });
+      tools.append(up, down, remove);
+      fields.append(nameLabel, row, tools);
+      card.append(imageWrap, fields);
+      container.appendChild(card);
+    });
+  }
+
+  function renderDraft() {
+    const draft = state.draft;
+    $('banner').src = draft.bannerUrl;
+    $('title').value = draft.title || '';
+    $('slug').value = draft.slug || '';
+    $('type').value = draft.type || '';
+    $('startDate').value = draft.startDate || '';
+    $('endDate').value = draft.endDate || '';
+    $('description').value = draft.description || '';
+    $('warnings').innerHTML = (draft.warnings || []).map(x => `<div>⚠ ${escapeHtml(x)}</div>`).join('');
+    renderItems();
+  }
+
+  function escapeHtml(value) {
+    return String(value).replace(/[&<>'"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));
+  }
+
+  function collectDraft() {
+    state.draft.title = $('title').value.trim();
+    state.draft.slug = $('slug').value.trim().toLowerCase();
+    state.draft.type = $('type').value.trim();
+    state.draft.startDate = $('startDate').value.trim();
+    state.draft.endDate = $('endDate').value.trim();
+    state.draft.description = $('description').value.trim();
+    state.draft.items.forEach((item, index) => { item.index = index + 1; });
+    return state.draft;
+  }
+
+  $('backButton').addEventListener('click', () => {
+    reviewPanel.classList.add('hidden');
+    uploadPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+
+  $('publishButton').addEventListener('click', async () => {
+    const button = $('publishButton');
+    const status = $('publishStatus');
+    const draft = collectDraft();
+    if (!confirm(`「${draft.title}」をビルド・GitHubへ反映します。よろしいですか？`)) return;
+    button.disabled = true;
+    setStatus(status, '画像保存 → データ登録 → ビルド → GitHub反映を実行中です。画面を閉じないでください。');
+    try {
+      const response = await jsonFetch('/api/publish', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sessionId: state.sessionId, draft }),
+      });
+      const result = response.result;
+      $('resultBox').innerHTML = `
+        <p><strong>「${escapeHtml(result.title)}」を公開しました。</strong></p>
+        <p>アイテム: ${result.itemCount}件<br>ビルド: ${escapeHtml(result.build)}<br>Git push: ${escapeHtml(result.push)}</p>
+        <p class="muted">本番環境はVercelのデプロイ完了後に更新されます。</p>`;
+      setStatus(status, '公開処理が完了しました。', 'success');
+      donePanel.classList.remove('hidden');
+      donePanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } catch (error) {
+      setStatus(status, error.message, 'error');
+    } finally {
+      button.disabled = false;
+    }
+  });
+})();
+</script>
+</body>
+</html>

@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+# Local screenshots watched by the gacha addition tool
+/ガチャスクショ投入/*
+!/ガチャスクショ投入/ここにスクショを入れる.txt
