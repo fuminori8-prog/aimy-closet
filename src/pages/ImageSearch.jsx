@@ -7,11 +7,46 @@ import GachaItemCard from '../components/GachaItemCard'
 import { getAllItems } from '../utils/items'
 import { MAIN_CATEGORIES } from '../utils/itemCategory'
 import {
-  createQueryDescriptor,
+  createQueryDescriptors,
   findSimilarItems,
 } from '../utils/imageSearch'
 
 const MIN_SELECTION_SIZE = 24
+const DETAIL_SUB_CATEGORIES = new Set([
+  '目',
+  'メイク',
+  '口',
+  '鼻',
+  'まゆげ',
+  '髪飾り',
+  '耳飾り',
+  'メガネ',
+])
+const SUB_CATEGORY_ORDER = [
+  '目',
+  'メイク',
+  '口',
+  '鼻',
+  'まゆげ',
+  '髪飾り',
+  '耳飾り',
+  'メガネ',
+]
+
+const SEARCH_GUIDES = {
+  服: '服全体が入るように囲ってください。顔や背景はできるだけ外すと精度が上がります。',
+  髪型: '髪全体を囲い、顔や服はできるだけ外してください。',
+  目: '左右の目だけを横長に囲ってください。髪飾りや髪は入れない方が探しやすくなります。',
+  メイク: 'チークやまつ毛など、探したい部分をできるだけ小さく囲ってください。',
+  口: '口だけを小さく囲ってください。',
+  鼻: '鼻だけを小さく囲ってください。',
+  まゆげ: '左右の眉だけを横長に囲ってください。',
+  髪飾り: '髪飾りだけを囲い、目や顔はできるだけ外してください。',
+  耳飾り: '耳飾りだけを囲い、髪や顔はできるだけ外してください。',
+  メガネ: 'メガネ全体を横長に囲ってください。',
+  背景: '人物よりも背景が広く入るように囲ってください。',
+  チェキフレーム: 'フレーム全体が分かるように囲ってください。',
+}
 
 function normalizeRect(start, end) {
   return {
@@ -22,6 +57,34 @@ function normalizeRect(start, end) {
   }
 }
 
+function drawContained(context, source, sourceRect, targetSize) {
+  const sourceRatio = sourceRect.width / sourceRect.height
+  let width = targetSize
+  let height = targetSize
+  let x = 0
+  let y = 0
+
+  if (sourceRatio > 1) {
+    height = targetSize / sourceRatio
+    y = (targetSize - height) / 2
+  } else {
+    width = targetSize * sourceRatio
+    x = (targetSize - width) / 2
+  }
+
+  context.drawImage(
+    source,
+    sourceRect.x,
+    sourceRect.y,
+    sourceRect.width,
+    sourceRect.height,
+    x,
+    y,
+    width,
+    height,
+  )
+}
+
 function ImageSearch() {
   const allItems = useMemo(() => getAllItems(), [])
   const canvasRef = useRef(null)
@@ -30,12 +93,41 @@ function ImageSearch() {
   const dragStartRef = useRef(null)
   const [fileName, setFileName] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('服')
+  const [selectedSubCategory, setSelectedSubCategory] = useState('')
   const [selection, setSelection] = useState(null)
   const [dragging, setDragging] = useState(false)
   const [results, setResults] = useState([])
   const [progress, setProgress] = useState(null)
   const [error, setError] = useState('')
   const [isSearching, setIsSearching] = useState(false)
+
+  const subCategoryOptions = useMemo(() => {
+    const values = new Set(
+      allItems
+        .filter((item) => item.normalizedCategory === selectedCategory)
+        .map((item) => item.subCategory)
+        .filter(Boolean),
+    )
+
+    return [...values].sort((left, right) => {
+      const leftIndex = SUB_CATEGORY_ORDER.indexOf(left)
+      const rightIndex = SUB_CATEGORY_ORDER.indexOf(right)
+      const normalizedLeft = leftIndex === -1 ? 999 : leftIndex
+      const normalizedRight = rightIndex === -1 ? 999 : rightIndex
+      return normalizedLeft - normalizedRight || left.localeCompare(right, 'ja')
+    })
+  }, [allItems, selectedCategory])
+
+  useEffect(() => {
+    if (subCategoryOptions.length === 0) {
+      setSelectedSubCategory('')
+      return
+    }
+
+    setSelectedSubCategory((current) =>
+      subCategoryOptions.includes(current) ? current : subCategoryOptions[0],
+    )
+  }, [subCategoryOptions])
 
   useEffect(() => {
     document.title = '画像からアイテムを探す｜Aimy Closet'
@@ -128,17 +220,7 @@ function ImageSearch() {
     const context = preview.getContext('2d')
     context.fillStyle = '#ffffff'
     context.fillRect(0, 0, size, size)
-    context.drawImage(
-      canvas,
-      nextSelection.x,
-      nextSelection.y,
-      nextSelection.width,
-      nextSelection.height,
-      0,
-      0,
-      size,
-      size,
-    )
+    drawContained(context, canvas, nextSelection, size)
   }
 
   useEffect(() => {
@@ -177,25 +259,12 @@ function ImageSearch() {
       )
       const width = image.naturalWidth * scale
       const height = image.naturalHeight * scale
-      const aspectRatio = width / height
-      let initialSelection
-
-      if (aspectRatio >= 0.8 && aspectRatio <= 1.25) {
-        const inset = Math.min(width, height) * 0.02
-        initialSelection = {
-          x: inset,
-          y: inset,
-          width: width - inset * 2,
-          height: height - inset * 2,
-        }
-      } else {
-        const selectionSize = Math.min(width, height) * 0.62
-        initialSelection = {
-          x: (width - selectionSize) / 2,
-          y: (height - selectionSize) / 2,
-          width: selectionSize,
-          height: selectionSize,
-        }
+      const selectionSize = Math.min(width, height) * 0.55
+      const initialSelection = {
+        x: (width - selectionSize) / 2,
+        y: (height - selectionSize) / 2,
+        width: selectionSize,
+        height: selectionSize,
       }
 
       setSelection(initialSelection)
@@ -240,11 +309,7 @@ function ImageSearch() {
       return
     }
 
-    const nextSelection = normalizeRect(
-      dragStartRef.current,
-      getCanvasPoint(event),
-    )
-    setSelection(nextSelection)
+    setSelection(normalizeRect(dragStartRef.current, getCanvasPoint(event)))
   }
 
   const handlePointerUp = (event) => {
@@ -271,6 +336,34 @@ function ImageSearch() {
     setSelection(nextSelection)
   }
 
+  const searchGuide =
+    SEARCH_GUIDES[selectedSubCategory] ||
+    SEARCH_GUIDES[selectedCategory] ||
+    '探したいアイテムだけが入るように囲ってください。'
+
+  const candidateItems = useMemo(
+    () =>
+      allItems.filter(
+        (item) =>
+          item.normalizedCategory === selectedCategory &&
+          (!selectedSubCategory || item.subCategory === selectedSubCategory),
+      ),
+    [allItems, selectedCategory, selectedSubCategory],
+  )
+
+  const selectionCoverage = useMemo(() => {
+    const canvas = canvasRef.current
+
+    if (!canvas || !selection) {
+      return 0
+    }
+
+    return (selection.width * selection.height) / (canvas.width * canvas.height)
+  }, [selection])
+
+  const detailSelectionIsLarge =
+    DETAIL_SUB_CATEGORIES.has(selectedSubCategory) && selectionCoverage > 0.32
+
   const handleSearch = async () => {
     const image = imageRef.current
     const canvas = canvasRef.current
@@ -288,10 +381,15 @@ function ImageSearch() {
       return
     }
 
+    if (candidateItems.length === 0) {
+      setError('選択した種類に、比較できるアイテム画像がありません。')
+      return
+    }
+
     setError('')
     setResults([])
     setIsSearching(true)
-    setProgress({ current: 0, total: 0 })
+    setProgress({ current: 0, total: candidateItems.length })
 
     try {
       const scaleX = image.naturalWidth / canvas.width
@@ -302,14 +400,13 @@ function ImageSearch() {
         width: selection.width * scaleX,
         height: selection.height * scaleY,
       }
-      const descriptor = createQueryDescriptor(image, sourceCrop)
-      const candidates = allItems.filter(
-        (item) => item.normalizedCategory === selectedCategory,
-      )
+      const descriptors = createQueryDescriptors(image, sourceCrop, {
+        subCategory: selectedSubCategory,
+      })
       const matches = await findSimilarItems({
-        descriptor,
-        items: candidates,
-        limit: 8,
+        descriptors,
+        items: candidateItems,
+        limit: 20,
         onProgress: (current, total) => setProgress({ current, total }),
       })
 
@@ -349,6 +446,10 @@ function ImageSearch() {
             🔒 選んだ画像は端末内で比較し、サーバーには送信しません。
           </div>
 
+          <div className="image-search-ratio-note">
+            縦長・横長の範囲も、形を潰さず余白を足して比較します。
+          </div>
+
           <div className="image-search-controls card">
             <label className="image-search-field">
               <span>1．カテゴリを選択</span>
@@ -356,6 +457,7 @@ function ImageSearch() {
                 value={selectedCategory}
                 onChange={(event) => {
                   setSelectedCategory(event.target.value)
+                  setSelectedSubCategory('')
                   setResults([])
                 }}
               >
@@ -367,8 +469,29 @@ function ImageSearch() {
               </select>
             </label>
 
+            {subCategoryOptions.length > 0 ? (
+              <label className="image-search-field">
+                <span>2．種類を選択</span>
+                <select
+                  value={selectedSubCategory}
+                  onChange={(event) => {
+                    setSelectedSubCategory(event.target.value)
+                    setResults([])
+                  }}
+                >
+                  {subCategoryOptions.map((category) => (
+                    <option key={category} value={category}>
+                      {category}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            ) : null}
+
             <label className="image-upload-button">
-              <span>2．スクショ・画像を選択</span>
+              <span>
+                {subCategoryOptions.length > 0 ? '3' : '2'}．スクショ・画像を選択
+              </span>
               <input
                 type="file"
                 accept="image/*"
@@ -382,8 +505,10 @@ function ImageSearch() {
           {imageRef.current ? (
             <div className="image-crop-layout">
               <section className="image-crop-area">
-                <h2>3．探したいアイテムを囲む</h2>
-                <p>画像上を指またはマウスで、左上から右下へなぞってください。</p>
+                <h2>
+                  {subCategoryOptions.length > 0 ? '4' : '3'}．探したいアイテムを囲む
+                </h2>
+                <p>{searchGuide}</p>
                 <canvas
                   ref={canvasRef}
                   className="image-crop-canvas"
@@ -397,13 +522,21 @@ function ImageSearch() {
               <aside className="image-crop-preview card">
                 <h2>検索する範囲</h2>
                 <canvas ref={previewCanvasRef} />
+                <p className="image-search-shape-note">
+                  余白部分は比較時に追加されるだけで、画像自体は変形しません。
+                </p>
+                {detailSelectionIsLarge ? (
+                  <p className="image-search-selection-warning">
+                    範囲が少し大きめです。目や飾り以外が多く入ると候補がぶれやすくなります。
+                  </p>
+                ) : null}
                 <button
                   type="button"
                   className="image-search-submit"
                   onClick={handleSearch}
                   disabled={isSearching}
                 >
-                  {isSearching ? '比較中…' : 'この画像で探す'}
+                  {isSearching ? '比較中…' : `この画像で${candidateItems.length}件から探す`}
                 </button>
 
                 {progress && isSearching ? (
@@ -431,7 +564,14 @@ function ImageSearch() {
             <section className="image-search-results" aria-live="polite">
               <div className="image-search-results-heading">
                 <h2>似ているアイテム候補</h2>
-                <p>一致度は参考値です。画像を見て候補を確認してください。</p>
+                <p>
+                  最大20件を表示しています。参考スコアは一致の保証ではないため、画像で確認してください。
+                </p>
+                {results[0]?.similarity < 45 ? (
+                  <p className="image-search-low-score">
+                    上位候補のスコアが低めです。囲む範囲を小さくして、もう一度お試しください。
+                  </p>
+                ) : null}
               </div>
 
               <div className="card-grid item-grid">
@@ -443,7 +583,7 @@ function ImageSearch() {
                   return (
                     <div className="image-search-result" key={item.id}>
                       <div className="image-search-rank">
-                        候補{rank}・一致度 {similarity}%
+                        候補{rank}・参考スコア {similarity}
                       </div>
                       <GachaItemCard
                         item={{ ...item, category: categoryLabel }}

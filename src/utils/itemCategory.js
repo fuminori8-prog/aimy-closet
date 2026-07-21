@@ -37,6 +37,7 @@ export function getMainCategory(category) {
       'メガネ',
       'ピアス',
       '耳飾り',
+      '耳',
     ].includes(value)
   ) {
     return 'アクセサリー'
@@ -71,15 +72,15 @@ export function getSubCategory(category) {
   const value = String(category || '').trim()
 
   if (['あたま', '髪飾り'].includes(value)) {
-    return 'あたま'
+    return '髪飾り'
   }
 
   if (['めがね', 'メガネ'].includes(value)) {
-    return 'めがね'
+    return 'メガネ'
   }
 
-  if (['ピアス', '耳飾り'].includes(value)) {
-    return 'ピアス'
+  if (['ピアス', '耳飾り', '耳'].includes(value)) {
+    return '耳飾り'
   }
 
   if (value === 'メイク') {

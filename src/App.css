@@ -1421,4 +1421,74 @@ footer p {
     grid-column: 1 / -1;
   }
 }
+/* 画像検索精度改善 v2 */
+.image-search-controls {
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+}
+
+.image-search-ratio-note {
+  margin: -6px 0 18px;
+  padding: 11px 15px;
+  border: 1px solid #e6dceb;
+  border-radius: 14px;
+  background: #ffffff;
+  color: #6f6374;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.image-search-shape-note {
+  margin: 10px 0 0;
+  color: #7d7480;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.image-search-selection-warning,
+.image-search-low-score {
+  margin: 12px 0 0;
+  padding: 10px 12px;
+  border: 1px solid #efc88c;
+  border-radius: 12px;
+  background: #fff9e9;
+  color: #8a6425;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.55;
+}
+
+.image-search-low-score {
+  max-width: 720px;
+  margin-top: 10px !important;
+}
+
+.image-search-rank {
+  text-align: center;
+}
+
+@media (max-width: 760px) {
+  .image-search-controls {
+    grid-template-columns: 1fr;
+  }
+
+  .image-search-shape-note {
+    grid-column: 2;
+    margin: 0;
+  }
+
+  .image-search-selection-warning {
+    grid-column: 1 / -1;
+    margin: 0;
+  }
+}
+
+@media (max-width: 430px) {
+  .image-crop-preview {
+    grid-template-columns: 96px minmax(0, 1fr);
+  }
+
+  .image-crop-preview canvas {
+    width: 96px;
+  }
+}
 
