@@ -60,10 +60,10 @@ function App() {
       <main>
         <SearchBar />
         <LatestGacha />
-        <AdBanner text="広告バナー 728×90" />
+        <AdBanner slot="homePrimary" />
         <CategoryGrid categories={categories} />
         <PopularItems />
-        <AdBanner text="広告バナー 728×90" />
+        <AdBanner slot="homeSecondary" />
       </main>
       <Footer />
     </div>

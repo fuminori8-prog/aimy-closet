@@ -147,7 +147,7 @@ function ItemDetail() {
           </div>
         </section>
 
-        <AdBanner text="広告バナー 728×90" />
+        <AdBanner slot="itemDetail" />
 
         {relatedItems.length > 0 ? (
           <section className="lineup-section">

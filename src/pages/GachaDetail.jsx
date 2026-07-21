@@ -131,7 +131,7 @@ function GachaDetail() {
           </p>
         </section>
 
-        <AdBanner text="広告バナー 728×90" />
+        <AdBanner slot="gachaDetail" />
 
         {hasLineup ? (
           raritySections.map((rarity) => {

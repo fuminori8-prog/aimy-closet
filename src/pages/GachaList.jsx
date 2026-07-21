@@ -127,7 +127,7 @@ useEffect(() => {
 
           <p className="result-count">{filteredGachas.length}件 / 全{gachas.length}件</p>
 
-          <AdBanner text="広告バナー 728×90" />
+          <AdBanner slot="gachaList" />
 
           {filteredGachas.length > 0 ? (
             <div className="gacha-grid">

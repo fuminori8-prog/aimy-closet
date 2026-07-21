@@ -1026,3 +1026,49 @@ footer p {
     font-size: 11px;
   }
 }
+
+/* アフィリエイト広告 */
+.affiliate-ad {
+  width: 100%;
+  margin: 20px 0;
+  text-align: center;
+}
+
+.affiliate-ad-label {
+  display: block;
+  margin-bottom: 6px;
+  color: #8a8ea0;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.affiliate-ad-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 1px;
+  overflow: hidden;
+}
+
+.affiliate-ad-content a {
+  display: inline-block;
+  max-width: 100%;
+}
+
+.affiliate-ad-content img,
+.affiliate-ad-content iframe {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 0 auto;
+  border: 0;
+}
+
+.affiliate-disclosure {
+  max-width: 760px;
+  margin: 12px auto 0;
+  font-size: 12px;
+  line-height: 1.7;
+}
+

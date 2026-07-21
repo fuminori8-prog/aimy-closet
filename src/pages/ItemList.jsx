@@ -182,7 +182,7 @@ function ItemList() {
             {filteredItems.length}件 / 全{allItems.length}件
           </p>
 
-          <AdBanner text="広告バナー 728×90" />
+          <AdBanner slot="itemList" />
 
           {filteredItems.length > 0 ? (
             <div className="card-grid item-grid">
