@@ -10,7 +10,6 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import { MAIN_CATEGORIES, getMainCategory } from '../utils/itemCategory'
 import { getGachaStatus } from '../utils/gachaStatus'
 
-const raritySections = ['SSR', 'SR', 'NR']
 const categoryOrder = MAIN_CATEGORIES
 
 const groupItemsByCategory = (items) => {
@@ -56,7 +55,7 @@ function GachaDetail() {
 
   const pageDescription =
     `${gacha.title}の開催期間と排出アイテム一覧を掲載しています。` +
-    `SSR・SRなどのラインナップを確認できるAimy非公式ガチャデータベースです。`
+    `服・髪型などカテゴリ別のラインナップを確認できるAimy非公式ガチャデータベースです。`
 
   const pageUrl = `https://aimycloset.jp/gacha/${gacha.slug}`
 
@@ -134,42 +133,28 @@ function GachaDetail() {
         <AdBanner slot="gachaDetail" />
 
         {hasLineup ? (
-          raritySections.map((rarity) => {
-            const rarityItems = gacha.items.filter(
-              (item) => item.rarity === rarity,
-            )
+          <section className="lineup-section">
+            <h2>アイテムラインナップ</h2>
 
-            if (rarityItems.length === 0) {
-              return null
-            }
+            {groupItemsByCategory(gacha.items).map(([category, items]) => (
+              <div key={category} className="lineup-group">
+                <h3>{category}</h3>
 
-            const groupedItems = groupItemsByCategory(rarityItems)
-
-            return (
-              <section key={rarity} className="lineup-section">
-                <h2>{rarity}ラインナップ</h2>
-
-                {groupedItems.map(([category, items]) => (
-                  <div key={category} className="lineup-group">
-                    <h3>{category}</h3>
-
-                    <div className="card-grid item-grid">
-                      {items.map((item) => (
-                        <GachaItemCard
-                          key={item.id}
-                          id={item.id}
-                          name={item.name}
-                          rarity={item.rarity}
-                          category={item.category}
-                          image={item.image}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </section>
-            )
-          })
+                <div className="card-grid item-grid">
+                  {items.map((item) => (
+                    <GachaItemCard
+                      key={item.id}
+                      id={item.id}
+                      name={item.name}
+                      rarity={item.rarity}
+                      category={item.category}
+                      image={item.image}
+                    />
+                  ))}
+                </div>
+              </div>
+            ))}
+          </section>
         ) : (
           <section className="lineup-section">
             <h2>ラインナップ情報</h2>
@@ -181,7 +166,6 @@ function GachaDetail() {
             </p>
           </section>
         )}
-
         <div className="detail-back-wrap">
           <button
             type="button"
