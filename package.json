@@ -7,10 +7,12 @@
     "dev": "vite",
     "generate:sitemap": "node scripts/generate-sitemap.js",
     "build": "npm run generate:sitemap && vite build",
-    "lint": "oxlint",
-    "preview": "vite preview"
+    "lint": "oxlint src scripts",
+    "preview": "vite preview",
+    "add-gacha": "python3 scripts/add_gacha.py"
   },
   "dependencies": {
+    "firebase": "^12.11.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "react-router-dom": "^7.18.1"

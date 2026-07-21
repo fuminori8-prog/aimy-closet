@@ -5,13 +5,13 @@ function Header() {
     <header className="header">
       <div className="logo-area">
         <Link to="/" className="logo logo-link">
-            Aimy Closet
+          Aimy Closet
         </Link>
 
-            <span className="logo-description">
-                Aimy非公式アイテム図鑑・ガチャデータベース
-            </span>
-    </div>
+        <span className="logo-description">
+          Aimy非公式アイテム図鑑・ガチャデータベース
+        </span>
+      </div>
 
       <nav className="header-nav">
         <NavLink to="/item" className="nav-button">
@@ -20,6 +20,10 @@ function Header() {
 
         <NavLink to="/gacha" className="nav-button">
           🎲 ガチャ履歴
+        </NavLink>
+
+        <NavLink to="/favorites" className="nav-button">
+          ♡ お気に入り
         </NavLink>
       </nav>
     </header>

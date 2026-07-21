@@ -5,11 +5,11 @@ import Header from '../components/Header'
 import Footer from '../components/Footer'
 import AdBanner from '../components/AdBanner'
 import SearchBar from '../components/SearchBar'
-import { gachas } from '../data/gachas'
+import GachaItemCard from '../components/GachaItemCard'
+import { getAllItems } from '../utils/items'
 import {
   MAIN_CATEGORIES,
   getMainCategory,
-  getSubCategory,
 } from '../utils/itemCategory'
 
 const CATEGORY_LABELS = MAIN_CATEGORIES
@@ -23,25 +23,7 @@ function ItemList() {
   const [searchParams] = useSearchParams()
   const [selectedCategory, setSelectedCategory] = useState('すべて')
   const [selectedSubCategory, setSelectedSubCategory] = useState('すべて')
-
-  const allItems = useMemo(() => {
-    const sortedGachas = [...gachas].sort((a, b) => {
-      const toDate = (value) =>
-        new Date(String(value || '').replace(/\//g, '-')).getTime()
-
-      return toDate(b.startDate) - toDate(a.startDate)
-    })
-
-    return sortedGachas.flatMap((gacha) =>
-      (gacha.items || []).map((item) => ({
-        ...item,
-        gachaSlug: gacha.slug,
-        gachaTitle: gacha.title,
-        normalizedCategory: getMainCategory(item.category),
-        subCategory: getSubCategory(item.category),
-      })),
-    )
-  }, [])
+  const allItems = useMemo(() => getAllItems(), [])
 
   const query = (searchParams.get('q') || '').trim().toLowerCase()
   const categoryQuery = (searchParams.get('category') || '').trim()
@@ -56,11 +38,8 @@ function ItemList() {
     const normalized = getMainCategory(categoryQuery)
 
     setSelectedCategory(
-      CATEGORY_LABELS.includes(normalized)
-        ? normalized
-        : 'すべて',
+      CATEGORY_LABELS.includes(normalized) ? normalized : 'すべて',
     )
-
     setSelectedSubCategory('すべて')
   }, [categoryQuery])
 
@@ -114,16 +93,10 @@ function ItemList() {
           String(field || '').toLowerCase().includes(query),
         )
       }),
-    [
-      allItems,
-      query,
-      selectedCategory,
-      selectedSubCategory,
-    ],
+    [allItems, query, selectedCategory, selectedSubCategory],
   )
 
-  const subCategoryOptions =
-    SUB_CATEGORY_OPTIONS[selectedCategory] || []
+  const subCategoryOptions = SUB_CATEGORY_OPTIONS[selectedCategory] || []
 
   return (
     <div className="page">
@@ -144,10 +117,7 @@ function ItemList() {
 
           <SearchBar targetPath="/item" />
 
-          <div
-            className="filter-group"
-            aria-label="item category filters"
-          >
+          <div className="filter-group" aria-label="item category filters">
             <button
               type="button"
               className={`filter-button ${
@@ -186,13 +156,9 @@ function ItemList() {
               <button
                 type="button"
                 className={`filter-button ${
-                  selectedSubCategory === 'すべて'
-                    ? 'active'
-                    : ''
+                  selectedSubCategory === 'すべて' ? 'active' : ''
                 }`}
-                onClick={() =>
-                  setSelectedSubCategory('すべて')
-                }
+                onClick={() => setSelectedSubCategory('すべて')}
               >
                 種類：すべて
               </button>
@@ -202,13 +168,9 @@ function ItemList() {
                   key={subCategory}
                   type="button"
                   className={`filter-button ${
-                    selectedSubCategory === subCategory
-                      ? 'active'
-                      : ''
+                    selectedSubCategory === subCategory ? 'active' : ''
                   }`}
-                  onClick={() =>
-                    setSelectedSubCategory(subCategory)
-                  }
+                  onClick={() => setSelectedSubCategory(subCategory)}
                 >
                   {subCategory}
                 </button>
@@ -225,46 +187,21 @@ function ItemList() {
           {filteredItems.length > 0 ? (
             <div className="card-grid item-grid">
               {filteredItems.map((item) => {
-                const hasImage =
-                  Boolean(item.image) &&
-                  item.image !== 'placeholder'
-
                 const categoryLabel = item.subCategory
                   ? `${item.normalizedCategory}：${item.subCategory}`
                   : item.normalizedCategory
 
                 return (
-                  <Link
-                    to={`/item/${item.id}`}
+                  <GachaItemCard
                     key={item.id}
-                    className="card item-card gacha-item-card"
-                  >
-                    <div className="item-image">
-                      {hasImage ? (
-                        <img
-                          src={item.image}
-                          alt={item.name}
-                          className="item-image-content"
-                        />
-                      ) : (
-                        <span>画像準備中</span>
-                      )}
-                    </div>
-
-                    <h3>{item.name}</h3>
-                    <p>{categoryLabel}</p>
-
-                    <p className="item-subtext">
-                      排出: {item.gachaTitle}
-                    </p>
-                  </Link>
+                    item={{ ...item, category: categoryLabel }}
+                    subtext={`排出: ${item.gachaTitle}`}
+                  />
                 )
               })}
             </div>
           ) : (
-            <p className="lineup-note">
-              該当するアイテムはありません
-            </p>
+            <p className="lineup-note">該当するアイテムはありません</p>
           )}
         </section>
       </main>

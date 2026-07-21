@@ -5,6 +5,7 @@ import Header from '../components/Header'
 import Footer from '../components/Footer'
 import AdBanner from '../components/AdBanner'
 import GachaItemCard from '../components/GachaItemCard'
+import FavoriteButton from '../components/FavoriteButton'
 import { gachas } from '../data/gachas'
 import {
   getMainCategory,
@@ -29,6 +30,30 @@ function ItemDetail() {
   useEffect(() => {
     setHasImageError(false)
   }, [itemId])
+
+  useEffect(() => {
+    if (!found) {
+      return
+    }
+
+    const { item } = found
+    const pageTitle = `${item.name}｜入手ガチャ・アイテム情報｜Aimy Closet`
+
+    document.title = pageTitle
+
+    const pageDescription =
+      `${item.name}の入手方法、排出ガチャ、レアリティ、カテゴリを掲載しています。`
+
+    let meta = document.querySelector('meta[name="description"]')
+
+    if (!meta) {
+      meta = document.createElement('meta')
+      meta.name = 'description'
+      document.head.appendChild(meta)
+    }
+
+    meta.content = pageDescription
+  }, [found])
 
   if (!found) {
     return (
@@ -60,24 +85,7 @@ function ItemDetail() {
   const hasImage = Boolean(item.image) && item.image !== 'placeholder' && !hasImageError
   const relatedItems = (gacha.items || []).filter((currentItem) => currentItem.id !== item.id).slice(0, 4)
 
- useEffect(() => {
-  const pageTitle = `${item.name}｜入手ガチャ・アイテム情報｜Aimy Closet`
 
-  document.title = pageTitle
-
-  const pageDescription =
-    `${item.name}の入手方法、排出ガチャ、レアリティ、カテゴリを掲載しています。`
-
-  let meta = document.querySelector('meta[name="description"]')
-
-  if (!meta) {
-    meta = document.createElement('meta')
-    meta.name = 'description'
-    document.head.appendChild(meta)
-  }
-
-  meta.content = pageDescription
-}, [item, gacha])
   
   return (
     <div className="page">
@@ -127,6 +135,7 @@ function ItemDetail() {
                 <span className="status-badge">{gacha.status}</span>
                 {gacha.infoStatus === '情報収集中' ? <span className="info-badge">{gacha.infoStatus}</span> : null}
               </div>
+              <FavoriteButton itemId={item.id} className="favorite-button-detail" />
               <button
                 type="button"
                 className="back-to-list-button"

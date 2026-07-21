@@ -1,0 +1,80 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function favoritePath(userId, itemId) {
+      return /databases/$(database)/documents/users/$(userId)/favorites/$(itemId);
+    }
+
+    function countPath(itemId) {
+      return /databases/$(database)/documents/itemFavoriteCounts/$(itemId);
+    }
+
+    match /itemFavoriteCounts/{itemId} {
+      allow read: if true;
+
+      allow create: if signedIn()
+        && request.resource.data.keys().hasOnly(['favoriteCount', 'updatedAt'])
+        && request.resource.data.favoriteCount == 1
+        && request.resource.data.updatedAt == request.time
+        && !exists(favoritePath(request.auth.uid, itemId))
+        && existsAfter(favoritePath(request.auth.uid, itemId));
+
+      allow update: if signedIn()
+        && request.resource.data.diff(resource.data).affectedKeys()
+          .hasOnly(['favoriteCount', 'updatedAt'])
+        && request.resource.data.updatedAt == request.time
+        && request.resource.data.favoriteCount >= 0
+        && (
+          (
+            request.resource.data.favoriteCount == resource.data.favoriteCount + 1
+            && !exists(favoritePath(request.auth.uid, itemId))
+            && existsAfter(favoritePath(request.auth.uid, itemId))
+          )
+          ||
+          (
+            request.resource.data.favoriteCount == resource.data.favoriteCount - 1
+            && exists(favoritePath(request.auth.uid, itemId))
+            && !existsAfter(favoritePath(request.auth.uid, itemId))
+          )
+        );
+
+      allow delete: if false;
+    }
+
+    match /users/{userId}/favorites/{itemId} {
+      allow read: if signedIn() && request.auth.uid == userId;
+
+      allow create: if signedIn()
+        && request.auth.uid == userId
+        && request.resource.data.keys().hasOnly(['itemId', 'createdAt'])
+        && request.resource.data.itemId == itemId
+        && request.resource.data.createdAt == request.time
+        && existsAfter(countPath(itemId))
+        && (
+          (
+            !exists(countPath(itemId))
+            && getAfter(countPath(itemId)).data.favoriteCount == 1
+          )
+          ||
+          (
+            exists(countPath(itemId))
+            && getAfter(countPath(itemId)).data.favoriteCount
+              == get(countPath(itemId)).data.favoriteCount + 1
+          )
+        );
+
+      allow delete: if signedIn()
+        && request.auth.uid == userId
+        && exists(countPath(itemId))
+        && getAfter(countPath(itemId)).data.favoriteCount
+          == get(countPath(itemId)).data.favoriteCount - 1;
+
+      allow update: if false;
+    }
+  }
+}
