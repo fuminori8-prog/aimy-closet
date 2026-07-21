@@ -1,3 +1,4 @@
+import junnoShiXianBarebaredayo from './gachas/junno-shi-xian-barebaredayo'
 import namahamukoFutariKiri from './gachas/namahamuko-futari-kiri'
 import hikoboshi from './gachas/hikoboshi'
 import nagisaKanbanmusume from './gachas/nagisa-kanbanmusume'
@@ -19,6 +20,7 @@ import kimiNoTokubetsu from './gachas/kimi-no-tokubetsu'
 import friendPoint from './gachas/friend-point'
 
 export const gachas = [
+  junnoShiXianBarebaredayo,
   namahamukoFutariKiri,
   hikoboshi,
   nagisaKanbanmusume,
