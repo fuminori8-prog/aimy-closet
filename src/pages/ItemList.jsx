@@ -195,7 +195,7 @@ function ItemList() {
                   <GachaItemCard
                     key={item.id}
                     item={{ ...item, category: categoryLabel }}
-                    subtext={`排出: ${item.gachaTitle}`}
+                    subtext={`ガチャ: ${item.gachaTitle}`}
                   />
                 )
               })}
