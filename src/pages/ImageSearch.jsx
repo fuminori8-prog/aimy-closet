@@ -509,14 +509,33 @@ function ImageSearch() {
                   {subCategoryOptions.length > 0 ? '4' : '3'}．探したいアイテムを囲む
                 </h2>
                 <p>{searchGuide}</p>
-                <canvas
-                  ref={canvasRef}
-                  className="image-crop-canvas"
-                  onPointerDown={handlePointerDown}
-                  onPointerMove={handlePointerMove}
-                  onPointerUp={handlePointerUp}
-                  onPointerCancel={handlePointerUp}
-                />
+                <div
+                  style={{
+                    display: 'grid',
+                    placeItems: 'center',
+                    width: '100%',
+                    padding: '16px',
+                    borderRadius: '18px',
+                    background: '#efe9ed',
+                    boxSizing: 'border-box',
+                  }}
+                >
+                  <canvas
+                    ref={canvasRef}
+                    className="image-crop-canvas"
+                    style={{
+                      width: 'auto',
+                      maxWidth: '100%',
+                      height: 'auto',
+                      maxHeight: '650px',
+                      margin: '0 auto',
+                    }}
+                    onPointerDown={handlePointerDown}
+                    onPointerMove={handlePointerMove}
+                    onPointerUp={handlePointerUp}
+                    onPointerCancel={handlePointerUp}
+                  />
+                </div>
               </section>
 
               <aside className="image-crop-preview card">
