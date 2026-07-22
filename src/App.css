@@ -1492,3 +1492,34 @@ footer p {
   }
 }
 
+/* DMM同人ウィジェット開始 */
+.dmm-widget-host {
+  display: flex;
+  width: 100%;
+  min-height: 90px;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.dmm-widget-host.is-mobile {
+  min-height: 100px;
+}
+
+.dmm-widget-host .dmm-widget-placement {
+  display: block;
+  flex: 0 0 auto;
+}
+
+.dmm-widget-host.is-desktop iframe {
+  width: 728px;
+  max-width: none;
+  height: 90px;
+}
+
+.dmm-widget-host.is-mobile iframe {
+  width: 320px;
+  max-width: none;
+  height: 100px;
+}
+/* DMM同人ウィジェット終了 */

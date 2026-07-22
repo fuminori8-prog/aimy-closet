@@ -1,33 +1,37 @@
-// DMMアフィリエイト審査中は false のままにします。
-// 承認後、ChatGPTへDMMで発行された広告HTMLを渡し、各スロットへ設定します。
+const dmmDoujinWidget = {
+  provider: 'dmm-widget',
+  desktopId: '1e3cfaeeb93fd3fc35adca4080f0e79d',
+  mobileId: '531dff1a4c72ec1b914fb929bc6f4882',
+}
+
 export const affiliateAds = {
-  enabled: false,
+  enabled: true,
   disclosure:
-    '当サイトはアフィリエイト広告を利用しています。広告を経由して商品・サービスが購入された場合、当サイトに報酬が発生することがあります。',
+    '当サイトは18歳以上の方を対象としたアフィリエイト広告を利用しています。広告を経由して商品・サービスが購入された場合、当サイトに報酬が発生することがあります。',
   slots: {
     homePrimary: {
-      enabled: false,
-      html: '',
+      enabled: true,
+      ...dmmDoujinWidget,
     },
     homeSecondary: {
       enabled: false,
-      html: '',
+      ...dmmDoujinWidget,
     },
     gachaList: {
-      enabled: false,
-      html: '',
+      enabled: true,
+      ...dmmDoujinWidget,
     },
     gachaDetail: {
-      enabled: false,
-      html: '',
+      enabled: true,
+      ...dmmDoujinWidget,
     },
     itemList: {
-      enabled: false,
-      html: '',
+      enabled: true,
+      ...dmmDoujinWidget,
     },
     itemDetail: {
-      enabled: false,
-      html: '',
+      enabled: true,
+      ...dmmDoujinWidget,
     },
   },
 }
@@ -39,7 +43,15 @@ export function getAffiliateAd(slotName) {
 
   const slot = affiliateAds.slots[slotName]
 
-  if (!slot?.enabled || !slot.html?.trim()) {
+  if (!slot?.enabled) {
+    return null
+  }
+
+  if (slot.provider === 'dmm-widget') {
+    return slot.desktopId && slot.mobileId ? slot : null
+  }
+
+  if (!slot.html?.trim()) {
     return null
   }
 
