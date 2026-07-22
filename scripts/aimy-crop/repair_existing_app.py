@@ -538,7 +538,11 @@ def _publish(payload: Dict[str, Any]) -> Dict[str, Any]:
         if item_id in submitted_existing_ids:
             raise AppError(f"既存アイテムが重複しています: {item_id}")
         submitted_existing_ids.append(item_id)
+        name = str(submitted.get("name", "")).strip()
+        if not name:
+            raise AppError(f"既存アイテムの名前が空です: {item_id}")
         existing = dict(existing_by_id[item_id])
+        existing["name"] = name
         existing["category"] = category
         normalized_items.append(existing)
 

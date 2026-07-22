@@ -42,7 +42,7 @@
     .details h3 { margin: 0 0 5px; font-size: 17px; }
     .details p { margin: 3px 0; }
     .details select { min-width: 0; width: 100%; }
-    .details input[type=text] { width: 100%; padding: 10px 11px; border: 1px solid #b9c1cb; border-radius: 9px; font: inherit; }
+    .details input[type=text], .bulk-name input[type=text] { width: 100%; padding: 10px 11px; border: 1px solid #b9c1cb; border-radius: 9px; font: inherit; }
     .new-item { background: #f0f8ff; border-color: #8ebde8; }
     .kept-item { background: #f3f8ef; border-color: #9abb82; }
     .new-badge { display: inline-block; margin-bottom: 7px; padding: 4px 8px; border-radius: 999px; background: #1972c9; color: #fff; font-size: 12px; font-weight: 800; }
@@ -71,6 +71,9 @@
     .manual-source-wrap { max-height: 68vh; margin-top: 14px; overflow: auto; border: 2px solid #b7a3df; border-radius: 12px; background: #e9edf2; cursor: crosshair; }
     .manual-source-wrap img { display: block; width: 100%; height: auto; }
     .manual-help { padding: 11px 13px; border-radius: 10px; background: #f1ecff; color: #4c3479; }
+    .bulk-name { margin-top: 14px; padding: 14px; border-radius: 12px; background: #f6f1ff; border: 1px solid #cbb8e8; }
+    .bulk-name h3 { margin: 0 0 10px; }
+    .bulk-name .controls label { flex: 1 1 240px; }
     @media (max-width: 850px) {
       .summary { grid-template-columns: 1fr; }
       .item { grid-template-columns: 45px 1fr 1fr; align-items: start; }
@@ -114,6 +117,19 @@
 
     <div id="countWarning" class="danger-box hidden"></div>
     <p><button id="appendManualButton" type="button" class="secondary">末尾へ未検出画像を手動追加</button></p>
+    <div class="bulk-name">
+      <h3>アイテム名の一括置換（任意）</h3>
+      <div class="controls">
+        <label>置換前
+          <input id="nameFindInput" type="text" placeholder="例：春うららの">
+        </label>
+        <label>置換後
+          <input id="nameReplaceInput" type="text" placeholder="例：錆多の">
+        </label>
+        <button id="nameReplaceButton" type="button">該当名を置換</button>
+      </div>
+      <div id="nameReplaceStatus" class="status" aria-live="polite"></div>
+    </div>
     <div id="items" class="items"></div>
     <div id="excludedPanel" class="excluded hidden">
       <h3>除外した候補</h3>
@@ -499,8 +515,21 @@
           cancel.addEventListener('click', () => cancelAddedItem(itemIndex));
           details.append(badge, nameLabel, fieldRow, cancel);
         } else {
-          const name = document.createElement('h3');
-          name.textContent = item.name;
+          const nameLabel = document.createElement('label');
+          nameLabel.textContent = 'アイテム名（編集可能）';
+          const nameInput = document.createElement('input');
+          nameInput.type = 'text';
+          nameInput.value = item.name;
+          nameInput.addEventListener('input', () => {
+            item.name = nameInput.value;
+            state.checks[itemIndex] = false;
+            if (checkbox) {
+              checkbox.checked = false;
+              checkbox.disabled = !item.name.trim() || (!candidate && !item.keepCurrentImage);
+            }
+            updateProgress();
+          });
+          nameLabel.appendChild(nameInput);
           const rarity = document.createElement('p');
           rarity.textContent = `レアリティ：${item.rarity}`;
           const itemId = document.createElement('p');
@@ -513,7 +542,7 @@
             ? '現在画像を維持中：新候補を使う状態に戻す'
             : '現在画像を維持して、この候補を次の行へ送る';
           keep.addEventListener('click', () => toggleKeepCurrentImage(itemIndex));
-          details.append(name, rarity, itemId, categorySelect(item, itemIndex), keep);
+          details.append(nameLabel, rarity, itemId, categorySelect(item, itemIndex), keep);
         }
         const label = document.createElement('label');
         label.className = 'check';
@@ -521,7 +550,7 @@
         checkbox.type = 'checkbox';
         checkbox.checked = Boolean(state.checks[itemIndex]);
         const imageReady = Boolean(candidate) || Boolean(item.keepCurrentImage);
-        checkbox.disabled = !imageReady || (item.isNew && !item.name.trim());
+        checkbox.disabled = !imageReady || !item.name.trim();
         checkbox.addEventListener('change', () => {
           state.checks[itemIndex] = checkbox.checked;
           updateProgress();
@@ -589,6 +618,26 @@
   });
 
   $('appendManualButton').addEventListener('click', () => openManualCrop(''));
+  $('nameReplaceButton').addEventListener('click', () => {
+    if (!state.result) return;
+    const before = $('nameFindInput').value;
+    const after = $('nameReplaceInput').value;
+    if (!before) {
+      setStatus($('nameReplaceStatus'), '置換前の文字を入力してください。', true);
+      return;
+    }
+    let changed = 0;
+    state.result.items.forEach(item => {
+      if (!item.name.includes(before)) return;
+      item.name = item.name.split(before).join(after);
+      changed += 1;
+    });
+    resetChecks();
+    renderItems();
+    setStatus($('nameReplaceStatus'), changed
+      ? `${changed}件の名前を置換しました。各行を確認してください。`
+      : '一致するアイテム名はありませんでした。', !changed);
+  });
   $('manualCloseButton').addEventListener('click', () => $('manualDialog').close());
   $('manualSourceImage').addEventListener('click', async event => {
     if (!state.result) return;
