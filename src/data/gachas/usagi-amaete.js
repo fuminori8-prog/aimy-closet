@@ -23,11 +23,11 @@ const gacha = {
     { id: 'usagi-amaete-fuwafuwa-amikomi-bob-black', rarity: 'SSR', category: '髪型', name: 'ふわふわ編み込みボブ(黒)', image: '/images/items/usagi-amaete/11.png' },
     { id: 'usagi-amaete-fuwafuwa-half-twintail-cream', rarity: 'SSR', category: '髪型', name: 'ふわふわハーフツインテ(クリーム)', image: '/images/items/usagi-amaete/12.png' },
     { id: 'usagi-amaete-fuwafuwa-half-twintail-pink', rarity: 'SSR', category: '髪型', name: 'ふわふわハーフツインテ(ピンク)', image: '/images/items/usagi-amaete/13.png' },
-    { id: 'usagi-amaete-lace-bunny-katyusha', rarity: 'SR', category: '髪飾り', name: 'レースバニーカチューシャ', image: '/images/items/usagi-amaete/14.png' },
-    { id: 'usagi-amaete-usamimi-ribbon-katyusha', rarity: 'SR', category: '髪飾り', name: 'うさ耳リボンカチューシャ', image: '/images/items/usagi-amaete/15.png' },
-    { id: 'usagi-amaete-usagi-ribbon-hairpin', rarity: 'SR', category: '髪飾り', name: 'うさぎちゃんのリボンヘアピン', image: '/images/items/usagi-amaete/16.png' },
-    { id: 'usagi-amaete-sabishinbo-heart-earring', rarity: 'SR', category: '耳飾り', name: '寂しんぼのハートイヤリング', image: '/images/items/usagi-amaete/17.png' },
-    { id: 'usagi-amaete-amaenbo-heart-earring', rarity: 'SR', category: '耳飾り', name: '甘えんぼのハートイヤリング', image: '/images/items/usagi-amaete/18.png' },
+    { id: 'usagi-amaete-lace-bunny-katyusha', rarity: 'SR', category: 'あたま', name: 'レースバニーカチューシャ', image: '/images/items/usagi-amaete/14.png' },
+    { id: 'usagi-amaete-usamimi-ribbon-katyusha', rarity: 'SR', category: 'あたま', name: 'うさ耳リボンカチューシャ', image: '/images/items/usagi-amaete/15.png' },
+    { id: 'usagi-amaete-usagi-ribbon-hairpin', rarity: 'SR', category: 'あたま', name: 'うさぎちゃんのリボンヘアピン', image: '/images/items/usagi-amaete/16.png' },
+    { id: 'usagi-amaete-sabishinbo-heart-earring', rarity: 'SR', category: 'ピアス', name: '寂しんぼのハートイヤリング', image: '/images/items/usagi-amaete/17.png' },
+    { id: 'usagi-amaete-amaenbo-heart-earring', rarity: 'SR', category: 'ピアス', name: '甘えんぼのハートイヤリング', image: '/images/items/usagi-amaete/18.png' },
   ],
 }
 

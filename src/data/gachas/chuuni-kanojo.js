@@ -19,7 +19,7 @@ const gacha = {
     { id: 'chuuni-kanojo-maso-roll-twintail-gold', rarity: 'SSR', category: '髪型', name: '魔装のロールツインテ(金)', image: '/images/items/chuuni-kanojo/07.png' },
     { id: 'chuuni-kanojo-kakiage-bob-brown', rarity: 'SSR', category: '髪型', name: 'かき上げボブ(茶)', image: '/images/items/chuuni-kanojo/08.png' },
     { id: 'chuuni-kanojo-maso-roll-twintail-red-brown', rarity: 'SSR', category: '髪型', name: '魔装のロールツインテ(赤茶)', image: '/images/items/chuuni-kanojo/09.png' },
-    { id: 'chuuni-kanojo-fuin-gantai', rarity: 'SR', category: '髪飾り', name: '封印の眼帯', image: '/images/items/chuuni-kanojo/10.png' },
+    { id: 'chuuni-kanojo-fuin-gantai', rarity: 'SR', category: 'あたま', name: '封印の眼帯', image: '/images/items/chuuni-kanojo/10.png' },
     { id: 'chuuni-kanojo-kumaari-ochitsuki-nekome-blue', rarity: 'SR', category: '目', name: 'クマ有り 落ち着き猫目(青)', image: '/images/items/chuuni-kanojo/11.png' },
     { id: 'chuuni-kanojo-saikyo-kumasan', rarity: 'SR', category: 'チェキフレーム', name: '最強クマさん', image: '/images/items/chuuni-kanojo/12.png' },
     { id: 'chuuni-kanojo-chuunibyou-status-josei-ver', rarity: 'SR', category: 'チェキフレーム', name: '厨二病ステータス!?女性ver', image: '/images/items/chuuni-kanojo/13.png' },

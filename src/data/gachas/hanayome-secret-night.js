@@ -20,7 +20,7 @@ const gacha = {
     { id: 'hanayome-secret-night-hanayaka-long-white', rarity: 'SSR', category: '髪型', name: '華やかロングヘア(白)', image: '/images/items/hanayome-secret-night/08.png' },
     { id: 'hanayome-secret-night-suzushige-tsuyayaka-up-light-brown', rarity: 'SSR', category: '髪型', name: '涼しげ艶やかアップヘアー(薄茶)', image: '/images/items/hanayome-secret-night/09.png' },
     { id: 'hanayome-secret-night-fuwafuwa-matomegami-light-brown', rarity: 'SSR', category: '髪型', name: 'ふわふわまとめ髪(薄茶)', image: '/images/items/hanayome-secret-night/10.png' },
-    { id: 'hanayome-secret-night-junshin-veil', rarity: 'SR', category: '髪飾り', name: '純心のベール', image: '/images/items/hanayome-secret-night/11.png' },
+    { id: 'hanayome-secret-night-junshin-veil', rarity: 'SR', category: 'あたま', name: '純心のベール', image: '/images/items/hanayome-secret-night/11.png' },
     { id: 'hanayome-secret-night-junpaku-hadaka-apron', rarity: 'SR', category: '衣装', name: '純白の裸エプロン', image: '/images/items/hanayome-secret-night/12.png' },
     { id: 'hanayome-secret-night-himitsu-no-cheek', rarity: 'SR', category: 'メイク', name: '秘密のチーク', image: '/images/items/hanayome-secret-night/13.png' },
     { id: 'hanayome-secret-night-hoteri-cheek', rarity: 'SR', category: 'メイク', name: 'ほてりチーク', image: '/images/items/hanayome-secret-night/14.png' },

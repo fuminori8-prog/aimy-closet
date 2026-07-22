@@ -21,7 +21,7 @@ const gacha = {
     { id: 'haruurara-mitsuami-ring-brown', rarity: 'SSR', category: '髪型', name: '春うららの三つ編みリング(茶)', image: '/images/items/haruurara/09.png' },
     { id: 'haruurara-mekakure-kurage-hair-white-green', rarity: 'SSR', category: '髪型', name: '春うららの目隠れくらげヘアー(白緑)', image: '/images/items/haruurara/10.png' },
     { id: 'haruurara-kurukuru-long-brown', rarity: 'SSR', category: '髪型', name: '春うららのくるくるロング(茶)', image: '/images/items/haruurara/11.png' },
-    { id: 'haruurara-ribbon-hairpin', rarity: 'SR', category: '髪飾り', name: '春うららのリボンヘアピン', image: '/images/items/haruurara/12.png' },
+    { id: 'haruurara-ribbon-hairpin', rarity: 'SR', category: 'あたま', name: '春うららのリボンヘアピン', image: '/images/items/haruurara/12.png' },
     { id: 'haruurara-haruiro-cheek', rarity: 'SR', category: 'メイク', name: '春色チーク', image: '/images/items/haruurara/13.png' },
     { id: 'haruurara-suzuran-girl', rarity: 'SR', category: 'チェキフレーム', name: 'すずらんガール', image: '/images/items/haruurara/14.png' },
     { id: 'haruurara-sakura-maichiru-odekake', rarity: 'SR', category: 'チェキフレーム', name: '桜舞い散るおでかけ', image: '/images/items/haruurara/15.png' },

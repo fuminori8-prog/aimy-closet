@@ -21,10 +21,10 @@ const gacha = {
     { id: 'kimi-no-tokubetsu-ribbon-amikomi-half-up-gold-black', rarity: 'SSR', category: '髪型', name: 'リボン編み込みハーフアップ(金黒)' , image: '/images/items/kimi-no-tokubetsu/09.png'},
     { id: 'kimi-no-tokubetsu-ribbon-amikomi-half-up-navy-pink', rarity: 'SSR', category: '髪型', name: 'リボン編み込みハーフアップ(紺ピンク)' , image: '/images/items/kimi-no-tokubetsu/10.png'},
 
-    { id: 'kimi-no-tokubetsu-ribbon-pearl-hairpin', rarity: 'SR', category: '髪飾り', name: 'リボンパールヘアピン' , image: '/images/items/kimi-no-tokubetsu/11.png'},
-    { id: 'kimi-no-tokubetsu-osakana-hairpin', rarity: 'SR', category: '髪飾り', name: 'おさかなヘアピン' , image: '/images/items/kimi-no-tokubetsu/12.png'},
+    { id: 'kimi-no-tokubetsu-ribbon-pearl-hairpin', rarity: 'SR', category: 'あたま', name: 'リボンパールヘアピン' , image: '/images/items/kimi-no-tokubetsu/11.png'},
+    { id: 'kimi-no-tokubetsu-osakana-hairpin', rarity: 'SR', category: 'あたま', name: 'おさかなヘアピン' , image: '/images/items/kimi-no-tokubetsu/12.png'},
     { id: 'kimi-no-tokubetsu-salopette-parka', rarity: 'SR', category: '衣装', name: 'サロペットパーカー' , image: '/images/items/kimi-no-tokubetsu/13.png'},
-    { id: 'kimi-no-tokubetsu-usagi-ribbon-pierce', rarity: 'SR', category: '耳飾り', name: 'うさぎリボンピアス' , image: '/images/items/kimi-no-tokubetsu/14.png'},
+    { id: 'kimi-no-tokubetsu-usagi-ribbon-pierce', rarity: 'SR', category: 'ピアス', name: 'うさぎリボンピアス' , image: '/images/items/kimi-no-tokubetsu/14.png'},
     { id: 'kimi-no-tokubetsu-sazanami-strawberry', rarity: 'SR', category: 'チェキフレーム', name: 'さざ波の一枚 ストロベリー' , image: '/images/items/kimi-no-tokubetsu/15.png'},
     { id: 'kimi-no-tokubetsu-aimystyle-july', rarity: 'SR', category: 'チェキフレーム', name: '月刊AIMYSTYLE7月号' , image: '/images/items/kimi-no-tokubetsu/16.png'},
     { id: 'kimi-no-tokubetsu-natsu-no-omoide', rarity: 'SR', category: 'チェキフレーム', name: '夏の思い出' , image: '/images/items/kimi-no-tokubetsu/17.png'},

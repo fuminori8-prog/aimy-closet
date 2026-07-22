@@ -72,15 +72,15 @@ export function getSubCategory(category) {
   const value = String(category || '').trim()
 
   if (['あたま', '髪飾り'].includes(value)) {
-    return '髪飾り'
+    return 'あたま'
   }
 
   if (['めがね', 'メガネ'].includes(value)) {
-    return 'メガネ'
+    return 'めがね'
   }
 
   if (['ピアス', '耳飾り', '耳'].includes(value)) {
-    return '耳飾り'
+    return 'ピアス'
   }
 
   if (value === 'メイク') {
