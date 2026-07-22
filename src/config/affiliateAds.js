@@ -14,7 +14,7 @@ export const affiliateAds = {
       ...dmmDoujinWidget,
     },
     homeSecondary: {
-      enabled: false,
+      enabled: true,
       ...dmmDoujinWidget,
     },
     gachaList: {
@@ -30,6 +30,10 @@ export const affiliateAds = {
       ...dmmDoujinWidget,
     },
     itemDetail: {
+      enabled: true,
+      ...dmmDoujinWidget,
+    },
+    footer: {
       enabled: true,
       ...dmmDoujinWidget,
     },

@@ -1,5 +1,5 @@
 import '../App.css'
-import { useEffect, useMemo, useState } from 'react'
+import { Fragment, useEffect, useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
@@ -18,6 +18,9 @@ const SUB_CATEGORY_OPTIONS = {
   アクセサリー: ['あたま', 'めがね', 'ピアス'],
   パーツ: ['メイク', '目', '口', '鼻', 'まゆげ'],
 }
+
+const ITEM_INLINE_AD_INTERVAL = 15
+const ITEM_INLINE_AD_LIMIT = 5
 
 function ItemList() {
   const [searchParams] = useSearchParams()
@@ -190,17 +193,30 @@ function ItemList() {
 
           {filteredItems.length > 0 ? (
             <div className="card-grid item-grid">
-              {filteredItems.map((item) => {
+              {filteredItems.map((item, index) => {
                 const categoryLabel = item.subCategory
                   ? `${item.normalizedCategory}：${item.subCategory}`
                   : item.normalizedCategory
 
+                const inlineAdNumber = (index + 1) / ITEM_INLINE_AD_INTERVAL
+                const showInlineAd =
+                  Number.isInteger(inlineAdNumber) &&
+                  inlineAdNumber <= ITEM_INLINE_AD_LIMIT &&
+                  index < filteredItems.length - 1
+
                 return (
-                  <GachaItemCard
-                    key={item.id}
-                    item={{ ...item, category: categoryLabel }}
-                    subtext={`ガチャ: ${item.gachaTitle}`}
-                  />
+                  <Fragment key={item.id}>
+                    <GachaItemCard
+                      item={{ ...item, category: categoryLabel }}
+                      subtext={`ガチャ: ${item.gachaTitle}`}
+                    />
+
+                    {showInlineAd ? (
+                      <div className="grid-inline-ad">
+                        <AdBanner slot="itemList" />
+                      </div>
+                    ) : null}
+                  </Fragment>
                 )
               })}
             </div>

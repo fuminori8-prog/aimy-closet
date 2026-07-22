@@ -1,5 +1,5 @@
 import '../App.css'
-import { useEffect, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import Header from '../components/Header'
 import AdBanner from '../components/AdBanner'
 import Footer from '../components/Footer'
@@ -50,6 +50,7 @@ function GachaDetail() {
 
   const hasLineup = gacha.items?.length > 0
   const status = getGachaStatus(gacha, currentTime)
+  const groupedItems = groupItemsByCategory(gacha.items || [])
 
   const pageTitle = `${gacha.title}｜排出アイテム・開催期間｜Aimy Closet`
 
@@ -136,23 +137,30 @@ function GachaDetail() {
           <section className="lineup-section">
             <h2>アイテムラインナップ</h2>
 
-            {groupItemsByCategory(gacha.items).map(([category, items]) => (
-              <div key={category} className="lineup-group">
-                <h3>{category}</h3>
+            {groupedItems.map(([category, items], groupIndex) => (
+              <Fragment key={category}>
+                <div className="lineup-group">
+                  <h3>{category}</h3>
 
-                <div className="card-grid item-grid">
-                  {items.map((item) => (
-                    <GachaItemCard
-                      key={item.id}
-                      id={item.id}
-                      name={item.name}
-                      rarity={item.rarity}
-                      category={item.category}
-                      image={item.image}
-                    />
-                  ))}
+                  <div className="card-grid item-grid">
+                    {items.map((item) => (
+                      <GachaItemCard
+                        key={item.id}
+                        id={item.id}
+                        name={item.name}
+                        rarity={item.rarity}
+                        category={item.category}
+                        image={item.image}
+                      />
+                    ))}
+                  </div>
                 </div>
-              </div>
+
+                {(groupIndex + 1) % 2 === 0 &&
+                groupIndex < groupedItems.length - 1 ? (
+                  <AdBanner slot="gachaDetail" />
+                ) : null}
+              </Fragment>
             ))}
           </section>
         ) : (
@@ -177,7 +185,6 @@ function GachaDetail() {
         </div>
       </main>
 
-      <AdBanner text="広告バナー 728×90" />
       <Footer />
     </div>
   )
