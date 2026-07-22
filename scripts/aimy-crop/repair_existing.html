@@ -27,7 +27,7 @@
     button.secondary { background: #eef2f7; color: #2e3948; border: 1px solid #cbd2dc; }
     button.publish { background: #bd2e37; padding: 14px 20px; }
     .status { min-height: 26px; margin-top: 12px; white-space: pre-wrap; line-height: 1.55; }
-    .summary { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 16px; }
+    .summary { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-top: 16px; }
     .summary > div { background: #f2f5f8; border-radius: 12px; padding: 13px; }
     .summary strong { display: block; font-size: 25px; margin-top: 3px; }
     .folder { display: block; padding: 10px 12px; background: #f1f3f6; border-radius: 9px; word-break: break-all; font-size: 13px; }
@@ -42,9 +42,15 @@
     .details h3 { margin: 0 0 5px; font-size: 17px; }
     .details p { margin: 3px 0; }
     .details select { min-width: 0; width: 100%; }
+    .details input[type=text] { width: 100%; padding: 10px 11px; border: 1px solid #b9c1cb; border-radius: 9px; font: inherit; }
+    .new-item { background: #f0f8ff; border-color: #8ebde8; }
+    .new-badge { display: inline-block; margin-bottom: 7px; padding: 4px 8px; border-radius: 999px; background: #1972c9; color: #fff; font-size: 12px; font-weight: 800; }
+    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-top: 8px; }
     .check { display: flex; gap: 9px; align-items: flex-start; margin-top: 12px; padding: 11px; background: #f2f7ff; border-radius: 10px; cursor: pointer; }
     .check input { width: 20px; height: 20px; margin: 0; flex: none; }
     .candidate-action { width: 100%; margin-top: 7px; padding: 8px 10px; background: #fff0f0; color: #9b2730; border: 1px solid #dfa6aa; font-size: 13px; }
+    .candidate-add { background: #e9f5ff; color: #145d9e; border-color: #91bfe7; }
+    .cancel-add { margin-top: 10px; background: #6a7480; padding: 8px 11px; }
     .excluded { margin-top: 18px; padding: 15px; border-radius: 12px; background: #f1f3f6; }
     .excluded h3 { margin: 0 0 10px; }
     .excluded-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)); gap: 10px; }
@@ -65,11 +71,11 @@
 <body>
 <main>
   <h1>既存ガチャ画像修正</h1>
-  <p class="muted">手動で重複を除いた元スクショを、既存アイテムへ上から順に1対1で対応させます。</p>
+  <p class="muted">元スクショから検出した候補を上から順に対応させ、不足しているアイテムはその位置へ新規登録できます。</p>
 
   <section class="panel safe">
     <h2>安全について</h2>
-    <p>この画面を開いたり「読み取る」を押しただけでは、サイト・GitHub・現在のアイテム画像は変更されません。重複の自動削除もしません。</p>
+    <p>この画面を開いたり「読み取る」を押しただけでは、サイト・GitHub・現在のアイテム画像は変更されません。不足アイテムの追加と、実際の重複候補の除外は、あなたが画面上で確定します。</p>
   </section>
 
   <section class="panel">
@@ -89,7 +95,8 @@
     <ul id="sourceList" class="source-list"></ul>
 
     <div class="summary">
-      <div>登録済みアイテム数<strong id="expectedCount">0</strong></div>
+      <div>元の登録数<strong id="expectedCount">0</strong></div>
+      <div>修正後の登録数<strong id="draftCount">0</strong></div>
       <div>使用候補 / 全検出<strong id="candidateCount">0</strong></div>
       <div>件数判定<strong id="countResult">―</strong></div>
     </div>
@@ -203,7 +210,36 @@
   }
 
   function resetChecks() {
-    state.checks = Array(state.result?.expectedCount || 0).fill(false);
+    state.checks = Array(state.result?.items?.length || 0).fill(false);
+  }
+
+  function addCandidateAsItem(rowIndex, candidate) {
+    const current = state.result.items[rowIndex];
+    const previous = state.result.items[rowIndex - 1];
+    const estimated = candidate?.estimatedRarity;
+    const rarity = ['SSR', 'SR', 'NR', 'R', 'N'].includes(estimated)
+      ? estimated
+      : (current?.rarity || previous?.rarity || 'SR');
+    const category = current?.category || previous?.category || state.categories[0];
+    state.result.items.splice(rowIndex, 0, {
+      id: '',
+      clientKey: `new-${Date.now()}-${Math.random().toString(16).slice(2)}`,
+      isNew: true,
+      name: '',
+      rarity,
+      category,
+      hasMotion: false,
+      currentImageUrl: '',
+    });
+    resetChecks();
+    renderItems();
+  }
+
+  function cancelAddedItem(rowIndex) {
+    if (!state.result.items[rowIndex]?.isNew) return;
+    state.result.items.splice(rowIndex, 1);
+    resetChecks();
+    renderItems();
   }
 
   function excludeCandidate(candidateIndex) {
@@ -244,17 +280,18 @@
   function updateCountStatus() {
     if (!state.result) return false;
     const activeCount = activeCandidates().length;
-    const expected = state.result.expectedCount;
-    const matches = activeCount === expected;
+    const draftCount = state.result.items.length;
+    const matches = activeCount === draftCount;
+    $('draftCount').textContent = draftCount;
     $('candidateCount').textContent = `${activeCount} / ${state.result.candidateCount}`;
     $('countResult').textContent = matches ? '一致' : '不一致';
     $('countResult').style.color = matches ? '#14723c' : '#a42d35';
     const warning = $('countWarning');
     warning.classList.toggle('hidden', matches);
-    if (activeCount > expected) {
-      warning.textContent = `登録は${expected}件、使用候補は${activeCount}件です。重複している画像を見つけて「候補から除外」を押してください。あと${activeCount - expected}件の除外が必要です。`;
-    } else if (activeCount < expected) {
-      warning.textContent = `登録は${expected}件、使用候補は${activeCount}件です。除外しすぎています。「除外した候補」から${expected - activeCount}件を元に戻してください。`;
+    if (activeCount > draftCount) {
+      warning.textContent = `修正後登録は${draftCount}件、使用候補は${activeCount}件です。登録されていない候補では「この候補を新規登録」を押してください。実際の重複だけは「この候補を除外」を使います。差は${activeCount - draftCount}件です。`;
+    } else if (activeCount < draftCount) {
+      warning.textContent = `修正後登録は${draftCount}件、使用候補は${activeCount}件です。除外しすぎた候補を元に戻すか、誤って追加したアイテムを取り消してください。差は${draftCount - activeCount}件です。`;
     }
     return matches;
   }
@@ -262,7 +299,7 @@
   function updateProgress() {
     if (!state.result) return;
     const checked = state.checks.filter(Boolean).length;
-    const total = state.result.expectedCount;
+    const total = state.result.items.length;
     const countMatches = updateCountStatus();
     $('checkProgress').textContent = `${checked} / ${total}件確認`;
     $('publishButton').disabled = !countMatches || checked !== total;
@@ -272,7 +309,7 @@
     const container = $('items');
     container.innerHTML = '';
     const candidates = activeCandidates();
-    const countMatches = candidates.length === state.result.expectedCount;
+    const countMatches = candidates.length === state.result.items.length;
     const max = Math.max(state.result.items.length, candidates.length);
     for (let index = 0; index < max; index += 1) {
       const item = state.result.items[index];
@@ -284,13 +321,21 @@
       number.className = 'number';
       number.textContent = String(index + 1).padStart(2, '0');
       row.appendChild(number);
-      row.appendChild(imageBox(item?.currentImageUrl, '現在のサイト画像'));
+      row.appendChild(imageBox(item?.currentImageUrl, item?.isNew ? '新規追加（現在画像なし）' : '現在のサイト画像'));
       const candidateBox = imageBox(
         candidate?.imageUrl,
         candidate ? `候補${String(candidate.index).padStart(2, '0')}：${candidate.source}` : '新画像なし',
         candidate?.sourceUrl,
       );
       if (candidate) {
+        if (!item?.isNew) {
+          const add = document.createElement('button');
+          add.type = 'button';
+          add.className = 'candidate-action candidate-add';
+          add.textContent = 'この候補を新規登録';
+          add.addEventListener('click', () => addCandidateAsItem(index, candidate));
+          candidateBox.appendChild(add);
+        }
         const exclude = document.createElement('button');
         exclude.type = 'button';
         exclude.className = 'candidate-action';
@@ -303,32 +348,85 @@
       const details = document.createElement('div');
       details.className = 'details';
       if (item) {
-        const name = document.createElement('h3');
-        name.textContent = item.name;
-        const rarity = document.createElement('p');
-        rarity.textContent = `レアリティ：${item.rarity}`;
-        const itemId = document.createElement('p');
-        itemId.className = 'muted';
-        itemId.textContent = item.id;
-        details.append(name, rarity, itemId, categorySelect(item, index));
+        if (item.isNew) row.classList.add('new-item');
+        let checkbox;
+        if (item.isNew) {
+          const badge = document.createElement('span');
+          badge.className = 'new-badge';
+          badge.textContent = '新規追加';
+          const nameLabel = document.createElement('label');
+          nameLabel.textContent = 'アイテム名（必須）';
+          const nameInput = document.createElement('input');
+          nameInput.type = 'text';
+          nameInput.value = item.name;
+          nameInput.placeholder = '元スクショを開いて正式名を入力';
+          nameInput.addEventListener('input', () => {
+            item.name = nameInput.value;
+            state.checks[index] = false;
+            if (checkbox) {
+              checkbox.checked = false;
+              checkbox.disabled = !candidate || !countMatches || !item.name.trim();
+            }
+            updateProgress();
+          });
+          nameLabel.appendChild(nameInput);
+
+          const fieldRow = document.createElement('div');
+          fieldRow.className = 'field-row';
+          const rarityLabel = document.createElement('label');
+          rarityLabel.textContent = 'レアリティ';
+          const raritySelect = document.createElement('select');
+          ['SSR', 'SR', 'NR', 'R', 'N'].forEach(value => {
+            const option = document.createElement('option');
+            option.value = value;
+            option.textContent = value;
+            option.selected = item.rarity === value;
+            raritySelect.appendChild(option);
+          });
+          raritySelect.addEventListener('change', () => {
+            item.rarity = raritySelect.value;
+            state.checks[index] = false;
+            renderItems();
+          });
+          rarityLabel.appendChild(raritySelect);
+          fieldRow.append(rarityLabel, categorySelect(item, index));
+
+          const cancel = document.createElement('button');
+          cancel.type = 'button';
+          cancel.className = 'cancel-add';
+          cancel.textContent = 'この追加を取り消す';
+          cancel.addEventListener('click', () => cancelAddedItem(index));
+          details.append(badge, nameLabel, fieldRow, cancel);
+        } else {
+          const name = document.createElement('h3');
+          name.textContent = item.name;
+          const rarity = document.createElement('p');
+          rarity.textContent = `レアリティ：${item.rarity}`;
+          const itemId = document.createElement('p');
+          itemId.className = 'muted';
+          itemId.textContent = item.id;
+          details.append(name, rarity, itemId, categorySelect(item, index));
+        }
         const label = document.createElement('label');
         label.className = 'check';
-        const checkbox = document.createElement('input');
+        checkbox = document.createElement('input');
         checkbox.type = 'checkbox';
         checkbox.checked = Boolean(state.checks[index]);
-        checkbox.disabled = !candidate || !countMatches;
+        checkbox.disabled = !candidate || !countMatches || (item.isNew && !item.name.trim());
         checkbox.addEventListener('change', () => {
           state.checks[index] = checkbox.checked;
           updateProgress();
         });
         const text = document.createElement('span');
-        text.textContent = '新画像がこのアイテム名・カテゴリと一致している';
+        text.textContent = item.isNew
+          ? '追加する名前・レアリティ・カテゴリと画像が一致している'
+          : '新画像がこのアイテム名・カテゴリと一致している';
         label.append(checkbox, text);
         details.appendChild(label);
       } else {
         const extra = document.createElement('p');
         extra.className = 'missing';
-        extra.textContent = '登録アイテムより多く検出されています。元スクショの重複を確認してください。';
+        extra.textContent = '未登録の候補です。実在するアイテムなら「この候補を新規登録」を押してください。実際の重複なら除外してください。';
         details.appendChild(extra);
       }
       row.appendChild(details);
@@ -380,7 +478,8 @@
 
   $('publishButton').addEventListener('click', async () => {
     if (!state.result) return;
-    const confirmed = confirm(`「${state.result.title}」の確認済み画像とカテゴリだけをGitHubへ反映します。よろしいですか？`);
+    const addedCount = state.result.items.filter(item => item.isNew).length;
+    const confirmed = confirm(`「${state.result.title}」の確認済み登録・画像・カテゴリをGitHubへ反映します。新規追加は${addedCount}件です。よろしいですか？`);
     if (!confirmed) return;
     const button = $('publishButton');
     button.disabled = true;
@@ -394,7 +493,14 @@
           slug: state.result.slug,
           checks: state.checks,
           candidateIndexes: activeCandidates().map(candidate => candidate.index),
-          items: state.result.items.map(item => ({ id: item.id, category: item.category })),
+          items: state.result.items.map(item => ({
+            id: item.id,
+            clientKey: item.clientKey,
+            isNew: Boolean(item.isNew),
+            name: item.name,
+            rarity: item.rarity,
+            category: item.category,
+          })),
         }),
       });
       const result = data.result;

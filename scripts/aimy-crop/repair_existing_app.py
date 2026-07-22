@@ -2,9 +2,9 @@
 """Aimy Closet: repair item-image mappings for an existing gacha.
 
 This local-only tool reads screenshots already stored in
-public/images/gacha/<slug>.  It deliberately performs no automatic duplicate
-removal.  The user can exclude duplicate candidates, then map the remaining
-cards to the existing item list in filename/top-to-bottom order.
+public/images/gacha/<slug>. It deliberately performs no automatic duplicate
+removal. The user can insert missing item records at detected-card positions,
+or exclude only genuine duplicate candidates, before publishing the mapping.
 """
 
 from __future__ import annotations
@@ -51,7 +51,7 @@ STANDARD_CATEGORIES = [
 import sys
 
 sys.path.insert(0, str(SCRIPT_DIR))
-from detect_cards import _detect_boxes  # noqa: E402
+from detect_cards import _detect_boxes, _estimate_rarity  # noqa: E402
 
 
 class AppError(RuntimeError):
@@ -218,6 +218,7 @@ def _analyze(slug: str) -> Dict[str, Any]:
                         "source": source.name,
                         "sourceIndex": source_index,
                         "box": list(box),
+                        "estimatedRarity": _estimate_rarity(image, tuple(box)),
                         "imageUrl": f"/candidate/{token}/{output_name}",
                         "sourceUrl": f"/source/{urllib.parse.quote(slug)}/{urllib.parse.quote(source.name)}",
                     }
@@ -258,6 +259,8 @@ def _analyze(slug: str) -> Dict[str, Any]:
                 "name": item.get("name", ""),
                 "rarity": item.get("rarity", ""),
                 "category": item.get("category", ""),
+                "hasMotion": bool(item.get("hasMotion", False)),
+                "isNew": False,
                 "currentImageUrl": f"/current/{urllib.parse.quote(slug)}/{urllib.parse.quote(filename)}",
             }
         )
@@ -277,28 +280,96 @@ def _analyze(slug: str) -> Dict[str, Any]:
     }
 
 
-def _replace_categories(data_path: Path, items: Sequence[Dict[str, Any]]) -> None:
-    text = data_path.read_text(encoding="utf-8")
-    for item in items:
-        item_id = str(item["id"])
-        category = str(item["category"])
-        id_match = re.search(r"\bid\s*:\s*(['\"])" + re.escape(item_id) + r"\1", text)
-        if not id_match:
-            raise AppError(f"データ内でアイテムIDを確認できません: {item_id}")
-        block_end = text.find("}", id_match.end())
-        if block_end < 0:
-            raise AppError(f"アイテムデータの終端を確認できません: {item_id}")
-        segment = text[id_match.start() : block_end]
-        category_match = re.search(r"(\bcategory\s*:\s*)(['\"])(.*?)\2", segment, flags=re.DOTALL)
-        if not category_match:
-            raise AppError(f"カテゴリ欄を確認できません: {item_id}")
-        replacement = f"{category_match.group(1)}{category_match.group(2)}{category}{category_match.group(2)}"
-        absolute_start = id_match.start() + category_match.start()
-        absolute_end = id_match.start() + category_match.end()
-        text = text[:absolute_start] + replacement + text[absolute_end:]
+def _js_string(value: Any) -> str:
+    return (
+        str(value)
+        .replace("\\", "\\\\")
+        .replace("'", "\\'")
+        .replace("\r", "")
+        .replace("\n", "\\n")
+    )
 
+
+def _items_array_span(text: str) -> Tuple[int, int]:
+    match = re.search(r"\bitems\s*:\s*\[", text)
+    if not match:
+        raise AppError("ガチャデータのitems配列が見つかりません。")
+    start = text.find("[", match.start())
+    depth = 0
+    quote = ""
+    escaped = False
+    line_comment = False
+    block_comment = False
+    index = start
+    while index < len(text):
+        char = text[index]
+        next_char = text[index + 1] if index + 1 < len(text) else ""
+        if line_comment:
+            if char == "\n":
+                line_comment = False
+            index += 1
+            continue
+        if block_comment:
+            if char == "*" and next_char == "/":
+                block_comment = False
+                index += 2
+            else:
+                index += 1
+            continue
+        if quote:
+            if escaped:
+                escaped = False
+            elif char == "\\":
+                escaped = True
+            elif char == quote:
+                quote = ""
+            index += 1
+            continue
+        if char in {"'", '"', "`"}:
+            quote = char
+            index += 1
+            continue
+        if char == "/" and next_char == "/":
+            line_comment = True
+            index += 2
+            continue
+        if char == "/" and next_char == "*":
+            block_comment = True
+            index += 2
+            continue
+        if char == "[":
+            depth += 1
+        elif char == "]":
+            depth -= 1
+            if depth == 0:
+                return start, index + 1
+        index += 1
+    raise AppError("ガチャデータのitems配列終端が見つかりません。")
+
+
+def _replace_items(data_path: Path, items: Sequence[Dict[str, Any]], slug: str) -> None:
+    text = data_path.read_text(encoding="utf-8")
+    start, end = _items_array_span(text)
+    lines = ["["]
+    for index, item in enumerate(items, start=1):
+        lines.extend(
+            [
+                "    {",
+                f"      id: '{_js_string(item['id'])}',",
+                f"      rarity: '{_js_string(item['rarity'])}',",
+                f"      category: '{_js_string(item['category'])}',",
+                f"      name: '{_js_string(item['name'])}',",
+                f"      image: '/images/items/{_js_string(slug)}/{index:02d}.png',",
+            ]
+        )
+        if item.get("hasMotion"):
+            lines.append("      hasMotion: true,")
+        lines.extend(["    },"])
+    lines.append("  ]")
+    replacement = "\n".join(lines)
+    updated = text[:start] + replacement + text[end:]
     temp_path = data_path.with_suffix(data_path.suffix + ".aimy-repair-tmp")
-    temp_path.write_text(text, encoding="utf-8")
+    temp_path.write_text(updated, encoding="utf-8")
     os.replace(temp_path, data_path)
 
 
@@ -326,11 +397,71 @@ def _publish(payload: Dict[str, Any]) -> Dict[str, Any]:
     if _source_signature(gacha, sources) != session["signature"]:
         raise AppError("確認後に元スクショまたはデータが変更されました。もう一度読み取ってください。")
 
-    expected = len(gacha.get("items", []))
+    original_items = gacha.get("items", [])
+    expected = len(original_items)
+    submitted_items = payload.get("items", [])
+    if not isinstance(submitted_items, list) or len(submitted_items) < expected:
+        raise AppError("既存アイテムが不足しています。既存登録は削除できません。")
+
+    existing_by_id = {str(item.get("id", "")): item for item in original_items}
+    original_ids = [str(item.get("id", "")) for item in original_items]
+    submitted_existing_ids: List[str] = []
+    normalized_items: List[Dict[str, Any]] = []
+    used_ids = set(existing_by_id)
+    used_client_keys: set[str] = set()
+    id_stamp = datetime.now().strftime("%Y%m%d%H%M%S")
+    added_count = 0
+    for submitted in submitted_items:
+        category = str(submitted.get("category", "")).strip()
+        if category not in STANDARD_CATEGORIES:
+            raise AppError(f"選択できないカテゴリです: {category}")
+        if submitted.get("isNew") is True:
+            client_key = str(submitted.get("clientKey", "")).strip()
+            name = str(submitted.get("name", "")).strip()
+            rarity = str(submitted.get("rarity", "")).strip().upper()
+            if not client_key or client_key in used_client_keys:
+                raise AppError("追加アイテムの識別情報が不正です。")
+            used_client_keys.add(client_key)
+            if not name:
+                raise AppError("追加アイテムの名前を入力してください。")
+            if rarity not in {"SSR", "SR", "NR", "R", "N"}:
+                raise AppError(f"追加アイテムのレアリティが不正です: {rarity}")
+            added_count += 1
+            suffix = added_count
+            item_id = f"{slug}-added-{id_stamp}-{suffix:02d}"
+            while item_id in used_ids:
+                suffix += 1
+                item_id = f"{slug}-added-{id_stamp}-{suffix:02d}"
+            used_ids.add(item_id)
+            normalized_items.append(
+                {
+                    "id": item_id,
+                    "rarity": rarity,
+                    "category": category,
+                    "name": name,
+                    "hasMotion": False,
+                }
+            )
+            continue
+
+        item_id = str(submitted.get("id", ""))
+        if item_id not in existing_by_id:
+            raise AppError(f"不明な既存アイテムIDです: {item_id}")
+        if item_id in submitted_existing_ids:
+            raise AppError(f"既存アイテムが重複しています: {item_id}")
+        submitted_existing_ids.append(item_id)
+        existing = dict(existing_by_id[item_id])
+        existing["category"] = category
+        normalized_items.append(existing)
+
+    if submitted_existing_ids != original_ids:
+        raise AppError("既存アイテムの不足または順序変更があります。追加以外の並び替えはできません。")
+
+    target_count = len(normalized_items)
     candidate_indexes = payload.get("candidateIndexes", [])
-    if not isinstance(candidate_indexes, list) or len(candidate_indexes) != expected:
+    if not isinstance(candidate_indexes, list) or len(candidate_indexes) != target_count:
         raise AppError(
-            f"使用する画像が登録件数と一致しません（登録 {expected}件／選択 {len(candidate_indexes) if isinstance(candidate_indexes, list) else 0}件）。"
+            f"使用する画像と修正後登録数が一致しません（修正後 {target_count}件／画像 {len(candidate_indexes) if isinstance(candidate_indexes, list) else 0}件）。"
         )
     if any(not isinstance(value, int) for value in candidate_indexes):
         raise AppError("使用する画像番号の形式が不正です。")
@@ -341,25 +472,8 @@ def _publish(payload: Dict[str, Any]) -> Dict[str, Any]:
         raise AppError("存在しない画像候補が選択されています。")
 
     checks = payload.get("checks", [])
-    if not isinstance(checks, list) or len(checks) != expected or not all(value is True for value in checks):
+    if not isinstance(checks, list) or len(checks) != target_count or not all(value is True for value in checks):
         raise AppError("全アイテムの確認チェックが完了していません。")
-
-    submitted_items = payload.get("items", [])
-    if not isinstance(submitted_items, list) or len(submitted_items) != expected:
-        raise AppError("送信されたアイテム数が一致しません。")
-
-    existing_by_id = {str(item.get("id", "")): item for item in gacha.get("items", [])}
-    normalized_items: List[Dict[str, str]] = []
-    for submitted in submitted_items:
-        item_id = str(submitted.get("id", ""))
-        category = str(submitted.get("category", "")).strip()
-        if item_id not in existing_by_id:
-            raise AppError(f"不明なアイテムIDです: {item_id}")
-        if category not in STANDARD_CATEGORIES:
-            raise AppError(f"選択できないカテゴリです: {category}")
-        normalized_items.append({"id": item_id, "category": category})
-    if [item["id"] for item in normalized_items] != [str(item.get("id", "")) for item in gacha["items"]]:
-        raise AppError("アイテムの順序が変わっています。もう一度読み取ってください。")
 
     if not PUBLISH_LOCK.acquire(blocking=False):
         raise AppError("別の反映処理が進行中です。完了までお待ちください。")
@@ -393,7 +507,9 @@ def _publish(payload: Dict[str, Any]) -> Dict[str, Any]:
                     "title": gacha.get("title", slug),
                     "createdAt": datetime.now().isoformat(timespec="seconds"),
                     "sources": [Path(path).name for path in session["sources"]],
-                    "itemCount": expected,
+                    "originalItemCount": expected,
+                    "newItemCount": added_count,
+                    "itemCount": target_count,
                     "selectedCandidateIndexes": candidate_indexes,
                 },
                 ensure_ascii=False,
@@ -411,7 +527,7 @@ def _publish(payload: Dict[str, Any]) -> Dict[str, Any]:
                     raise AppError(f"生成画像サイズが不正です: {source.name} {image.size}")
             shutil.copy2(source, production_dir / f"{output_index:02d}.png")
 
-        _replace_categories(data_path, normalized_items)
+        _replace_items(data_path, normalized_items, slug)
         _run(["npm", "run", "lint"], timeout=180)
         build_log = _run(["npm", "run", "build"], timeout=300)
 
@@ -424,12 +540,12 @@ def _publish(payload: Dict[str, Any]) -> Dict[str, Any]:
             _restore_backup(backup_dir, production_dir, data_path)
             return {
                 "changed": False,
-                "message": "現在の画像・カテゴリと同じだったため、GitHubへの反映は不要でした。",
+                "message": "現在の登録・画像・カテゴリと同じだったため、GitHubへの反映は不要でした。",
                 "backup": str(backup_dir.relative_to(PROJECT_ROOT)),
             }
 
         title = str(gacha.get("title", slug))
-        _run(["git", "commit", "-m", f"Fix {title} item image mapping"], timeout=90)
+        _run(["git", "commit", "-m", f"Fix {title} item registration and image mapping"], timeout=90)
         committed = True
         push_log = _run(["git", "push"], timeout=180)
         with SESSION_LOCK:
@@ -437,7 +553,7 @@ def _publish(payload: Dict[str, Any]) -> Dict[str, Any]:
         shutil.rmtree(work_dir, ignore_errors=True)
         return {
             "changed": True,
-            "message": "確認済み画像とカテゴリをGitHubへ反映しました。",
+            "message": f"確認済み登録・画像・カテゴリをGitHubへ反映しました（新規追加 {added_count}件）。",
             "backup": str(backup_dir.relative_to(PROJECT_ROOT)),
             "buildSummary": build_log[-1200:],
             "pushSummary": push_log[-1200:],
