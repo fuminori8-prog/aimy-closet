@@ -44,13 +44,16 @@
     .details select { min-width: 0; width: 100%; }
     .details input[type=text] { width: 100%; padding: 10px 11px; border: 1px solid #b9c1cb; border-radius: 9px; font: inherit; }
     .new-item { background: #f0f8ff; border-color: #8ebde8; }
+    .kept-item { background: #f3f8ef; border-color: #9abb82; }
     .new-badge { display: inline-block; margin-bottom: 7px; padding: 4px 8px; border-radius: 999px; background: #1972c9; color: #fff; font-size: 12px; font-weight: 800; }
     .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-top: 8px; }
     .check { display: flex; gap: 9px; align-items: flex-start; margin-top: 12px; padding: 11px; background: #f2f7ff; border-radius: 10px; cursor: pointer; }
     .check input { width: 20px; height: 20px; margin: 0; flex: none; }
     .candidate-action { width: 100%; margin-top: 7px; padding: 8px 10px; background: #fff0f0; color: #9b2730; border: 1px solid #dfa6aa; font-size: 13px; }
     .candidate-add { background: #e9f5ff; color: #145d9e; border-color: #91bfe7; }
+    .candidate-manual { background: #f1ecff; color: #59349a; border-color: #b9a2e3; }
     .cancel-add { margin-top: 10px; background: #6a7480; padding: 8px 11px; }
+    .keep-current { width: 100%; margin-top: 9px; padding: 9px 11px; background: #edf5e8; color: #3d6928; border: 1px solid #a9c695; }
     .excluded { margin-top: 18px; padding: 15px; border-radius: 12px; background: #f1f3f6; }
     .excluded h3 { margin: 0 0 10px; }
     .excluded-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)); gap: 10px; }
@@ -60,6 +63,14 @@
     .missing { color: #a42d35; font-weight: 800; }
     .publish-area { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
     .result { background: #e9f8ef; border: 1px solid #8fcdaa; padding: 17px; border-radius: 12px; white-space: pre-wrap; line-height: 1.6; }
+    dialog { width: min(980px, calc(100% - 24px)); max-height: 92vh; border: 0; border-radius: 16px; padding: 0; box-shadow: 0 20px 60px rgba(20, 28, 40, .3); }
+    dialog::backdrop { background: rgba(16, 23, 34, .62); }
+    .manual-dialog-inner { padding: 20px; }
+    .manual-dialog-head { display: flex; justify-content: space-between; gap: 12px; align-items: start; }
+    .manual-dialog-head button { background: #596574; padding: 8px 12px; }
+    .manual-source-wrap { max-height: 68vh; margin-top: 14px; overflow: auto; border: 2px solid #b7a3df; border-radius: 12px; background: #e9edf2; cursor: crosshair; }
+    .manual-source-wrap img { display: block; width: 100%; height: auto; }
+    .manual-help { padding: 11px 13px; border-radius: 10px; background: #f1ecff; color: #4c3479; }
     @media (max-width: 850px) {
       .summary { grid-template-columns: 1fr; }
       .item { grid-template-columns: 45px 1fr 1fr; align-items: start; }
@@ -75,7 +86,7 @@
 
   <section class="panel safe">
     <h2>安全について</h2>
-    <p>この画面を開いたり「読み取る」を押しただけでは、サイト・GitHub・現在のアイテム画像は変更されません。不足アイテムの追加と、実際の重複候補の除外は、あなたが画面上で確定します。</p>
+    <p>この画面を開いたり「読み取る」を押しただけでは、サイト・GitHub・現在のアイテム画像は変更されません。不足登録・未検出画像・現在画像の維持・実際の重複除外は、あなたが画面上で確定します。</p>
   </section>
 
   <section class="panel">
@@ -98,10 +109,11 @@
       <div>元の登録数<strong id="expectedCount">0</strong></div>
       <div>修正後の登録数<strong id="draftCount">0</strong></div>
       <div>使用候補 / 全検出<strong id="candidateCount">0</strong></div>
-      <div>件数判定<strong id="countResult">―</strong></div>
+      <div>対応判定<strong id="countResult">―</strong></div>
     </div>
 
     <div id="countWarning" class="danger-box hidden"></div>
+    <p><button id="appendManualButton" type="button" class="secondary">末尾へ未検出画像を手動追加</button></p>
     <div id="items" class="items"></div>
     <div id="excludedPanel" class="excluded hidden">
       <h3>除外した候補</h3>
@@ -122,9 +134,32 @@
   </section>
 </main>
 
+<dialog id="manualDialog">
+  <div class="manual-dialog-inner">
+    <div class="manual-dialog-head">
+      <div>
+        <h2>未検出画像を元スクショから追加</h2>
+        <p class="manual-help">元スクショ内の、追加したいアイテムカードの真ん中を1回クリックしてください。カード1枚分を自動で正方形に切り抜き、指定位置へ挿入します。</p>
+      </div>
+      <button id="manualCloseButton" type="button">閉じる</button>
+    </div>
+    <label>元スクショ
+      <select id="manualSourceSelect"></select>
+    </label>
+    <div id="manualStatus" class="status" aria-live="polite"></div>
+    <div class="manual-source-wrap"><img id="manualSourceImage" alt="手動切り抜き元スクショ"></div>
+  </div>
+</dialog>
+
 <script>
   const $ = id => document.getElementById(id);
-  const state = { result: null, checks: [], categories: [], excludedCandidateIndexes: new Set() };
+  const state = {
+    result: null,
+    checks: [],
+    categories: [],
+    excludedCandidateKeys: new Set(),
+    manualBeforeCandidateKey: '',
+  };
 
   async function api(path, options = {}) {
     const response = await fetch(path, options);
@@ -206,7 +241,7 @@
 
   function activeCandidates() {
     if (!state.result) return [];
-    return state.result.candidates.filter(candidate => !state.excludedCandidateIndexes.has(candidate.index));
+    return state.result.candidates.filter(candidate => !state.excludedCandidateKeys.has(candidate.key));
   }
 
   function resetChecks() {
@@ -229,6 +264,7 @@
       rarity,
       category,
       hasMotion: false,
+      keepCurrentImage: false,
       currentImageUrl: '',
     });
     resetChecks();
@@ -242,20 +278,69 @@
     renderItems();
   }
 
-  function excludeCandidate(candidateIndex) {
-    state.excludedCandidateIndexes.add(candidateIndex);
+  function toggleKeepCurrentImage(itemIndex) {
+    const item = state.result.items[itemIndex];
+    if (!item || item.isNew) return;
+    item.keepCurrentImage = !item.keepCurrentImage;
     resetChecks();
     renderItems();
   }
 
-  function restoreCandidate(candidateIndex) {
-    state.excludedCandidateIndexes.delete(candidateIndex);
+  function mappedRows() {
+    const candidates = activeCandidates();
+    const rows = [];
+    let candidatePosition = 0;
+    state.result.items.forEach((item, itemIndex) => {
+      const candidate = item.keepCurrentImage ? null : (candidates[candidatePosition] || null);
+      rows.push({ item, itemIndex, candidate, candidatePosition });
+      if (!item.keepCurrentImage && candidate) candidatePosition += 1;
+    });
+    while (candidatePosition < candidates.length) {
+      rows.push({
+        item: null,
+        itemIndex: state.result.items.length,
+        candidate: candidates[candidatePosition],
+        candidatePosition,
+      });
+      candidatePosition += 1;
+    }
+    return rows;
+  }
+
+  function openManualCrop(beforeCandidateKey = '') {
+    if (!state.result) return;
+    state.manualBeforeCandidateKey = beforeCandidateKey;
+    const select = $('manualSourceSelect');
+    select.innerHTML = '';
+    state.result.sources.forEach(name => {
+      const option = document.createElement('option');
+      option.value = name;
+      option.textContent = name;
+      select.appendChild(option);
+    });
+    const refreshImage = () => {
+      $('manualSourceImage').src = `/source/${encodeURIComponent(state.result.slug)}/${encodeURIComponent(select.value)}?v=${Date.now()}`;
+      setStatus($('manualStatus'), '追加したいカードの真ん中をクリックしてください。');
+    };
+    select.onchange = refreshImage;
+    refreshImage();
+    $('manualDialog').showModal();
+  }
+
+  function excludeCandidate(candidateKey) {
+    state.excludedCandidateKeys.add(candidateKey);
+    resetChecks();
+    renderItems();
+  }
+
+  function restoreCandidate(candidateKey) {
+    state.excludedCandidateKeys.delete(candidateKey);
     resetChecks();
     renderItems();
   }
 
   function renderExcludedCandidates() {
-    const excluded = state.result.candidates.filter(candidate => state.excludedCandidateIndexes.has(candidate.index));
+    const excluded = state.result.candidates.filter(candidate => state.excludedCandidateKeys.has(candidate.key));
     const panel = $('excludedPanel');
     const container = $('excludedCandidates');
     panel.classList.toggle('hidden', excluded.length === 0);
@@ -271,7 +356,7 @@
       const restore = document.createElement('button');
       restore.type = 'button';
       restore.textContent = '元に戻す';
-      restore.addEventListener('click', () => restoreCandidate(candidate.index));
+      restore.addEventListener('click', () => restoreCandidate(candidate.key));
       card.append(image, text, restore);
       container.appendChild(card);
     });
@@ -281,17 +366,19 @@
     if (!state.result) return false;
     const activeCount = activeCandidates().length;
     const draftCount = state.result.items.length;
-    const matches = activeCount === draftCount;
+    const keptCount = state.result.items.filter(item => item.keepCurrentImage).length;
+    const candidateNeededCount = draftCount - keptCount;
+    const matches = activeCount === candidateNeededCount;
     $('draftCount').textContent = draftCount;
     $('candidateCount').textContent = `${activeCount} / ${state.result.candidateCount}`;
     $('countResult').textContent = matches ? '一致' : '不一致';
     $('countResult').style.color = matches ? '#14723c' : '#a42d35';
     const warning = $('countWarning');
     warning.classList.toggle('hidden', matches);
-    if (activeCount > draftCount) {
-      warning.textContent = `修正後登録は${draftCount}件、使用候補は${activeCount}件です。登録されていない候補では「この候補を新規登録」を押してください。実際の重複だけは「この候補を除外」を使います。差は${activeCount - draftCount}件です。`;
-    } else if (activeCount < draftCount) {
-      warning.textContent = `修正後登録は${draftCount}件、使用候補は${activeCount}件です。除外しすぎた候補を元に戻すか、誤って追加したアイテムを取り消してください。差は${draftCount - activeCount}件です。`;
+    if (activeCount > candidateNeededCount) {
+      warning.textContent = `新候補が${activeCount - candidateNeededCount}件余っています。未登録アイテムなら「この候補を新規登録」、実際の重複なら「この候補を除外」を使ってください。`;
+    } else if (activeCount < candidateNeededCount) {
+      warning.textContent = `新候補が${candidateNeededCount - activeCount}件不足しています。元スクショにある場合は「未検出画像を手動追加」、既存アイテムで現在画像が正しい場合は「現在画像を維持」を使ってください。`;
     }
     return matches;
   }
@@ -309,22 +396,24 @@
     const container = $('items');
     container.innerHTML = '';
     const candidates = activeCandidates();
-    const countMatches = candidates.length === state.result.items.length;
-    const max = Math.max(state.result.items.length, candidates.length);
-    for (let index = 0; index < max; index += 1) {
-      const item = state.result.items[index];
-      const candidate = candidates[index];
+    const candidateNeededCount = state.result.items.filter(item => !item.keepCurrentImage).length;
+    const countMatches = candidates.length === candidateNeededCount;
+    const rows = mappedRows();
+    rows.forEach((mapped, displayIndex) => {
+      const { item, itemIndex, candidate } = mapped;
       const row = document.createElement('article');
       row.className = 'item';
 
       const number = document.createElement('div');
       number.className = 'number';
-      number.textContent = String(index + 1).padStart(2, '0');
+      number.textContent = String(displayIndex + 1).padStart(2, '0');
       row.appendChild(number);
       row.appendChild(imageBox(item?.currentImageUrl, item?.isNew ? '新規追加（現在画像なし）' : '現在のサイト画像'));
       const candidateBox = imageBox(
         candidate?.imageUrl,
-        candidate ? `候補${String(candidate.index).padStart(2, '0')}：${candidate.source}` : '新画像なし',
+        candidate
+          ? `候補${String(candidate.index).padStart(2, '0')}：${candidate.source}${candidate.manual ? '（手動追加）' : ''}`
+          : (item?.keepCurrentImage ? '現在画像を維持（新候補は使いません）' : '新画像なし'),
         candidate?.sourceUrl,
       );
       if (candidate) {
@@ -333,15 +422,28 @@
           add.type = 'button';
           add.className = 'candidate-action candidate-add';
           add.textContent = 'この候補を新規登録';
-          add.addEventListener('click', () => addCandidateAsItem(index, candidate));
+          add.addEventListener('click', () => addCandidateAsItem(itemIndex, candidate));
           candidateBox.appendChild(add);
         }
+        const manual = document.createElement('button');
+        manual.type = 'button';
+        manual.className = 'candidate-action candidate-manual';
+        manual.textContent = 'この位置の前へ未検出画像を追加';
+        manual.addEventListener('click', () => openManualCrop(candidate.key));
+        candidateBox.appendChild(manual);
         const exclude = document.createElement('button');
         exclude.type = 'button';
         exclude.className = 'candidate-action';
         exclude.textContent = 'この候補を除外';
-        exclude.addEventListener('click', () => excludeCandidate(candidate.index));
+        exclude.addEventListener('click', () => excludeCandidate(candidate.key));
         candidateBox.appendChild(exclude);
+      } else if (item && !item.keepCurrentImage) {
+        const manual = document.createElement('button');
+        manual.type = 'button';
+        manual.className = 'candidate-action candidate-manual';
+        manual.textContent = 'ここへ未検出画像を追加';
+        manual.addEventListener('click', () => openManualCrop(''));
+        candidateBox.appendChild(manual);
       }
       row.appendChild(candidateBox);
 
@@ -349,6 +451,7 @@
       details.className = 'details';
       if (item) {
         if (item.isNew) row.classList.add('new-item');
+        if (item.keepCurrentImage) row.classList.add('kept-item');
         let checkbox;
         if (item.isNew) {
           const badge = document.createElement('span');
@@ -362,7 +465,7 @@
           nameInput.placeholder = '元スクショを開いて正式名を入力';
           nameInput.addEventListener('input', () => {
             item.name = nameInput.value;
-            state.checks[index] = false;
+            state.checks[itemIndex] = false;
             if (checkbox) {
               checkbox.checked = false;
               checkbox.disabled = !candidate || !countMatches || !item.name.trim();
@@ -385,17 +488,17 @@
           });
           raritySelect.addEventListener('change', () => {
             item.rarity = raritySelect.value;
-            state.checks[index] = false;
+            state.checks[itemIndex] = false;
             renderItems();
           });
           rarityLabel.appendChild(raritySelect);
-          fieldRow.append(rarityLabel, categorySelect(item, index));
+          fieldRow.append(rarityLabel, categorySelect(item, itemIndex));
 
           const cancel = document.createElement('button');
           cancel.type = 'button';
           cancel.className = 'cancel-add';
           cancel.textContent = 'この追加を取り消す';
-          cancel.addEventListener('click', () => cancelAddedItem(index));
+          cancel.addEventListener('click', () => cancelAddedItem(itemIndex));
           details.append(badge, nameLabel, fieldRow, cancel);
         } else {
           const name = document.createElement('h3');
@@ -405,22 +508,32 @@
           const itemId = document.createElement('p');
           itemId.className = 'muted';
           itemId.textContent = item.id;
-          details.append(name, rarity, itemId, categorySelect(item, index));
+          const keep = document.createElement('button');
+          keep.type = 'button';
+          keep.className = 'keep-current';
+          keep.textContent = item.keepCurrentImage
+            ? '現在画像を維持中：新候補を使う状態に戻す'
+            : '現在画像を維持して、この候補を次の行へ送る';
+          keep.addEventListener('click', () => toggleKeepCurrentImage(itemIndex));
+          details.append(name, rarity, itemId, categorySelect(item, itemIndex), keep);
         }
         const label = document.createElement('label');
         label.className = 'check';
         checkbox = document.createElement('input');
         checkbox.type = 'checkbox';
-        checkbox.checked = Boolean(state.checks[index]);
-        checkbox.disabled = !candidate || !countMatches || (item.isNew && !item.name.trim());
+        checkbox.checked = Boolean(state.checks[itemIndex]);
+        const imageReady = Boolean(candidate) || Boolean(item.keepCurrentImage);
+        checkbox.disabled = !imageReady || !countMatches || (item.isNew && !item.name.trim());
         checkbox.addEventListener('change', () => {
-          state.checks[index] = checkbox.checked;
+          state.checks[itemIndex] = checkbox.checked;
           updateProgress();
         });
         const text = document.createElement('span');
-        text.textContent = item.isNew
-          ? '追加する名前・レアリティ・カテゴリと画像が一致している'
-          : '新画像がこのアイテム名・カテゴリと一致している';
+        text.textContent = item.keepCurrentImage
+          ? '現在のサイト画像をそのまま維持する'
+          : (item.isNew
+              ? '追加する名前・レアリティ・カテゴリと画像が一致している'
+              : '新画像がこのアイテム名・カテゴリと一致している');
         label.append(checkbox, text);
         details.appendChild(label);
       } else {
@@ -431,7 +544,7 @@
       }
       row.appendChild(details);
       container.appendChild(row);
-    }
+    });
     renderExcludedCandidates();
     updateProgress();
   }
@@ -439,7 +552,8 @@
   function renderResult(result) {
     state.result = result;
     state.categories = result.categories;
-    state.excludedCandidateIndexes = new Set();
+    state.excludedCandidateKeys = new Set();
+    state.result.items.forEach(item => { item.keepCurrentImage = false; });
     resetChecks();
     $('title').textContent = result.title;
     $('sourceFolder').textContent = result.sourceFolder;
@@ -476,6 +590,44 @@
     }
   });
 
+  $('appendManualButton').addEventListener('click', () => openManualCrop(''));
+  $('manualCloseButton').addEventListener('click', () => $('manualDialog').close());
+  $('manualSourceImage').addEventListener('click', async event => {
+    if (!state.result) return;
+    const image = $('manualSourceImage');
+    if (!image.naturalWidth || image.dataset.busy === '1') return;
+    const rect = image.getBoundingClientRect();
+    const centerX = (event.clientX - rect.left) * image.naturalWidth / rect.width;
+    const centerY = (event.clientY - rect.top) * image.naturalHeight / rect.height;
+    image.dataset.busy = '1';
+    image.style.pointerEvents = 'none';
+    setStatus($('manualStatus'), 'クリック位置からカードを切り抜いています…');
+    try {
+      const data = await api('/api/manual-candidate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          token: state.result.token,
+          slug: state.result.slug,
+          source: $('manualSourceSelect').value,
+          centerX,
+          centerY,
+          beforeCandidateKey: state.manualBeforeCandidateKey,
+        }),
+      });
+      state.result.candidates = data.result.candidates;
+      state.result.candidateCount = data.result.candidateCount;
+      resetChecks();
+      $('manualDialog').close();
+      renderItems();
+    } catch (error) {
+      setStatus($('manualStatus'), error.message, true);
+    } finally {
+      image.dataset.busy = '0';
+      image.style.pointerEvents = '';
+    }
+  });
+
   $('publishButton').addEventListener('click', async () => {
     if (!state.result) return;
     const addedCount = state.result.items.filter(item => item.isNew).length;
@@ -485,6 +637,11 @@
     button.disabled = true;
     setStatus($('publishStatus'), 'バックアップ → 検査 → ビルド → GitHub反映を実行しています。画面とターミナルを閉じないでください。');
     try {
+      const imageAssignments = mappedRows()
+        .filter(row => row.item)
+        .map(row => row.item.keepCurrentImage
+          ? { mode: 'current' }
+          : { mode: 'candidate', candidateKey: row.candidate?.key || '' });
       const data = await api('/api/publish', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -492,7 +649,7 @@
           token: state.result.token,
           slug: state.result.slug,
           checks: state.checks,
-          candidateIndexes: activeCandidates().map(candidate => candidate.index),
+          imageAssignments,
           items: state.result.items.map(item => ({
             id: item.id,
             clientKey: item.clientKey,

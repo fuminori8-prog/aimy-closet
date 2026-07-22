@@ -3,8 +3,9 @@
 
 This local-only tool reads screenshots already stored in
 public/images/gacha/<slug>. It deliberately performs no automatic duplicate
-removal. The user can insert missing item records at detected-card positions,
-or exclude only genuine duplicate candidates, before publishing the mapping.
+removal. The user can insert missing item records, manually crop undetected
+cards, keep a valid current image, or exclude genuine duplicate candidates
+before publishing the mapping.
 """
 
 from __future__ import annotations
@@ -194,6 +195,17 @@ def _crop_card(image: Image.Image, box: Tuple[int, int, int, int]) -> Image.Imag
     return crop
 
 
+def _candidate_payload(session: Dict[str, Any]) -> List[Dict[str, Any]]:
+    token = str(session["token"])
+    payload: List[Dict[str, Any]] = []
+    for index, candidate in enumerate(session["candidates"], start=1):
+        public = dict(candidate)
+        public["index"] = index
+        public["imageUrl"] = f"/candidate/{token}/{urllib.parse.quote(str(candidate['output']))}"
+        payload.append(public)
+    return payload
+
+
 def _analyze(slug: str) -> Dict[str, Any]:
     gacha = _get_gacha(slug)
     sources = _source_files(slug)
@@ -209,17 +221,18 @@ def _analyze(slug: str) -> Dict[str, Any]:
             boxes = sorted(_detect_boxes(image), key=lambda box: (box[1], box[0]))
             for box in boxes:
                 index = len(candidates) + 1
-                output_name = f"{index:02d}.png"
+                candidate_key = f"auto-{index:04d}"
+                output_name = f"{candidate_key}.png"
                 _crop_card(image, tuple(box)).save(generated_dir / output_name, "PNG")
                 candidates.append(
                     {
+                        "key": candidate_key,
                         "index": index,
                         "output": output_name,
                         "source": source.name,
                         "sourceIndex": source_index,
                         "box": list(box),
                         "estimatedRarity": _estimate_rarity(image, tuple(box)),
-                        "imageUrl": f"/candidate/{token}/{output_name}",
                         "sourceUrl": f"/source/{urllib.parse.quote(slug)}/{urllib.parse.quote(source.name)}",
                     }
                 )
@@ -237,6 +250,7 @@ def _analyze(slug: str) -> Dict[str, Any]:
         "sources": [str(path.resolve()) for path in sources],
         "signature": signature,
         "workDir": str(work_dir.resolve()),
+        "candidates": candidates,
         "candidateCount": len(candidates),
     }
     with SESSION_LOCK:
@@ -272,11 +286,85 @@ def _analyze(slug: str) -> Dict[str, Any]:
         "sourceFolder": str((PROJECT_ROOT / "public" / "images" / "gacha" / slug).resolve()),
         "sources": [path.name for path in sources],
         "items": items,
-        "candidates": candidates,
+        "candidates": _candidate_payload(session),
         "categories": categories,
         "expectedCount": expected,
         "candidateCount": len(candidates),
         "countMatches": expected == len(candidates),
+    }
+
+
+def _add_manual_candidate(payload: Dict[str, Any]) -> Dict[str, Any]:
+    token = str(payload.get("token", ""))
+    with SESSION_LOCK:
+        session = SESSIONS.get(token)
+    if not session:
+        raise AppError("確認データの有効期限が切れました。もう一度読み取ってください。")
+
+    slug = str(session["slug"])
+    if str(payload.get("slug", "")) != slug:
+        raise AppError("対象ガチャが一致しません。")
+    gacha = _get_gacha(slug)
+    sources = _source_files(slug)
+    if _source_signature(gacha, sources) != session["signature"]:
+        raise AppError("確認後に元スクショまたはデータが変更されました。もう一度読み取ってください。")
+
+    source_name = str(payload.get("source", ""))
+    source_by_name = {path.name: path for path in sources}
+    source = source_by_name.get(source_name)
+    if not source:
+        raise AppError("選択した元スクショが見つかりません。")
+    try:
+        center_x = float(payload.get("centerX"))
+        center_y = float(payload.get("centerY"))
+    except (TypeError, ValueError) as ex:
+        raise AppError("切り抜く位置が不正です。") from ex
+
+    with Image.open(source) as opened:
+        image = opened.convert("RGB")
+        width, height = image.size
+        if not (0 <= center_x < width and 0 <= center_y < height):
+            raise AppError("クリック位置がスクショの外です。")
+        card_size = max(64, round(192 * width / 1179))
+        left = max(0, min(width - card_size, round(center_x - card_size / 2)))
+        top = max(0, min(height - card_size, round(center_y - card_size / 2)))
+        box = (left, top, left + card_size, top + card_size)
+        candidate_key = f"manual-{secrets.token_hex(8)}"
+        output_name = f"{candidate_key}.png"
+        generated_dir = Path(session["workDir"]) / "items"
+        _crop_card(image, box).save(generated_dir / output_name, "PNG")
+        estimated_rarity = _estimate_rarity(image, box)
+
+    before_key = str(payload.get("beforeCandidateKey", "")).strip()
+    manual = {
+        "key": candidate_key,
+        "output": output_name,
+        "source": source.name,
+        "sourceIndex": sources.index(source) + 1,
+        "box": list(box),
+        "estimatedRarity": estimated_rarity,
+        "sourceUrl": f"/source/{urllib.parse.quote(slug)}/{urllib.parse.quote(source.name)}",
+        "manual": True,
+    }
+    with SESSION_LOCK:
+        current = SESSIONS.get(token)
+        if current is not session:
+            raise AppError("確認データの有効期限が切れました。もう一度読み取ってください。")
+        candidates = session["candidates"]
+        if before_key:
+            insert_at = next((index for index, value in enumerate(candidates) if value["key"] == before_key), -1)
+            if insert_at < 0:
+                raise AppError("追加位置の候補が見つかりません。画面を読み直してください。")
+        else:
+            insert_at = len(candidates)
+        candidates.insert(insert_at, manual)
+        session["candidateCount"] = len(candidates)
+        public_candidates = _candidate_payload(session)
+
+    return {
+        "candidates": public_candidates,
+        "candidateCount": len(public_candidates),
+        "insertedKey": candidate_key,
     }
 
 
@@ -458,18 +546,38 @@ def _publish(payload: Dict[str, Any]) -> Dict[str, Any]:
         raise AppError("既存アイテムの不足または順序変更があります。追加以外の並び替えはできません。")
 
     target_count = len(normalized_items)
-    candidate_indexes = payload.get("candidateIndexes", [])
-    if not isinstance(candidate_indexes, list) or len(candidate_indexes) != target_count:
-        raise AppError(
-            f"使用する画像と修正後登録数が一致しません（修正後 {target_count}件／画像 {len(candidate_indexes) if isinstance(candidate_indexes, list) else 0}件）。"
-        )
-    if any(not isinstance(value, int) for value in candidate_indexes):
-        raise AppError("使用する画像番号の形式が不正です。")
-    if len(set(candidate_indexes)) != len(candidate_indexes):
-        raise AppError("同じ画像候補が複数回選択されています。")
-    available_indexes = set(range(1, int(session["candidateCount"]) + 1))
-    if not set(candidate_indexes).issubset(available_indexes):
-        raise AppError("存在しない画像候補が選択されています。")
+    image_assignments = payload.get("imageAssignments", [])
+    if not isinstance(image_assignments, list) or len(image_assignments) != target_count:
+        raise AppError("修正後の全アイテムに画像の割り当てが必要です。")
+    candidate_by_key = {str(candidate["key"]): candidate for candidate in session["candidates"]}
+    used_candidate_keys: set[str] = set()
+    validated_assignments: List[Dict[str, str]] = []
+    for submitted, assignment in zip(submitted_items, image_assignments):
+        if not isinstance(assignment, dict):
+            raise AppError("画像割り当ての形式が不正です。")
+        mode = str(assignment.get("mode", ""))
+        if mode == "candidate":
+            candidate_key = str(assignment.get("candidateKey", ""))
+            if candidate_key not in candidate_by_key:
+                raise AppError("存在しない画像候補が選択されています。")
+            if candidate_key in used_candidate_keys:
+                raise AppError("同じ画像候補が複数回選択されています。")
+            used_candidate_keys.add(candidate_key)
+            validated_assignments.append({"mode": "candidate", "candidateKey": candidate_key})
+            continue
+        if mode == "current":
+            if submitted.get("isNew") is True:
+                raise AppError("新規追加アイテムには現在画像がありません。未検出画像を手動追加してください。")
+            item_id = str(submitted.get("id", ""))
+            existing = existing_by_id.get(item_id)
+            if not existing:
+                raise AppError("現在画像を維持する既存アイテムが見つかりません。")
+            filename = Path(str(existing.get("image", ""))).name
+            if not filename:
+                raise AppError(f"現在画像のファイル名が不正です: {item_id}")
+            validated_assignments.append({"mode": "current", "filename": filename, "itemId": item_id})
+            continue
+        raise AppError("画像の割り当てが未確認です。")
 
     checks = payload.get("checks", [])
     if not isinstance(checks, list) or len(checks) != target_count or not all(value is True for value in checks):
@@ -510,7 +618,7 @@ def _publish(payload: Dict[str, Any]) -> Dict[str, Any]:
                     "originalItemCount": expected,
                     "newItemCount": added_count,
                     "itemCount": target_count,
-                    "selectedCandidateIndexes": candidate_indexes,
+                    "imageAssignments": validated_assignments,
                 },
                 ensure_ascii=False,
                 indent=2,
@@ -518,14 +626,26 @@ def _publish(payload: Dict[str, Any]) -> Dict[str, Any]:
             encoding="utf-8",
         )
 
-        for output_index, candidate_index in enumerate(candidate_indexes, start=1):
-            source = generated_dir / f"{candidate_index:02d}.png"
+        publish_dir = work_dir / "publish-items"
+        if publish_dir.exists():
+            shutil.rmtree(publish_dir)
+        publish_dir.mkdir(parents=True)
+        for output_index, assignment in enumerate(validated_assignments, start=1):
+            if assignment["mode"] == "candidate":
+                candidate = candidate_by_key[assignment["candidateKey"]]
+                source = generated_dir / str(candidate["output"])
+            else:
+                source = backup_dir / "items" / assignment["filename"]
             if not source.exists():
-                raise AppError(f"生成画像が見つかりません: {source.name}")
+                raise AppError(f"割り当て画像が見つかりません: {source.name}")
             with Image.open(source) as image:
                 if image.size != (192, 192):
-                    raise AppError(f"生成画像サイズが不正です: {source.name} {image.size}")
-            shutil.copy2(source, production_dir / f"{output_index:02d}.png")
+                    raise AppError(f"割り当て画像サイズが不正です: {source.name} {image.size}")
+            shutil.copy2(source, publish_dir / f"{output_index:02d}.png")
+
+        if production_dir.exists():
+            shutil.rmtree(production_dir)
+        shutil.copytree(publish_dir, production_dir)
 
         _replace_items(data_path, normalized_items, slug)
         _run(["npm", "run", "lint"], timeout=180)
@@ -689,6 +809,9 @@ class Handler(BaseHTTPRequestHandler):
             payload = self._read_json()
             if path == "/api/analyze":
                 self._send_json({"result": _analyze(str(payload.get("slug", "")))})
+                return
+            if path == "/api/manual-candidate":
+                self._send_json({"result": _add_manual_candidate(payload)})
                 return
             if path == "/api/publish":
                 self._send_json({"result": _publish(payload)})
