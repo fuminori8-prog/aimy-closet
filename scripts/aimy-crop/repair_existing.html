@@ -396,8 +396,6 @@
     const container = $('items');
     container.innerHTML = '';
     const candidates = activeCandidates();
-    const candidateNeededCount = state.result.items.filter(item => !item.keepCurrentImage).length;
-    const countMatches = candidates.length === candidateNeededCount;
     const rows = mappedRows();
     rows.forEach((mapped, displayIndex) => {
       const { item, itemIndex, candidate } = mapped;
@@ -468,7 +466,7 @@
             state.checks[itemIndex] = false;
             if (checkbox) {
               checkbox.checked = false;
-              checkbox.disabled = !candidate || !countMatches || !item.name.trim();
+              checkbox.disabled = !candidate || !item.name.trim();
             }
             updateProgress();
           });
@@ -523,7 +521,7 @@
         checkbox.type = 'checkbox';
         checkbox.checked = Boolean(state.checks[itemIndex]);
         const imageReady = Boolean(candidate) || Boolean(item.keepCurrentImage);
-        checkbox.disabled = !imageReady || !countMatches || (item.isNew && !item.name.trim());
+        checkbox.disabled = !imageReady || (item.isNew && !item.name.trim());
         checkbox.addEventListener('change', () => {
           state.checks[itemIndex] = checkbox.checked;
           updateProgress();
