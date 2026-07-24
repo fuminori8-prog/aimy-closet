@@ -839,8 +839,14 @@ def _extract_metadata(all_lines: Sequence[OCRLine]) -> Dict[str, str]:
 
 
 def _slugify(title: str, start_date: str) -> str:
+    date_match = re.search(r"(20\d{2})/(\d{2})/(\d{2})", start_date)
+    date_part = "".join(date_match.groups()) if date_match else datetime.now().strftime("%Y%m%d")
+
+    # macOSの漢字→Latin変換は日本語ではなく中国語読みに寄るため使わない。
+    # 漢字を含むタイトルは安全で読みやすい日付slugにし、必要なら確認画面で編集する。
+    contains_kanji = bool(re.search(r"[\u3400-\u9fff]", title or ""))
     result = ""
-    if title and platform.system() == "Darwin":
+    if title and not contains_kanji and platform.system() == "Darwin":
         try:
             binary = _compile_native_ocr()
             proc = subprocess.run(
@@ -855,10 +861,7 @@ def _slugify(title: str, start_date: str) -> str:
         except Exception:
             result = ""
     if not result:
-        date_match = re.search(r"(20\d{2})/(\d{2})/(\d{2})", start_date)
-        date_part = "".join(date_match.groups()) if date_match else datetime.now().strftime("%Y%m%d")
-        digest = hashlib.sha1(title.encode("utf-8")).hexdigest()[:6] if title else "new"
-        result = f"gacha-{date_part}-{digest}"
+        result = f"gacha-{date_part}"
     result = re.sub(r"[^a-z0-9-]+", "-", result.lower()).strip("-")
     result = re.sub(r"-+", "-", result)
     if not result:
@@ -1000,14 +1003,10 @@ def process_session(session_id: str) -> Dict[str, Any]:
                 }
                 duplicate = _is_cross_screenshot_duplicate(candidate, detected)
                 if duplicate is not None:
-                    # OCR name equality is strongest. The cross-page image check handles missing OCR.
+                    # 色違いの目・髪などを画像の類似だけで消さない。
+                    # OCRで同じ正式名と確認できた場合だけスクロール重複として除外する。
                     same_name = name and _item_name_key(name) == _item_name_key(duplicate.get("name", ""))
-                    previous_height = int(duplicate.get("imageHeight") or 2556)
-                    near_page_edge = (
-                        duplicate["box"][1] > previous_height * (1800 / 2556)
-                        and box[1] < rgb.height * (850 / 2556)
-                    )
-                    if same_name or near_page_edge:
+                    if same_name:
                         continue
                 detected.append(candidate)
 
