@@ -1079,14 +1079,9 @@ def process_session(session_id: str) -> Dict[str, Any]:
     if not detected:
         raise AppError("アイテム画像を検出できませんでした。")
 
-    seen_names: Dict[str, int] = {}
     items: List[Dict[str, Any]] = []
     for candidate in detected:
         name = candidate["name"]
-        key = _item_name_key(name) if name else ""
-        if key and key in seen_names:
-            # Exact OCR duplicate from a scroll overlap.
-            continue
 
         index = len(items) + 1
         source_path = upload_dir / candidate["source"]
@@ -1096,8 +1091,6 @@ def process_session(session_id: str) -> Dict[str, Any]:
 
         if not name:
             name = f"アイテム {index:02d}"
-        if key:
-            seen_names[key] = index
         items.append(
             {
                 "index": index,
