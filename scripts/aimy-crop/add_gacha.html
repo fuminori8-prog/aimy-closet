@@ -175,10 +175,17 @@
                 <option value="2">200%</option>
               </select>
             </label>
+            <label style="min-width:120px;flex:0">カード枠
+              <select id="cropCardSize">
+                <option value="0.15">小さめ</option>
+                <option value="0.165" selected>標準</option>
+                <option value="0.18">大きめ</option>
+              </select>
+            </label>
             <button class="primary" id="insertCropButton" type="button" disabled>囲んだ画像をこの行へ差し込む</button>
             <button class="subtle" id="closeCropButton" type="button">閉じる</button>
           </div>
-          <p class="muted">未検出アイテムの四角い画像部分を、左上から右下へドラッグして囲んでください。</p>
+          <p class="muted">未検出アイテム画像の中央を1回クリックしてください。正方形の赤枠が自動で付きます。</p>
           <div class="crop-stage" id="cropStage">
             <img class="crop-source" id="cropSourceImage" alt="投入済みの元スクリーンショット">
             <div class="crop-selection hidden" id="cropSelection"></div>
@@ -227,6 +234,7 @@
   const cropSourceSelect = $('cropSourceSelect');
   const cropSourceImage = $('cropSourceImage');
   const cropZoom = $('cropZoom');
+  const cropCardSize = $('cropCardSize');
   const cropStage = $('cropStage');
   const cropSelection = $('cropSelection');
   const insertCropButton = $('insertCropButton');
@@ -526,6 +534,7 @@
     cropSourceImage.style.maxWidth = 'none';
     resetCropSelection();
   });
+  cropCardSize.addEventListener('change', resetCropSelection);
   $('closeCropButton').addEventListener('click', () => cropPicker.classList.add('hidden'));
 
   function cropPoint(event) {
@@ -539,10 +548,18 @@
   cropStage.addEventListener('pointerdown', event => {
     if (!cropSourceImage.complete) return;
     event.preventDefault();
-    cropStage.setPointerCapture(event.pointerId);
-    cropDragStart = cropPoint(event);
-    cropBox = null;
+    const point = cropPoint(event);
+    const size = cropSourceImage.clientWidth * Number(cropCardSize.value);
+    const left = Math.max(0, Math.min(cropSourceImage.clientWidth - size, point.x - size / 2));
+    const top = Math.max(0, Math.min(cropSourceImage.clientHeight - size, point.y - size / 2));
+    cropDragStart = null;
+    cropBox = { left, top, right: left + size, bottom: top + size };
+    cropSelection.style.left = `${left}px`;
+    cropSelection.style.top = `${top}px`;
+    cropSelection.style.width = `${size}px`;
+    cropSelection.style.height = `${size}px`;
     cropSelection.classList.remove('hidden');
+    insertCropButton.disabled = false;
   });
   cropStage.addEventListener('pointermove', event => {
     if (!cropDragStart) return;
@@ -562,7 +579,6 @@
     insertCropButton.disabled = width < 12 || height < 12;
   });
   cropStage.addEventListener('pointerup', event => {
-    if (cropDragStart) cropStage.releasePointerCapture(event.pointerId);
     cropDragStart = null;
   });
 
@@ -600,7 +616,7 @@
       state.draft = result.draft;
       renderDraft();
       manualInsertPosition.value = String(position + 1);
-      manualAddStatus.textContent = `${position}番へ画像を差し込みました。名前は動かしていません。次は${position + 1}番です。`;
+      manualAddStatus.textContent = `${position}番へ画像を差し込み、末尾画像も保持しました。次は${position + 1}番です。`;
       resetCropSelection();
     } catch (error) {
       manualAddStatus.textContent = `追加できませんでした: ${error.message}`;

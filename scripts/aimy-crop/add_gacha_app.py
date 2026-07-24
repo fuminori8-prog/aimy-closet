@@ -975,6 +975,22 @@ def add_manual_crop(
             old_index = int(item.get("sourceImageIndex", index))
             item["sourceImageFile"] = f"{old_index:02d}.png"
 
+    # Add one row first so shifting never discards the image at the end.
+    last_item = items[-1]
+    items.append(
+        {
+            "index": len(items) + 1,
+            "sourceImageIndex": len(items) + 1,
+            "sourceImageFile": "",
+            "name": "末尾アイテム名を入力",
+            "rarity": last_item.get("rarity", "SR"),
+            "category": last_item.get("category", "未分類"),
+            "confidence": 0,
+            "source": "manual:shifted-tail",
+            "box": [0, 0, 192, 192],
+            "imageUrl": "",
+        }
+    )
     for index in range(len(items) - 1, insert_at, -1):
         items[index]["sourceImageFile"] = items[index - 1]["sourceImageFile"]
 
@@ -995,7 +1011,7 @@ def add_manual_crop(
     warnings = [x for x in draft.get("warnings", []) if "画像を差し込み" not in x]
     warnings.append(
         f"{position}番へ画像を差し込み、元の画像だけを後続行へ送りました。"
-        "アイテム名は移動していません。"
+        "アイテム名は移動していません。末尾に増えた行の正式名を入力してください。"
     )
     draft["warnings"] = warnings
     draft_path.write_text(json.dumps(draft, ensure_ascii=False, indent=2), encoding="utf-8")
