@@ -43,10 +43,13 @@
     .banner { display: block; max-width: 100%; width: auto; border: 1px solid #dfe3e8; border-radius: 12px; margin-bottom: 18px; }
     .form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
     label { display: grid; gap: 6px; font-size: 14px; font-weight: 700; }
-    input[type=text], select, textarea { width: 100%; border: 1px solid #c8cdd4; border-radius: 9px; padding: 10px 11px; font: inherit; background: #fff; }
+    input[type=text], input[type=number], select, textarea { width: 100%; border: 1px solid #c8cdd4; border-radius: 9px; padding: 10px 11px; font: inherit; background: #fff; }
     textarea { min-height: 78px; resize: vertical; }
     .wide { grid-column: 1 / -1; }
     .items-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 14px; }
+    .manual-add { display: flex; align-items: end; gap: 8px; flex-wrap: wrap; }
+    .manual-add label { width: 110px; }
+    .manual-add-status { width: 100%; margin: 0; }
     .items-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(310px, 1fr)); gap: 13px; }
     .item-card { display: grid; grid-template-columns: 112px minmax(0, 1fr); gap: 13px; border: 1px solid #dfe3e8; border-radius: 13px; padding: 12px; background: #fff; }
     .item-image-wrap { text-align: center; }
@@ -147,7 +150,15 @@
 
     <div class="items-head" style="margin-top:24px">
       <h2 style="margin:0">アイテム</h2>
-      <span class="muted" id="itemCount"></span>
+      <div class="manual-add">
+        <span class="muted" id="itemCount"></span>
+        <label>追加位置
+          <input id="manualInsertPosition" type="number" min="1" value="1">
+        </label>
+        <button class="primary" id="addMissingItemsButton" type="button">未検出画像を追加</button>
+        <input id="missingItemsInput" type="file" accept="image/png,image/jpeg,image/webp" multiple>
+        <p class="muted manual-add-status" id="manualAddStatus">不足アイテムだけを正方形に切り抜いた画像を選択します。</p>
+      </div>
     </div>
     <div class="items-grid" id="items"></div>
 
@@ -183,6 +194,10 @@
   const folderFileList = $('folderFileList');
   const watchDot = $('watchDot');
   const retryFolderButton = $('retryFolderButton');
+  const addMissingItemsButton = $('addMissingItemsButton');
+  const missingItemsInput = $('missingItemsInput');
+  const manualInsertPosition = $('manualInsertPosition');
+  const manualAddStatus = $('manualAddStatus');
 
   function setStatus(el, text, kind = '') {
     el.className = `status ${kind}`;
@@ -342,7 +357,7 @@
     return o;
   }
 
-  const categories = ['衣装', '目', '髪型', 'あたま', 'めがね', 'ピアス', 'メイク', 'チェキフレーム', '背景', 'イベント', '未分類'];
+  const categories = ['衣装', '目', '髪型', '髪飾り', '耳', '耳飾り', 'チェキフレーム', '背景', 'メイク', 'めがね', 'あたま', 'イベント', '未分類'];
   const rarities = ['SSR', 'SR', 'NR', 'R', 'N'];
 
   function renderItems() {
@@ -437,7 +452,52 @@
     $('description').value = draft.description || '';
     $('warnings').innerHTML = (draft.warnings || []).map(x => `<div>⚠ ${escapeHtml(x)}</div>`).join('');
     renderItems();
+    manualInsertPosition.max = String((draft.items || []).length + 1);
   }
+
+  addMissingItemsButton.addEventListener('click', () => missingItemsInput.click());
+  missingItemsInput.addEventListener('change', async () => {
+    const files = [...missingItemsInput.files]
+      .filter(file => /^image\//.test(file.type))
+      .sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }));
+    if (!files.length || !state.sessionId || !state.draft) return;
+
+    let position = Number.parseInt(manualInsertPosition.value, 10);
+    if (!Number.isFinite(position)) position = state.draft.items.length + 1;
+    position = Math.max(1, Math.min(state.draft.items.length + 1, position));
+
+    addMissingItemsButton.disabled = true;
+    try {
+      collectDraft();
+      await jsonFetch('/api/save-draft', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sessionId: state.sessionId, draft: state.draft }),
+      });
+
+      for (let index = 0; index < files.length; index++) {
+        const file = files[index];
+        manualAddStatus.textContent = `追加中 ${index + 1}/${files.length}: ${file.name}`;
+        const result = await jsonFetch(
+          `/api/manual-item?session=${encodeURIComponent(state.sessionId)}&position=${position + index}&name=${encodeURIComponent(file.name)}`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': file.type || 'application/octet-stream' },
+            body: file,
+          },
+        );
+        state.draft = result.draft;
+      }
+      renderDraft();
+      manualInsertPosition.value = String(position + files.length);
+      manualAddStatus.textContent = `${files.length}件を追加しました。名前・レアリティ・カテゴリを入力してください。`;
+    } catch (error) {
+      manualAddStatus.textContent = `追加できませんでした: ${error.message}`;
+    } finally {
+      missingItemsInput.value = '';
+      addMissingItemsButton.disabled = false;
+    }
+  });
 
   function escapeHtml(value) {
     return String(value).replace(/[&<>'"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));

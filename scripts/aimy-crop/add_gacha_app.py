@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import hashlib
 import html
+import io
 import json
 import os
 import platform
@@ -41,6 +42,7 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 PROJECT_ROOT = SCRIPT_DIR.parent.parent
 WORKSPACE_ROOT = SCRIPT_DIR / "workspace"
 HTML_PATH = SCRIPT_DIR / "add_gacha.html"
+SLUGIFY_SCRIPT = SCRIPT_DIR / "slugify.mjs"
 NATIVE_OCR_SOURCE = SCRIPT_DIR / "macos_ocr.m"
 NATIVE_OCR_BIN = SCRIPT_DIR / ".bin" / "aimy-ocr"
 INBOX_DIR = PROJECT_ROOT / "ガチャスクショ投入"
@@ -57,19 +59,17 @@ CATEGORY_ALIASES = {
     "衣装": "衣装",
     "目": "目",
     "髪型": "髪型",
-    "あたま": "あたま",
-    "髪飾り": "あたま",
-    "ピアス": "ピアス",
-    "耳": "ピアス",
-    "耳飾り": "ピアス",
+    "髪飾り": "髪飾り",
+    "耳": "耳",
+    "耳飾り": "耳飾り",
     "背景": "背景",
     "チェキフレーム": "チェキフレーム",
     "メイク": "メイク",
     "めがね": "めがね",
-    "メガネ": "めがね",
+    "あたま": "あたま",
     "イベント": "イベント",
 }
-CATEGORY_ORDER = list(dict.fromkeys(CATEGORY_ALIASES.values()))
+CATEGORY_ORDER = list(CATEGORY_ALIASES.values())
 BOILERPLATE_WORDS = (
     "ガチャ詳細",
     "ラインナップ紹介",
@@ -839,34 +839,100 @@ def _extract_metadata(all_lines: Sequence[OCRLine]) -> Dict[str, str]:
 
 
 def _slugify(title: str, start_date: str) -> str:
-    date_match = re.search(r"(20\d{2})/(\d{2})/(\d{2})", start_date)
-    date_part = "".join(date_match.groups()) if date_match else datetime.now().strftime("%Y%m%d")
-
-    # macOSの漢字→Latin変換は日本語ではなく中国語読みに寄るため使わない。
-    # 漢字を含むタイトルは安全で読みやすい日付slugにし、必要なら確認画面で編集する。
-    contains_kanji = bool(re.search(r"[\u3400-\u9fff]", title or ""))
     result = ""
-    if title and not contains_kanji and platform.system() == "Darwin":
+    if title and SLUGIFY_SCRIPT.is_file():
         try:
-            binary = _compile_native_ocr()
             proc = subprocess.run(
-                [str(binary), "--slug", title],
+                ["node", str(SLUGIFY_SCRIPT), title],
                 cwd=PROJECT_ROOT,
                 text=True,
                 capture_output=True,
-                timeout=15,
+                timeout=30,
             )
             if proc.returncode == 0:
-                result = str(json.loads(proc.stdout).get("slug", ""))
+                result = proc.stdout.strip()
         except Exception:
             result = ""
     if not result:
-        result = f"gacha-{date_part}"
+        date_match = re.search(r"(20\d{2})/(\d{2})/(\d{2})", start_date)
+        date_part = "".join(date_match.groups()) if date_match else datetime.now().strftime("%Y%m%d")
+        digest = hashlib.sha1(title.encode("utf-8")).hexdigest()[:6] if title else "new"
+        result = f"gacha-{date_part}-{digest}"
     result = re.sub(r"[^a-z0-9-]+", "-", result.lower()).strip("-")
     result = re.sub(r"-+", "-", result)
     if not result:
         result = f"gacha-{datetime.now():%Y%m%d-%H%M%S}"
     return result[:80]
+
+
+def _normalize_manual_item_image(data: bytes) -> Image.Image:
+    if not data or len(data) > 40_000_000:
+        raise AppError("追加画像のサイズが不正です。")
+    try:
+        with Image.open(io.BytesIO(data)) as source:
+            image = source.convert("RGBA")
+    except Exception as ex:
+        raise AppError("追加画像を読み込めません。") from ex
+
+    image.thumbnail((192, 192), Image.Resampling.LANCZOS)
+    canvas = Image.new("RGBA", (192, 192), (0, 0, 0, 0))
+    left = (192 - image.width) // 2
+    top = (192 - image.height) // 2
+    canvas.paste(image, (left, top), image)
+    return canvas
+
+
+def add_manual_items(session_id: str, position: int, payloads: Sequence[Tuple[str, bytes]]) -> Dict[str, Any]:
+    session_dir = _session_dir(session_id)
+    draft_path = session_dir / "draft.json"
+    items_dir = session_dir / "generated" / "items"
+    if not draft_path.is_file() or not items_dir.is_dir():
+        raise AppError("追加先の処理データがありません。スクショをもう一度処理してください。")
+    if not payloads:
+        raise AppError("追加する画像を選択してください。")
+
+    draft = json.loads(draft_path.read_text(encoding="utf-8"))
+    items = list(draft.get("items", []))
+    insert_at = max(0, min(len(items), position - 1))
+    added_count = len(payloads)
+
+    for old_index in range(len(items), insert_at, -1):
+        old_path = items_dir / f"{old_index:02d}.png"
+        new_path = items_dir / f"{old_index + added_count:02d}.png"
+        if old_path.is_file():
+            old_path.replace(new_path)
+
+    additions = []
+    for offset, (filename, data) in enumerate(payloads):
+        item_index = insert_at + offset + 1
+        output = _normalize_manual_item_image(data)
+        output.save(items_dir / f"{item_index:02d}.png", "PNG")
+        additions.append(
+            {
+                "index": item_index,
+                "sourceImageIndex": item_index,
+                "name": "",
+                "rarity": "SR",
+                "category": "未分類",
+                "confidence": 0,
+                "source": f"manual:{_safe_filename(filename)}",
+                "box": [0, 0, output.width, output.height],
+                "imageUrl": f"/workspace/{session_id}/generated/items/{item_index:02d}.png",
+            }
+        )
+
+    items[insert_at:insert_at] = additions
+    for index, item in enumerate(items, start=1):
+        item["index"] = index
+        item["sourceImageIndex"] = index
+        item["imageUrl"] = f"/workspace/{session_id}/generated/items/{index:02d}.png"
+
+    draft["items"] = items
+    warnings = [x for x in draft.get("warnings", []) if "手動追加" not in x]
+    warnings.append(f"未検出画像を{added_count}件手動追加しました。名前・レアリティ・カテゴリを確認してください。")
+    draft["warnings"] = warnings
+    draft_path.write_text(json.dumps(draft, ensure_ascii=False, indent=2), encoding="utf-8")
+    return draft
 
 
 def _unique_slug(base: str) -> str:
@@ -1466,6 +1532,33 @@ class Handler(BaseHTTPRequestHandler):
             if parsed.path == "/api/process":
                 obj = self._read_json()
                 draft = process_session(str(obj.get("sessionId", "")))
+                self._send_json({"ok": True, "draft": draft})
+                return
+
+            if parsed.path == "/api/save-draft":
+                obj = self._read_json()
+                session_id = str(obj.get("sessionId", ""))
+                draft = obj.get("draft", {})
+                if not isinstance(draft, dict):
+                    raise AppError("確認内容を保存できません。")
+                draft_path = _session_dir(session_id) / "draft.json"
+                if not draft_path.is_file():
+                    raise AppError("処理データがありません。")
+                draft_path.write_text(json.dumps(draft, ensure_ascii=False, indent=2), encoding="utf-8")
+                self._send_json({"ok": True})
+                return
+
+            if parsed.path == "/api/manual-item":
+                session_id = query.get("session", [""])[0]
+                filename = _safe_filename(query.get("name", ["manual.png"])[0])
+                try:
+                    position = int(query.get("position", ["1"])[0])
+                except ValueError as ex:
+                    raise AppError("追加位置が不正です。") from ex
+                length = int(self.headers.get("Content-Length", "0"))
+                if length <= 0 or length > 40_000_000:
+                    raise AppError("追加画像のサイズが不正です。")
+                draft = add_manual_items(session_id, position, [(filename, self.rfile.read(length))])
                 self._send_json({"ok": True, "draft": draft})
                 return
 
