@@ -1,0 +1,27 @@
+{
+  "slug": "junpaku-hanayome",
+  "items": [
+    { "output": "01.png", "candidateId": "c0001" },
+    { "output": "02.png", "candidateId": "c0002" },
+    { "output": "03.png", "candidateId": "c0003" },
+    { "output": "04.png", "candidateId": "c0004" },
+    { "output": "05.png", "candidateId": "c0006" },
+    { "output": "06.png", "candidateId": "c0007" },
+    { "output": "07.png", "candidateId": "c0008" },
+    { "output": "08.png", "candidateId": "c0009" },
+    { "output": "09.png", "candidateId": "c0010" },
+    { "output": "10.png", "candidateId": "c0012" },
+    { "output": "11.png", "candidateId": "c0013" },
+    { "output": "12.png", "candidateId": "c0014" },
+    { "output": "13.png", "candidateId": "c0015" },
+    { "output": "14.png", "candidateId": "c0016" },
+    { "output": "15.png", "candidateId": "c0018" },
+    { "output": "16.png", "candidateId": "c0019" },
+    { "output": "17.png", "candidateId": "c0020" },
+    { "output": "18.png", "candidateId": "c0021" },
+    { "output": "19.png", "candidateId": "c0022" },
+    { "output": "20.png", "candidateId": "c0023" },
+    { "output": "21.png", "candidateId": "c0025" },
+    { "output": "22.png", "candidateId": "c0026" }
+  ]
+}

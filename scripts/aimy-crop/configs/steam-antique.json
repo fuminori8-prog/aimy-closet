@@ -1,0 +1,21 @@
+{
+  "slug": "steam-antique",
+  "items": [
+    { "output": "01.png", "candidateId": "c0001" },
+    { "output": "02.png", "candidateId": "c0002" },
+    { "output": "03.png", "candidateId": "c0003" },
+    { "output": "04.png", "candidateId": "c0004" },
+    { "output": "05.png", "candidateId": "c0005" },
+    { "output": "06.png", "candidateId": "c0006" },
+    { "output": "07.png", "candidateId": "c0007" },
+    { "output": "08.png", "candidateId": "c0008" },
+    { "output": "09.png", "candidateId": "c0009" },
+    { "output": "10.png", "candidateId": "c0010" },
+    { "output": "11.png", "candidateId": "c0013" },
+    { "output": "12.png", "candidateId": "c0014" },
+    { "output": "13.png", "candidateId": "c0015" },
+    { "output": "14.png", "candidateId": "c0016" },
+    { "output": "15.png", "candidateId": "c0017" },
+    { "output": "16.png", "candidateId": "c0023" }
+  ]
+}
