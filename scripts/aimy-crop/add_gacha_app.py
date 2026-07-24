@@ -935,6 +935,31 @@ def add_manual_items(session_id: str, position: int, payloads: Sequence[Tuple[st
     return draft
 
 
+def add_manual_crop(
+    session_id: str, position: int, source_name: str, box: Sequence[float]
+) -> Dict[str, Any]:
+    """Insert a crop taken from a screenshot already uploaded for this session."""
+    safe_name = _safe_filename(source_name)
+    source_path = _session_dir(session_id) / "uploads" / safe_name
+    if not source_path.is_file():
+        raise AppError("選択した元スクショが見つかりません。")
+    if len(box) != 4:
+        raise AppError("切り抜き範囲が不正です。")
+    with Image.open(source_path) as source:
+        width, height = source.size
+        left, top, right, bottom = (int(round(float(value))) for value in box)
+        left = max(0, min(width - 1, left))
+        top = max(0, min(height - 1, top))
+        right = max(left + 1, min(width, right))
+        bottom = max(top + 1, min(height, bottom))
+        if right - left < 20 or bottom - top < 20:
+            raise AppError("アイテムを囲うように、もう少し大きく範囲選択してください。")
+        cropped = source.convert("RGBA").crop((left, top, right, bottom))
+        buffer = io.BytesIO()
+        cropped.save(buffer, "PNG")
+    return add_manual_items(session_id, position, [(safe_name, buffer.getvalue())])
+
+
 def _unique_slug(base: str) -> str:
     slug = base
     number = 2
@@ -1129,6 +1154,13 @@ def process_session(session_id: str) -> Dict[str, Any]:
         "bannerUrl": f"/workspace/{session_id}/generated/banner.jpg",
         "bannerInfo": banner_info,
         "items": items,
+        "sourceImages": [
+            {
+                "name": path.name,
+                "url": f"/workspace/{session_id}/uploads/{urllib.parse.quote(path.name)}",
+            }
+            for path in screenshots
+        ],
         "warnings": warnings,
         "screenshotCount": len(screenshots),
         "screenshotOrder": [path.name for path in screenshots],
@@ -1552,6 +1584,21 @@ class Handler(BaseHTTPRequestHandler):
                 if length <= 0 or length > 40_000_000:
                     raise AppError("追加画像のサイズが不正です。")
                 draft = add_manual_items(session_id, position, [(filename, self.rfile.read(length))])
+                self._send_json({"ok": True, "draft": draft})
+                return
+
+            if parsed.path == "/api/manual-crop":
+                obj = self._read_json()
+                try:
+                    position = int(obj.get("position", 1))
+                except (TypeError, ValueError) as ex:
+                    raise AppError("追加位置が不正です。") from ex
+                draft = add_manual_crop(
+                    str(obj.get("sessionId", "")),
+                    position,
+                    str(obj.get("source", "")),
+                    obj.get("box", []),
+                )
                 self._send_json({"ok": True, "draft": draft})
                 return
 

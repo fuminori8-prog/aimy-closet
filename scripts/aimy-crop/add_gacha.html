@@ -50,6 +50,12 @@
     .manual-add { display: flex; align-items: end; gap: 8px; flex-wrap: wrap; }
     .manual-add label { width: 110px; }
     .manual-add-status { width: 100%; margin: 0; }
+    .crop-picker { width: 100%; border: 1px solid #c8cdd4; border-radius: 12px; padding: 12px; background: #f7f8fa; }
+    .crop-picker-head { display: flex; gap: 10px; align-items: end; flex-wrap: wrap; margin-bottom: 10px; }
+    .crop-picker-head label { min-width: 260px; flex: 1; }
+    .crop-stage { position: relative; width: min(100%, 720px); max-height: 70vh; overflow: auto; border-radius: 10px; background: #25272b; touch-action: none; }
+    .crop-source { display: block; max-width: 100%; height: auto; user-select: none; -webkit-user-drag: none; }
+    .crop-selection { position: absolute; border: 3px solid #ff3b30; background: rgba(255,59,48,.15); pointer-events: none; }
     .items-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(310px, 1fr)); gap: 13px; }
     .item-card { display: grid; grid-template-columns: 112px minmax(0, 1fr); gap: 13px; border: 1px solid #dfe3e8; border-radius: 13px; padding: 12px; background: #fff; }
     .item-image-wrap { text-align: center; }
@@ -156,8 +162,21 @@
           <input id="manualInsertPosition" type="number" min="1" value="1">
         </label>
         <button class="primary" id="addMissingItemsButton" type="button">未検出画像を追加</button>
-        <input id="missingItemsInput" type="file" accept="image/png,image/jpeg,image/webp" multiple>
-        <p class="muted manual-add-status" id="manualAddStatus">不足アイテムだけを正方形に切り抜いた画像を選択します。</p>
+        <p class="muted manual-add-status" id="manualAddStatus">投入済みスクショから未検出アイテムを選択します。</p>
+        <div class="crop-picker hidden" id="cropPicker">
+          <div class="crop-picker-head">
+            <label>元スクショ
+              <select id="cropSourceSelect"></select>
+            </label>
+            <button class="primary" id="insertCropButton" type="button" disabled>囲んだ画像をこの位置へ追加</button>
+            <button class="subtle" id="closeCropButton" type="button">閉じる</button>
+          </div>
+          <p class="muted">未検出アイテムの四角い画像部分を、左上から右下へドラッグして囲んでください。</p>
+          <div class="crop-stage" id="cropStage">
+            <img class="crop-source" id="cropSourceImage" alt="投入済みの元スクリーンショット">
+            <div class="crop-selection hidden" id="cropSelection"></div>
+          </div>
+        </div>
       </div>
     </div>
     <div class="items-grid" id="items"></div>
@@ -195,9 +214,16 @@
   const watchDot = $('watchDot');
   const retryFolderButton = $('retryFolderButton');
   const addMissingItemsButton = $('addMissingItemsButton');
-  const missingItemsInput = $('missingItemsInput');
   const manualInsertPosition = $('manualInsertPosition');
   const manualAddStatus = $('manualAddStatus');
+  const cropPicker = $('cropPicker');
+  const cropSourceSelect = $('cropSourceSelect');
+  const cropSourceImage = $('cropSourceImage');
+  const cropStage = $('cropStage');
+  const cropSelection = $('cropSelection');
+  const insertCropButton = $('insertCropButton');
+  let cropDragStart = null;
+  let cropBox = null;
 
   function setStatus(el, text, kind = '') {
     el.className = `status ${kind}`;
@@ -455,18 +481,84 @@
     manualInsertPosition.max = String((draft.items || []).length + 1);
   }
 
-  addMissingItemsButton.addEventListener('click', () => missingItemsInput.click());
-  missingItemsInput.addEventListener('change', async () => {
-    const files = [...missingItemsInput.files]
-      .filter(file => /^image\//.test(file.type))
-      .sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }));
-    if (!files.length || !state.sessionId || !state.draft) return;
+  function resetCropSelection() {
+    cropBox = null;
+    cropDragStart = null;
+    cropSelection.classList.add('hidden');
+    insertCropButton.disabled = true;
+  }
 
+  function showSelectedSource() {
+    const source = (state.draft.sourceImages || [])[Number(cropSourceSelect.value) || 0];
+    resetCropSelection();
+    if (source) cropSourceImage.src = source.url;
+  }
+
+  addMissingItemsButton.addEventListener('click', () => {
+    const sources = state.draft?.sourceImages || [];
+    if (!sources.length) {
+      manualAddStatus.textContent = '投入済みスクショを取得できません。いったん同じスクショを読み直してください。';
+      return;
+    }
+    cropSourceSelect.innerHTML = '';
+    sources.forEach((source, index) => {
+      const item = document.createElement('option');
+      item.value = String(index);
+      item.textContent = `${index + 1}. ${source.name}`;
+      cropSourceSelect.appendChild(item);
+    });
+    cropPicker.classList.remove('hidden');
+    showSelectedSource();
+    cropPicker.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  });
+
+  cropSourceSelect.addEventListener('change', showSelectedSource);
+  $('closeCropButton').addEventListener('click', () => cropPicker.classList.add('hidden'));
+
+  function cropPoint(event) {
+    const rect = cropSourceImage.getBoundingClientRect();
+    return {
+      x: Math.max(0, Math.min(rect.width, event.clientX - rect.left)),
+      y: Math.max(0, Math.min(rect.height, event.clientY - rect.top)),
+    };
+  }
+
+  cropStage.addEventListener('pointerdown', event => {
+    if (!cropSourceImage.complete) return;
+    event.preventDefault();
+    cropStage.setPointerCapture(event.pointerId);
+    cropDragStart = cropPoint(event);
+    cropBox = null;
+    cropSelection.classList.remove('hidden');
+  });
+  cropStage.addEventListener('pointermove', event => {
+    if (!cropDragStart) return;
+    const point = cropPoint(event);
+    const left = Math.min(cropDragStart.x, point.x);
+    const top = Math.min(cropDragStart.y, point.y);
+    const width = Math.abs(point.x - cropDragStart.x);
+    const height = Math.abs(point.y - cropDragStart.y);
+    cropSelection.style.left = `${left}px`;
+    cropSelection.style.top = `${top}px`;
+    cropSelection.style.width = `${width}px`;
+    cropSelection.style.height = `${height}px`;
+    cropBox = { left, top, right: left + width, bottom: top + height };
+    insertCropButton.disabled = width < 12 || height < 12;
+  });
+  cropStage.addEventListener('pointerup', event => {
+    if (cropDragStart) cropStage.releasePointerCapture(event.pointerId);
+    cropDragStart = null;
+  });
+
+  insertCropButton.addEventListener('click', async () => {
+    const source = (state.draft.sourceImages || [])[Number(cropSourceSelect.value) || 0];
+    if (!source || !cropBox) return;
     let position = Number.parseInt(manualInsertPosition.value, 10);
     if (!Number.isFinite(position)) position = state.draft.items.length + 1;
     position = Math.max(1, Math.min(state.draft.items.length + 1, position));
-
-    addMissingItemsButton.disabled = true;
+    const scaleX = cropSourceImage.naturalWidth / cropSourceImage.clientWidth;
+    const scaleY = cropSourceImage.naturalHeight / cropSourceImage.clientHeight;
+    insertCropButton.disabled = true;
     try {
       collectDraft();
       await jsonFetch('/api/save-draft', {
@@ -474,28 +566,29 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ sessionId: state.sessionId, draft: state.draft }),
       });
-
-      for (let index = 0; index < files.length; index++) {
-        const file = files[index];
-        manualAddStatus.textContent = `追加中 ${index + 1}/${files.length}: ${file.name}`;
-        const result = await jsonFetch(
-          `/api/manual-item?session=${encodeURIComponent(state.sessionId)}&position=${position + index}&name=${encodeURIComponent(file.name)}`,
-          {
-            method: 'POST',
-            headers: { 'Content-Type': file.type || 'application/octet-stream' },
-            body: file,
-          },
-        );
-        state.draft = result.draft;
-      }
+      const result = await jsonFetch('/api/manual-crop', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          sessionId: state.sessionId,
+          position,
+          source: source.name,
+          box: [
+            cropBox.left * scaleX,
+            cropBox.top * scaleY,
+            cropBox.right * scaleX,
+            cropBox.bottom * scaleY,
+          ],
+        }),
+      });
+      state.draft = result.draft;
       renderDraft();
-      manualInsertPosition.value = String(position + files.length);
-      manualAddStatus.textContent = `${files.length}件を追加しました。名前・レアリティ・カテゴリを入力してください。`;
+      manualInsertPosition.value = String(position + 1);
+      manualAddStatus.textContent = `${position}番へ追加しました。続けて囲めば、次は${position + 1}番へ入ります。`;
+      resetCropSelection();
     } catch (error) {
       manualAddStatus.textContent = `追加できませんでした: ${error.message}`;
-    } finally {
-      missingItemsInput.value = '';
-      addMissingItemsButton.disabled = false;
+      insertCropButton.disabled = false;
     }
   });
 
