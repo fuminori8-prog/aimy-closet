@@ -938,7 +938,7 @@ def add_manual_items(session_id: str, position: int, payloads: Sequence[Tuple[st
 def add_manual_crop(
     session_id: str, position: int, source_name: str, box: Sequence[float]
 ) -> Dict[str, Any]:
-    """Insert a crop taken from a screenshot already uploaded for this session."""
+    """Insert only an image into the existing rows; names stay where they are."""
     safe_name = _safe_filename(source_name)
     source_path = _session_dir(session_id) / "uploads" / safe_name
     if not source_path.is_file():
@@ -957,7 +957,49 @@ def add_manual_crop(
         cropped = source.convert("RGBA").crop((left, top, right, bottom))
         buffer = io.BytesIO()
         cropped.save(buffer, "PNG")
-    return add_manual_items(session_id, position, [(safe_name, buffer.getvalue())])
+
+    session_dir = _session_dir(session_id)
+    draft_path = session_dir / "draft.json"
+    items_dir = session_dir / "generated" / "items"
+    if not draft_path.is_file() or not items_dir.is_dir():
+        raise AppError("差し込み先の処理データがありません。")
+    draft = json.loads(draft_path.read_text(encoding="utf-8"))
+    items = list(draft.get("items", []))
+    if not items:
+        raise AppError("差し込み先のアイテムがありません。")
+    insert_at = max(0, min(len(items) - 1, position - 1))
+
+    # Convert older drafts to immutable image references before changing order.
+    for index, item in enumerate(items, start=1):
+        if not item.get("sourceImageFile"):
+            old_index = int(item.get("sourceImageIndex", index))
+            item["sourceImageFile"] = f"{old_index:02d}.png"
+
+    for index in range(len(items) - 1, insert_at, -1):
+        items[index]["sourceImageFile"] = items[index - 1]["sourceImageFile"]
+
+    image_file = f"manual-{time.time_ns()}.png"
+    output = _normalize_manual_item_image(buffer.getvalue())
+    output.save(items_dir / image_file, "PNG")
+    items[insert_at]["sourceImageFile"] = image_file
+
+    revision = time.time_ns()
+    for index, item in enumerate(items, start=1):
+        item["index"] = index
+        item["imageUrl"] = (
+            f"/workspace/{session_id}/generated/items/"
+            f"{urllib.parse.quote(str(item['sourceImageFile']))}?v={revision}"
+        )
+
+    draft["items"] = items
+    warnings = [x for x in draft.get("warnings", []) if "画像を差し込み" not in x]
+    warnings.append(
+        f"{position}番へ画像を差し込み、元の画像だけを後続行へ送りました。"
+        "アイテム名は移動していません。"
+    )
+    draft["warnings"] = warnings
+    draft_path.write_text(json.dumps(draft, ensure_ascii=False, indent=2), encoding="utf-8")
+    return draft
 
 
 def _unique_slug(base: str) -> str:
@@ -1120,6 +1162,7 @@ def process_session(session_id: str) -> Dict[str, Any]:
             {
                 "index": index,
                 "sourceImageIndex": index,
+                "sourceImageFile": f"{index:02d}.png",
                 "name": name,
                 "rarity": candidate["rarity"],
                 "category": candidate["category"],
@@ -1314,8 +1357,12 @@ def publish_session(session_id: str, incoming: Dict[str, Any]) -> Dict[str, Any]
         shutil.rmtree(ordered_items_stage)
     ordered_items_stage.mkdir(parents=True)
     for new_index, item in enumerate(stored["items"], start=1):
-        source_index = int(item.get("sourceImageIndex", item.get("index", new_index)))
-        source_image = source_items / f"{source_index:02d}.png"
+        source_file = str(item.get("sourceImageFile", "")).strip()
+        if not source_file:
+            source_index = int(item.get("sourceImageIndex", item.get("index", new_index)))
+            source_file = f"{source_index:02d}.png"
+        source_file = Path(source_file).name
+        source_image = source_items / source_file
         if not source_image.exists():
             raise AppError(f"{new_index:02d}番に対応する生成画像がありません。")
         shutil.copy2(source_image, ordered_items_stage / f"{new_index:02d}.png")
