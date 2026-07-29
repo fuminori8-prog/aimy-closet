@@ -44,29 +44,36 @@ def _estimate_rarity(image: Image.Image, box: BBox) -> str:
     left, top, right, bottom = box
     w = right - left
     h = bottom - top
-    sample = image.crop((left + int(w * 0.58), top + int(h * 0.03), right - 2, top + int(h * 0.27))).convert("RGB")
+    # Read only the top-right rarity badge. A wider sample can include blonde
+    # or orange hair and falsely turn an SSR card into gold/SR.
+    sample = image.crop(
+        (left + int(w * 0.68), top, right - 1, top + int(h * 0.30))
+    ).convert("RGB")
     px = sample.load()
     sw, sh = sample.size
 
-    sr_hits = 0
-    vivid_hits = 0
+    gold_hits = 0
+    rainbow_hits = 0
     for y in range(sh):
         for x in range(sw):
             r, g, b = px[x, y]
             mx = max(r, g, b)
             mn = min(r, g, b)
             sat = mx - mn
-            if r > 165 and g > 110 and b < 130:
-                sr_hits += 1
-            if sat > 55 and mx > 130:
-                vivid_hits += 1
+            if r > 150 and g > 90 and r > g * 1.05 and g > b * 1.15:
+                gold_hits += 1
+            if (
+                (b > 130 and g > 115 and b > r * 1.05)
+                or (g > 130 and g > r * 1.05)
+            ):
+                rainbow_hits += 1
 
     total = max(1, sw * sh)
-    sr_ratio = sr_hits / total
-    vivid_ratio = vivid_hits / total
-    if sr_ratio > 0.18:
+    gold_ratio = gold_hits / total
+    rainbow_ratio = rainbow_hits / total
+    if gold_ratio > 0.08:
         return "SR"
-    if vivid_ratio > 0.30:
+    if rainbow_ratio > 0.08:
         return "SSR"
     return "UNKNOWN"
 
@@ -159,6 +166,78 @@ def _detect_boxes(image: Image.Image) -> List[BBox]:
             if min_x > max_card_left:
                 continue
             components.append((min_x, min_y, max_x2 + 1, max_y + 1))
+
+    components.sort(key=lambda b: (b[1], b[0]))
+
+    # JPEG compression can break an SSR rainbow border into several disconnected
+    # pieces. Detect card-sized vertical colour bands as a geometry fallback.
+    soft_left = max(0, round(45 * scale))
+    soft_right = min(w, max(soft_left + 20, round(320 * scale)))
+    soft_threshold = max(4, round(16 * scale))
+    soft_rows: List[int] = []
+    for y in range(h):
+        hits = 0
+        for x in range(soft_left, soft_right):
+            r, g, b = px[x, y]
+            if max(r, g, b) > 100 and max(r, g, b) - min(r, g, b) > 15:
+                hits += 1
+        soft_rows.append(hits)
+
+    intervals: List[Tuple[int, int]] = []
+    start: Optional[int] = None
+    last_hit = -10
+    for y, hits in enumerate(soft_rows):
+        if hits >= soft_threshold:
+            if start is None:
+                start = y
+            last_hit = y
+        elif start is not None and y - last_hit > 2:
+            intervals.append((start, last_hit + 1))
+            start = None
+    if start is not None:
+        intervals.append((start, last_hit + 1))
+
+    fallback: List[BBox] = []
+    for top, bottom in intervals:
+        height = bottom - top
+        if not (min_card_size <= height <= max_card_size + round(12 * scale)):
+            continue
+
+        xs: List[int] = []
+        left_colour = 0
+        right_colour = 0
+        for y in range(top, bottom):
+            for x in range(soft_left, soft_right):
+                r, g, b = px[x, y]
+                if max(r, g, b) > 100 and max(r, g, b) - min(r, g, b) > 15:
+                    xs.append(x)
+                    left_colour += 1
+            for x in range(soft_right, w):
+                r, g, b = px[x, y]
+                if max(r, g, b) > 100 and max(r, g, b) - min(r, g, b) > 15:
+                    right_colour += 1
+
+        if not xs or right_colour > left_colour * 0.6:
+            continue
+        left = min(xs)
+        right = max(xs) + 1
+        width = right - left
+        if not (min_card_size <= width <= max_card_size + round(12 * scale)):
+            continue
+        if not 0.78 <= width / max(1, height) <= 1.28:
+            continue
+        fallback.append((left, top, right, bottom))
+
+    def overlaps(a: BBox, b: BBox) -> bool:
+        ax = (a[0] + a[2]) / 2
+        ay = (a[1] + a[3]) / 2
+        bx = (b[0] + b[2]) / 2
+        by = (b[1] + b[3]) / 2
+        return abs(ax - bx) <= max(8, 20 * scale) and abs(ay - by) <= max(8, 20 * scale)
+
+    for box in fallback:
+        if not any(overlaps(box, old) for old in components):
+            components.append(box)
 
     components.sort(key=lambda b: (b[1], b[0]))
     return components
