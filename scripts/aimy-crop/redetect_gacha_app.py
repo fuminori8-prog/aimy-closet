@@ -378,7 +378,7 @@ def _write_session_manifest(
                 "candidateSharpness": candidate["sharpness"],
                 "matchCost": cost,
                 "matchQuality": "良好" if cost <= 34 else ("要確認" if cost <= 55 else "弱い"),
-                "resolutionQuality": "十分" if candidate["side"] >= MIN_CARD_SIDE else "不足",
+                "resolutionQuality": "十分" if candidate["side"] >= MIN_CARD_SIDE else "低解像度",
             }
         )
 
@@ -454,7 +454,7 @@ def process_sources(slug: str, session_id: str, use_stored: bool) -> Dict[str, A
             {"session": session_id, "file": row["candidateFile"], "v": time.time_ns()}
         )
 
-    low_resolution_count = sum(row["resolutionQuality"] == "不足" for row in mapping)
+    low_resolution_count = sum(row["resolutionQuality"] == "低解像度" for row in mapping)
     weak_match_count = sum(row["matchQuality"] == "弱い" for row in mapping)
     warnings: List[str] = []
     if len(candidates) < len(items):
@@ -469,14 +469,17 @@ def process_sources(slug: str, session_id: str, use_stored: bool) -> Dict[str, A
     if low_resolution_count:
         warnings.append(
             f"{low_resolution_count}件は元カードが{MIN_CARD_SIDE}px未満です。"
-            "このまま拡大保存せず、iPhoneの元サイズ（目安：スクショ幅1000px以上）を選び直してください。"
+            "拡大加工はせず、検出した原寸のまま保存できます。"
+            "より高画質にしたい場合だけ、iPhoneの元サイズ（目安：スクショ幅1000px以上）で再検出してください。"
         )
     if weak_match_count:
         warnings.append(
             f"{weak_match_count}件は現画像との一致度が弱いため、左右の画像対応を重点確認してください。"
         )
 
-    publish_ready = len(selected) == len(items) and low_resolution_count == 0
+    # Resolution is information for the user, not a reason to take control away.
+    # When every existing item has exactly one candidate, native-size saving is safe.
+    publish_ready = len(selected) == len(items)
     return {
         "sessionId": session_id,
         "slug": slug,
@@ -485,6 +488,7 @@ def process_sources(slug: str, session_id: str, use_stored: bool) -> Dict[str, A
         "candidateCount": len(candidates),
         "mappedCount": len(mapping),
         "publishReady": publish_ready,
+        "lowResolutionCount": low_resolution_count,
         "minimumCardSide": MIN_CARD_SIDE,
         "sources": [_source_summary(source) for source in sources],
         "mapping": mapping,
@@ -547,8 +551,6 @@ def publish_session(session_id: str, confirmed: bool) -> Dict[str, Any]:
     mapping = manifest.get("mapping") or []
     if len(mapping) != len(items):
         raise AppError("検出数と登録アイテム数が一致していません。")
-    if any(row.get("resolutionQuality") != "十分" for row in mapping):
-        raise AppError("低解像度候補が残っています。フル解像度の元スクショで再検出してください。")
     if not confirmed:
         raise AppError("左右の画像とアイテム名が一致していることを確認してください。")
 

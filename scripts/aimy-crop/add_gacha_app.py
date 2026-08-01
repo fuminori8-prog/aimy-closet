@@ -55,7 +55,6 @@ from detect_cards import _compute_dhash, _detect_boxes, _estimate_rarity, _hammi
 from export_cards import _crop_without_stretch  # noqa: E402
 
 IMAGE_EXTS = {".png", ".jpg", ".jpeg", ".webp"}
-MIN_NATIVE_CARD_SIDE = 150
 CATEGORY_ALIASES = {
     "衣装": "衣装",
     "目": "目",
@@ -576,12 +575,6 @@ def run_ocr(image_path: Path) -> List[OCRLine]:
 def _crop_item_for_output(image: Image.Image, box: Tuple[int, int, int, int]) -> Image.Image:
     """Crop at native resolution and never manufacture pixels by enlargement."""
     crop = image.crop(box).convert("RGBA")
-    if min(crop.size) < MIN_NATIVE_CARD_SIDE:
-        raise AppError(
-            f"元スクショの解像度が不足しています（検出枠 {crop.width}×{crop.height}px）。"
-            "縮小画像を192pxへ引き伸ばすとぼやけるため保存を中止しました。"
-            "iPhoneから書き出した元サイズのスクショ（目安：横幅1000px以上）を使用してください。"
-        )
     side = min(crop.size)
     left = (crop.width - side) // 2
     top = (crop.height - side) // 2
@@ -915,11 +908,6 @@ def _normalize_manual_item_image(data: bytes) -> Image.Image:
         raise AppError(
             "手動追加画像は正方形に切り抜いてください。"
             "縦長・横長画像を縮小して余白付きにはしません。"
-        )
-    if min(image.size) < MIN_NATIVE_CARD_SIDE:
-        raise AppError(
-            f"追加画像が小さすぎます（{image.width}×{image.height}px）。"
-            f"一辺{MIN_NATIVE_CARD_SIDE}px以上の切り抜き画像を選んでください。"
         )
     side = min(image.size)
     left = (image.width - side) // 2

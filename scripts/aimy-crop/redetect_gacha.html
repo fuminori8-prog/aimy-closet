@@ -464,7 +464,9 @@
         elements.resultItems.textContent = `${result.itemCount}件`;
         elements.resultCandidates.textContent = `${result.candidateCount}件`;
         elements.resultMapped.textContent = `${result.mappedCount}件`;
-        elements.resultReady.textContent = result.publishReady ? "反映可能" : "要再検出";
+        elements.resultReady.textContent = result.publishReady
+          ? (result.lowResolutionCount ? "反映可能（原寸保存）" : "反映可能")
+          : "要再検出";
         elements.resultReady.className = result.publishReady ? "quality-good" : "quality-warn";
         elements.warnings.replaceChildren();
         for (const warningText of result.warnings) {
@@ -514,11 +516,13 @@
         elements.status.hidden = false;
         elements.status.classList.remove("error");
         elements.status.textContent = result.publishReady
-          ? "再検出が完了しました。左右の対応を確認してから本番反映できます。"
-          : "検出は完了しましたが、解像度または件数が不足しています。警告に従って原本を選び直してください。";
+          ? (result.lowResolutionCount
+              ? `再検出が完了しました。${result.lowResolutionCount}件は低解像度ですが、拡大せず原寸のまま本番反映できます。`
+              : "再検出が完了しました。左右の対応を確認してから本番反映できます。")
+          : "検出数が不足しています。不足している範囲のスクショを追加して再検出してください。";
         elements.saveState.textContent = result.publishReady
-          ? "差し替え前後を確認し、確認欄へチェックしてください。"
-          : "この結果は本番反映できません。フル解像度の元スクショで再検出してください。";
+          ? "差し替え前後を確認し、確認欄へチェックすると保存できます。"
+          : "検出数と登録数が一致していないため、本番反映できません。";
         refreshPublishButton();
         elements.results.scrollIntoView({ behavior: "smooth", block: "start" });
       }
