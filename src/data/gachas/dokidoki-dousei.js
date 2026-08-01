@@ -109,17 +109,17 @@ const gacha = {
       image: '/images/items/dokidoki-dousei/14.png',
     },
     {
-      id: 'dokidoki-dousei-yuagari-hoppe',
+      id: 'dokidoki-osanage-tareme-bluegreen',
       rarity: 'SR',
-      category: 'メイク',
-      name: '湯上がりほっぺ',
+      category: '目',
+      name: '幼気タレ目(青緑)',
       image: '/images/items/dokidoki-dousei/15.png',
     },
     {
       id: 'dokidoki-dousei-terease-hoppe',
       rarity: 'SR',
       category: 'メイク',
-      name: 'てれあせほっぺ',
+      name: '湯上がりほっぺ',
       image: '/images/items/dokidoki-dousei/16.png',
     },
     {
