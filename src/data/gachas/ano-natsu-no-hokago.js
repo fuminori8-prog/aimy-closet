@@ -14,7 +14,7 @@ const gacha = {
       id: 'ano-natsu-no-hokago-01',
       rarity: 'SSR',
       category: '衣装',
-      name: 'ギャルちゃんの要制服',
+      name: 'ギャルちゃんの夏制服',
       image: '/images/items/ano-natsu-no-hokago/01.png',
     },
     {
