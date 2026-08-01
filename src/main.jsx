@@ -9,6 +9,7 @@ import ItemList from './pages/ItemList.jsx'
 import ItemDetail from './pages/ItemDetail.jsx'
 import Favorites from './pages/Favorites.jsx'
 import ImageSearch from './pages/ImageSearch.jsx'
+import HistoricalItemList from './pages/HistoricalItemList.jsx'
 import PrivacyPolicy from './pages/PrivacyPolicy.jsx'
 import Disclaimer from './pages/Disclaimer.jsx'
 import Contact from './pages/Contact.jsx'
@@ -29,6 +30,7 @@ createRoot(document.getElementById('root')).render(
           <Route path="/gacha/:slug" element={<GachaDetail />} />
           <Route path="/favorites" element={<Favorites />} />
           <Route path="/image-search" element={<ImageSearch />} />
+          <Route path="/historical-items" element={<HistoricalItemList />} />
           <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="/disclaimer" element={<Disclaimer />} />
           <Route path="/contact" element={<Contact />} />

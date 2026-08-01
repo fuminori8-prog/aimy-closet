@@ -21,6 +21,13 @@ const outputFilePath = path.join(
   'sitemap.xml',
 )
 
+const historicalDataPath = path.join(
+  projectDirectory,
+  'src',
+  'data',
+  'historicalItems.js',
+)
+
 function escapeXml(value) {
   return String(value)
     .replaceAll('&', '&amp;')
@@ -80,12 +87,21 @@ async function loadGachas() {
   return gachas
 }
 
-function createUrlSet(gachas) {
+async function loadHistoricalItems() {
+  const moduleUrl = pathToFileURL(historicalDataPath).href
+  const importedModule = await import(moduleUrl)
+  const items = importedModule.default ?? importedModule.historicalItems ?? []
+
+  return Array.isArray(items) ? items : []
+}
+
+function createUrlSet(gachas, historicalItems) {
   const paths = new Set([
     '/',
     '/item',
     '/gacha',
     '/image-search',
+    '/historical-items',
     '/contact',
     '/disclaimer',
     '/privacy',
@@ -104,6 +120,14 @@ function createUrlSet(gachas) {
       if (itemId) {
         paths.add(`/item/${encodeURIComponent(itemId)}`)
       }
+    }
+  }
+
+  for (const item of historicalItems) {
+    const itemId = String(item.id || '').trim()
+
+    if (itemId && !item.matchedItemId) {
+      paths.add(`/item/${encodeURIComponent(itemId)}`)
     }
   }
 
@@ -140,7 +164,8 @@ ${urlEntries}
 async function generateSitemap() {
   try {
     const gachas = await loadGachas()
-    const paths = createUrlSet(gachas)
+    const historicalItems = await loadHistoricalItems()
+    const paths = createUrlSet(gachas, historicalItems)
     const sitemapXml = createSitemapXml(paths)
 
     await writeFile(outputFilePath, sitemapXml, 'utf8')
@@ -156,6 +181,7 @@ async function generateSitemap() {
     console.log('サイトマップを生成しました')
     console.log(`ガチャ数: ${gachas.length}`)
     console.log(`アイテム数: ${itemCount}`)
+    console.log(`ガチャ未特定アイテム数: ${historicalItems.length}`)
     console.log(`URL数: ${paths.length}`)
     console.log(`出力先: ${outputFilePath}`)
   } catch (error) {

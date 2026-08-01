@@ -1,4 +1,5 @@
 import { gachas } from '../data/gachas'
+import { historicalItems } from '../data/historicalItems'
 import { getMainCategory, getSubCategory } from './itemCategory'
 
 const toTimestamp = (value) => {
@@ -24,12 +25,32 @@ export function getAllItems() {
       seenIds.add(item.id)
       items.push({
         ...item,
+        sourceType: 'gacha',
         gachaSlug: gacha.slug,
         gachaTitle: gacha.title,
         gachaStartDate: gacha.startDate,
         normalizedCategory: getMainCategory(item.category),
         subCategory: getSubCategory(item.category),
       })
+    })
+  })
+
+  historicalItems.forEach((item) => {
+    if (!item?.id || seenIds.has(item.id) || item.matchedItemId) {
+      return
+    }
+
+    seenIds.add(item.id)
+    items.push({
+      ...item,
+      sourceType: 'historical',
+      gachaSlug: '',
+      gachaTitle: '',
+      gachaStartDate: '',
+      normalizedCategory: getMainCategory(
+        item.mainCategory || item.category,
+      ),
+      subCategory: getSubCategory(item.category),
     })
   })
 

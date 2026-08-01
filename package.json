@@ -9,7 +9,8 @@
     "build": "npm run generate:sitemap && vite build",
     "lint": "oxlint src scripts",
     "preview": "vite preview",
-    "add-gacha": "python3 scripts/aimy-crop/add_gacha_app.py"
+    "add-gacha": "python3 scripts/aimy-crop/add_gacha_app.py",
+    "import-historical": "python3 scripts/aimy-crop/historical_items_app.py"
   },
   "dependencies": {
     "firebase": "^12.11.0",
@@ -21,8 +22,6 @@
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.3",
-    "kuroshiro": "1.2.0",
-    "kuroshiro-analyzer-kuromoji": "1.1.0",
     "oxlint": "^1.71.0",
     "vite": "^8.1.1"
   }

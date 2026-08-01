@@ -122,6 +122,10 @@ function ItemList() {
             📷 名前が分からないアイテムを画像から探す
           </Link>
 
+          <Link to="/historical-items" className="historical-entry-link">
+            🗂 ガチャ名・名称が未特定の過去アイテムを見る
+          </Link>
+
           <SearchBar targetPath="/item" />
 
           <div className="filter-group" aria-label="item category filters">
@@ -208,7 +212,11 @@ function ItemList() {
                   <Fragment key={item.id}>
                     <GachaItemCard
                       item={{ ...item, category: categoryLabel }}
-                      subtext={`ガチャ: ${item.gachaTitle}`}
+                      subtext={
+                        item.sourceType === 'historical'
+                          ? `${item.implementationPeriod}・ガチャ未特定`
+                          : `ガチャ: ${item.gachaTitle}`
+                      }
                     />
 
                     {showInlineAd ? (

@@ -60,7 +60,11 @@ function Favorites() {
                   <GachaItemCard
                     key={item.id}
                     item={item}
-                    subtext={`排出: ${item.gachaTitle}`}
+                    subtext={
+                      item.sourceType === 'historical'
+                        ? `${item.implementationPeriod}・ガチャ未特定`
+                        : `排出: ${item.gachaTitle}`
+                    }
                   />
                 ))}
               </div>

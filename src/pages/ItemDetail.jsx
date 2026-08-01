@@ -7,6 +7,7 @@ import AdBanner from '../components/AdBanner'
 import GachaItemCard from '../components/GachaItemCard'
 import FavoriteButton from '../components/FavoriteButton'
 import { gachas } from '../data/gachas'
+import { getAllItems, getItemById } from '../utils/items'
 import {
   getMainCategory,
   getSubCategory,
@@ -18,13 +19,17 @@ function ItemDetail() {
   const [hasImageError, setHasImageError] = useState(false)
 
   const found = useMemo(() => {
-    for (const gacha of gachas) {
-      const item = (gacha.items || []).find((currentItem) => currentItem.id === itemId)
-      if (item) {
-        return { item, gacha }
-      }
+    const item = getItemById(itemId)
+    if (!item) {
+      return null
     }
-    return null
+
+    const gacha =
+      item.sourceType === 'gacha'
+        ? gachas.find((currentGacha) => currentGacha.slug === item.gachaSlug) || null
+        : null
+
+    return { item, gacha }
   }, [itemId])
 
   useEffect(() => {
@@ -37,12 +42,18 @@ function ItemDetail() {
     }
 
     const { item } = found
-    const pageTitle = `${item.name}｜入手ガチャ・アイテム情報｜Aimy Closet`
+    const displayName =
+      item.sourceType === 'historical'
+        ? `${item.name}（${item.implementationPeriod}）`
+        : item.name
+    const pageTitle = `${displayName}｜アイテム情報｜Aimy Closet`
 
     document.title = pageTitle
 
     const pageDescription =
-      `${item.name}の入手方法、排出ガチャ、レアリティ、カテゴリを掲載しています。`
+      item.sourceType === 'historical'
+        ? `${item.implementationPeriod}に実装された、名称・配布ガチャ未特定の${item.rarity}アイテムです。`
+        : `${item.name}の入手方法、排出ガチャ、レアリティ、カテゴリを掲載しています。`
 
     let meta = document.querySelector('meta[name="description"]')
 
@@ -83,7 +94,17 @@ function ItemDetail() {
 
   const { item, gacha } = found
   const hasImage = Boolean(item.image) && item.image !== 'placeholder' && !hasImageError
-  const relatedItems = (gacha.items || []).filter((currentItem) => currentItem.id !== item.id).slice(0, 4)
+  const relatedItems = (
+    gacha
+      ? gacha.items || []
+      : getAllItems().filter(
+          (currentItem) =>
+            currentItem.sourceType === 'historical' &&
+            currentItem.id !== item.id &&
+            currentItem.implementationPeriod === item.implementationPeriod &&
+            currentItem.normalizedCategory === item.normalizedCategory,
+        )
+  ).filter((currentItem) => currentItem.id !== item.id).slice(0, 4)
 
 
   
@@ -129,19 +150,33 @@ function ItemDetail() {
                  種類: {getSubCategory(item.category)}
               </p>
               ) : null}
-              <p className="gacha-meta">排出ガチャ: {gacha.title}</p>
-              <p className="gacha-meta">開催期間: {gacha.startDate} ～ {gacha.endDate}</p>
-              <div className="status-group">
-                <span className="status-badge">{gacha.status}</span>
-                {gacha.infoStatus === '情報収集中' ? <span className="info-badge">{gacha.infoStatus}</span> : null}
-              </div>
+              {gacha ? (
+                <>
+                  <p className="gacha-meta">排出ガチャ: {gacha.title}</p>
+                  <p className="gacha-meta">開催期間: {gacha.startDate} ～ {gacha.endDate}</p>
+                  <div className="status-group">
+                    <span className="status-badge">{gacha.status}</span>
+                    {gacha.infoStatus === '情報収集中' ? <span className="info-badge">{gacha.infoStatus}</span> : null}
+                  </div>
+                </>
+              ) : (
+                <>
+                  <p className="gacha-meta">実装時期: {item.implementationPeriod}</p>
+                  <p className="gacha-meta">配布ガチャ: 未特定</p>
+                  <div className="status-group">
+                    <span className="info-badge">2.5周年交換所で確認</span>
+                  </div>
+                </>
+              )}
               <FavoriteButton itemId={item.id} className="favorite-button-detail" />
               <button
                 type="button"
                 className="back-to-list-button"
-                onClick={() => navigate(`/gacha/${gacha.slug}`)}
+                onClick={() =>
+                  navigate(gacha ? `/gacha/${gacha.slug}` : '/historical-items')
+                }
               >
-                ガチャ詳細を見る
+                {gacha ? 'ガチャ詳細を見る' : '同時期の過去アイテムを見る'}
               </button>
             </div>
           </div>
@@ -151,7 +186,7 @@ function ItemDetail() {
 
         {relatedItems.length > 0 ? (
           <section className="lineup-section">
-            <h2>同じガチャの関連アイテム</h2>
+            <h2>{gacha ? '同じガチャの関連アイテム' : '同時期・同カテゴリのアイテム'}</h2>
             <div className="card-grid item-grid">
               {relatedItems.map((relatedItem) => (
                 <GachaItemCard

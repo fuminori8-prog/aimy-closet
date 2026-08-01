@@ -1056,13 +1056,59 @@ footer p {
   max-width: 100%;
 }
 
-.affiliate-ad-content img,
-.affiliate-ad-content iframe {
+.affiliate-ad-content img {
   display: block;
   max-width: 100%;
   height: auto;
   margin: 0 auto;
   border: 0;
+}
+
+.affiliate-ad-content iframe {
+  display: block;
+  margin: 0 auto;
+  border: 0;
+}
+
+.dmm-widget-host {
+  display: flex;
+  width: 100%;
+  min-height: 90px;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.dmm-widget-host.is-mobile {
+  min-height: 100px;
+}
+
+.dmm-widget-host .dmm-widget-placement {
+  display: block;
+  flex: 0 0 auto;
+}
+
+.grid-inline-ad {
+  grid-column: 1 / -1;
+  width: 100%;
+}
+
+.grid-inline-ad .affiliate-ad {
+  margin: 18px 0;
+}
+
+.footer-ad-wrap {
+  padding: 0 32px;
+}
+
+.footer-ad-wrap .affiliate-ad {
+  margin: 28px 0;
+}
+
+@media (max-width: 700px) {
+  .footer-ad-wrap {
+    padding: 0 20px;
+  }
 }
 
 .affiliate-disclosure {
@@ -1195,6 +1241,180 @@ footer p {
 .image-search-entry-link:hover {
   background: #fff0f6;
   transform: translateY(-1px);
+}
+
+.historical-entry-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 18px 8px;
+  padding: 10px 16px;
+  border: 1px solid #b9ddef;
+  border-radius: 999px;
+  background: #f2faff;
+  color: #3d7ba4;
+  font-size: 14px;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.historical-entry-link:hover {
+  background: #e7f6ff;
+  transform: translateY(-1px);
+}
+
+/* 2.5周年交換所で確認した、ガチャ未特定の過去アイテム */
+.historical-page {
+  width: min(100%, 980px);
+  margin: 0 auto;
+  overflow: hidden;
+  border: 1px solid #d7e8f3;
+  border-radius: 24px;
+  background: #ffffff;
+  box-shadow: 0 10px 28px rgba(91, 138, 170, 0.1);
+}
+
+.historical-heading {
+  padding: 24px 24px 18px;
+}
+
+.historical-heading h1 {
+  margin: 0 0 8px;
+  color: #55465b;
+  font-size: 28px;
+}
+
+.historical-heading p {
+  margin: 0;
+  color: #717885;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.historical-category-tabs {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  border-top: 1px solid #e6edf3;
+  border-bottom: 5px solid #45bdf1;
+  background: #ffffff;
+}
+
+.historical-category-tabs button {
+  display: grid;
+  min-width: 0;
+  gap: 5px;
+  justify-items: center;
+  padding: 15px 4px 12px;
+  border: 0;
+  background: transparent;
+  color: #7b7f84;
+  cursor: pointer;
+}
+
+.historical-category-tabs button span {
+  font-size: clamp(22px, 4vw, 34px);
+  line-height: 1;
+  filter: grayscale(1);
+}
+
+.historical-category-tabs button strong {
+  max-width: 100%;
+  overflow: hidden;
+  font-size: clamp(9px, 1.9vw, 15px);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.historical-category-tabs button.active {
+  color: #27aaf0;
+}
+
+.historical-category-tabs button.active span {
+  filter: none;
+}
+
+.historical-periods {
+  background: #ffffff;
+}
+
+.historical-period-section h2 {
+  margin: 0;
+  padding: 15px 13px;
+  background: #eaf5ff;
+  color: #36a2ef;
+  font-size: clamp(18px, 4vw, 28px);
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.historical-item-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 5px;
+  padding: 12px 15px 16px;
+  background: #ffffff;
+}
+
+.historical-item-tile {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  border-radius: 10px;
+  background: #eaf5ff;
+  box-shadow: 0 1px 0 rgba(88, 137, 174, 0.1);
+  transition: transform 0.16s ease, box-shadow 0.16s ease;
+}
+
+.historical-item-tile:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 13px rgba(65, 125, 169, 0.2);
+}
+
+.historical-item-tile img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: contain;
+}
+
+.historical-empty {
+  min-height: 260px;
+  display: grid;
+  place-items: center;
+  padding: 30px;
+  color: #76818e;
+  text-align: center;
+}
+
+@media (max-width: 700px) {
+  .historical-entry-link {
+    margin-left: 0;
+  }
+
+  .historical-page {
+    border-radius: 17px;
+  }
+
+  .historical-heading {
+    padding: 18px 15px 14px;
+  }
+
+  .historical-heading h1 {
+    font-size: 22px;
+  }
+
+  .historical-category-tabs button {
+    padding: 12px 2px 9px;
+  }
+
+  .historical-item-grid {
+    gap: 3px;
+    padding: 8px 8px 12px;
+  }
+
+  .historical-item-tile {
+    border-radius: 6px;
+  }
 }
 
 .image-search-page {
@@ -1491,58 +1711,3 @@ footer p {
     width: 96px;
   }
 }
-
-/* DMM同人ウィジェット開始 */
-.dmm-widget-host {
-  display: flex;
-  width: 100%;
-  min-height: 90px;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-}
-
-.dmm-widget-host.is-mobile {
-  min-height: 100px;
-}
-
-.dmm-widget-host .dmm-widget-placement {
-  display: block;
-  flex: 0 0 auto;
-}
-
-.grid-inline-ad {
-  grid-column: 1 / -1;
-  width: 100%;
-}
-
-.grid-inline-ad .affiliate-ad {
-  margin: 18px 0;
-}
-
-.footer-ad-wrap {
-  padding: 0 32px;
-}
-
-.footer-ad-wrap .affiliate-ad {
-  margin: 28px 0;
-}
-
-.dmm-widget-host.is-desktop iframe {
-  width: 728px;
-  max-width: none;
-  height: 90px;
-}
-
-.dmm-widget-host.is-mobile iframe {
-  width: 320px;
-  max-width: none;
-  height: 100px;
-}
-
-@media (max-width: 700px) {
-  .footer-ad-wrap {
-    padding: 0 20px;
-  }
-}
-/* DMM同人ウィジェット終了 */
