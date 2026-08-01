@@ -147,7 +147,7 @@ const gacha = {
       id: 'junno-shi-xian-barebaredayo-20',
       rarity: 'SR',
       category: 'チェキフレーム',
-      name: '見すぎ',
+      name: '見すぎ...',
       image: '/images/items/junno-shi-xian-barebaredayo/20.png',
     },
     {
