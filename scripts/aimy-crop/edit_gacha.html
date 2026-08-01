@@ -1,0 +1,427 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aimy 既存ガチャ編集</title>
+    <style>
+      :root {
+        color: #172033;
+        background: #f3f6fb;
+        font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", sans-serif;
+        font-synthesis: none;
+      }
+      * { box-sizing: border-box; }
+      body { margin: 0; min-width: 320px; }
+      button, input, select { font: inherit; }
+      button { cursor: pointer; }
+      .page { width: min(1080px, calc(100% - 32px)); margin: 34px auto 72px; }
+      h1 { margin: 0; font-size: clamp(28px, 4vw, 42px); }
+      .lead { margin: 10px 0 0; color: #59657a; line-height: 1.7; }
+      .safety {
+        margin: 22px 0; padding: 16px 18px; border: 1px solid #a7d9bf;
+        border-radius: 14px; background: #edf9f2; color: #245f43; line-height: 1.65;
+      }
+      .panel {
+        margin-top: 18px; padding: clamp(18px, 3vw, 30px); border: 1px solid #dce3ed;
+        border-radius: 20px; background: #fff; box-shadow: 0 10px 34px rgba(40, 55, 82, .08);
+      }
+      .field { display: grid; gap: 8px; margin-bottom: 20px; }
+      label, .label { font-weight: 800; font-size: 15px; }
+      select, input[type="text"] {
+        width: 100%; padding: 13px 14px; border: 1px solid #bac5d5; border-radius: 11px;
+        background: #fff; color: #172033; font-size: 17px;
+      }
+      input[readonly] { background: #f1f4f8; color: #657087; }
+      .hint { margin: 0; color: #68748a; font-size: 13px; line-height: 1.55; }
+      .comparison { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 14px; }
+      .preview-card { min-width: 0; }
+      .preview-title { margin: 0 0 9px; font-weight: 800; }
+      .banner-frame {
+        position: relative; width: 100%; aspect-ratio: 1125 / 202; overflow: hidden;
+        border: 2px solid #d3dae6; border-radius: 12px; background: #eef1f5;
+      }
+      .banner-frame img { width: 100%; height: 100%; object-fit: cover; display: block; }
+      .empty-banner { display: grid; place-items: center; height: 100%; color: #7b8495; }
+      .file-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 16px; }
+      .file-button, .secondary-button {
+        display: inline-flex; align-items: center; justify-content: center; min-height: 44px;
+        padding: 10px 16px; border: 1px solid #9bbce9; border-radius: 10px;
+        background: #eef6ff; color: #1764bd; font-weight: 800;
+      }
+      .secondary-button { background: #fff; color: #526078; border-color: #c9d1dd; }
+      input[type="file"] { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+      .crop-section { margin-top: 18px; padding-top: 18px; border-top: 1px solid #e1e6ee; }
+      .crop-section[hidden] { display: none; }
+      .crop-head { display: flex; justify-content: space-between; gap: 14px; align-items: start; }
+      .crop-head h2 { margin: 0; font-size: 20px; }
+      .crop-canvas-wrap {
+        width: 100%; margin-top: 12px; overflow: hidden; border: 3px solid #3b82f6;
+        border-radius: 13px; background: #dce3ed; touch-action: none; cursor: grab;
+      }
+      .crop-canvas-wrap.dragging { cursor: grabbing; }
+      canvas { display: block; width: 100%; height: auto; }
+      .crop-help { margin: 9px 0 0; color: #526078; font-size: 13px; }
+      .controls { display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: center; margin-top: 14px; }
+      input[type="range"] { width: 100%; }
+      .zoom-value { min-width: 52px; text-align: right; font-weight: 800; }
+      .change-note {
+        margin-top: 18px; padding: 14px 16px; border-radius: 11px; background: #fff8db;
+        color: #6f5615; line-height: 1.6;
+      }
+      .actions { display: flex; gap: 12px; align-items: center; margin-top: 24px; }
+      .save-button {
+        min-height: 52px; padding: 13px 26px; border: 0; border-radius: 12px;
+        background: #176bd1; color: #fff; font-size: 17px; font-weight: 900;
+        box-shadow: 0 7px 18px rgba(23, 107, 209, .25);
+      }
+      .save-button:disabled { cursor: wait; opacity: .55; }
+      .status { margin: 0; color: #526078; white-space: pre-wrap; }
+      .result {
+        margin-top: 20px; padding: 18px; border: 1px solid #8ed0ac; border-radius: 13px;
+        background: #ecf9f2; color: #185839; line-height: 1.75;
+      }
+      .result[hidden] { display: none; }
+      .error { border-color: #f0a3a3; background: #fff0f0; color: #9e2323; }
+      @media (max-width: 760px) {
+        .comparison { grid-template-columns: 1fr; }
+        .page { width: min(100% - 20px, 1080px); margin-top: 18px; }
+        .controls { grid-template-columns: auto 1fr; }
+        .zoom-value { grid-column: 2; }
+        .actions { align-items: stretch; flex-direction: column; }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <h1>既存ガチャ編集</h1>
+      <p class="lead">登録済みガチャの名前とバナーを修正します。アイテム・開催期間・URLは変更しません。</p>
+
+      <div class="safety">
+        slugは固定なので、名前を直しても既存のURLやアイテムへのリンクは壊れません。<br />
+        保存すると本番ビルドを確認し、今回の対象ファイルだけをcommit・pushします。
+      </div>
+
+      <section class="panel">
+        <div class="field">
+          <label for="gachaSelect">修正するガチャ</label>
+          <select id="gachaSelect"><option value="">読み込み中…</option></select>
+        </div>
+
+        <div class="field">
+          <label for="titleInput">ガチャ名</label>
+          <input id="titleInput" type="text" maxlength="120" autocomplete="off" />
+        </div>
+
+        <div class="field">
+          <label for="slugInput">slug（変更しません）</label>
+          <input id="slugInput" type="text" readonly />
+        </div>
+
+        <div class="comparison">
+          <div class="preview-card">
+            <p class="preview-title">現在のバナー</p>
+            <div class="banner-frame" id="currentBannerFrame">
+              <img id="currentBanner" alt="現在のバナー" />
+            </div>
+          </div>
+          <div class="preview-card">
+            <p class="preview-title">修正後のバナー</p>
+            <div class="banner-frame" id="nextBannerFrame">
+              <img id="nextBanner" alt="修正後のバナー" />
+            </div>
+          </div>
+        </div>
+
+        <div class="file-row">
+          <label class="file-button" for="bannerFile">新しい画像を選ぶ</label>
+          <input id="bannerFile" type="file" accept="image/png,image/jpeg,image/webp" />
+          <button class="secondary-button" id="clearBanner" type="button" disabled>バナー変更を取り消す</button>
+        </div>
+        <p class="hint">バナー単体でも、バナーが写ったスクリーンショット全体でも選択できます。</p>
+
+        <section class="crop-section" id="cropSection" hidden>
+          <div class="crop-head">
+            <div>
+              <h2>青枠にバナーを合わせる</h2>
+              <p class="crop-help">画像をドラッグして位置を動かします。縦横比は潰れません。</p>
+            </div>
+            <button class="secondary-button" id="resetCrop" type="button">位置を戻す</button>
+          </div>
+          <div class="crop-canvas-wrap" id="canvasWrap">
+            <canvas id="cropCanvas" width="1125" height="202"></canvas>
+          </div>
+          <div class="controls">
+            <label for="zoomRange">拡大</label>
+            <input id="zoomRange" type="range" min="1" max="5" value="1" step="0.01" />
+            <span class="zoom-value" id="zoomValue">100%</span>
+          </div>
+        </section>
+
+        <div class="change-note" id="changeNote">ガチャを選択してください。</div>
+
+        <div class="actions">
+          <button class="save-button" id="saveButton" type="button">修正を保存して本番反映</button>
+          <p class="status" id="status"></p>
+        </div>
+        <div class="result" id="result" hidden></div>
+      </section>
+    </main>
+
+    <script>
+      const WIDTH = 1125
+      const HEIGHT = 202
+      const select = document.querySelector('#gachaSelect')
+      const titleInput = document.querySelector('#titleInput')
+      const slugInput = document.querySelector('#slugInput')
+      const currentBanner = document.querySelector('#currentBanner')
+      const nextBanner = document.querySelector('#nextBanner')
+      const bannerFile = document.querySelector('#bannerFile')
+      const clearBanner = document.querySelector('#clearBanner')
+      const cropSection = document.querySelector('#cropSection')
+      const canvas = document.querySelector('#cropCanvas')
+      const canvasWrap = document.querySelector('#canvasWrap')
+      const context = canvas.getContext('2d', { alpha: false })
+      const zoomRange = document.querySelector('#zoomRange')
+      const zoomValue = document.querySelector('#zoomValue')
+      const resetCrop = document.querySelector('#resetCrop')
+      const changeNote = document.querySelector('#changeNote')
+      const saveButton = document.querySelector('#saveButton')
+      const status = document.querySelector('#status')
+      const result = document.querySelector('#result')
+
+      let gachas = []
+      let selected = null
+      let sourceImage = null
+      let sourceObjectUrl = ''
+      let bannerChanged = false
+      let zoom = 1
+      let offsetX = 0
+      let offsetY = 0
+      let drag = null
+
+      function setResult(message, isError = false) {
+        result.textContent = message
+        result.classList.toggle('error', isError)
+        result.hidden = !message
+      }
+
+      function updateChangeNote() {
+        if (!selected) {
+          changeNote.textContent = 'ガチャを選択してください。'
+          return
+        }
+        const changes = []
+        if (titleInput.value.trim() !== selected.title) changes.push('ガチャ名')
+        if (bannerChanged) changes.push('バナー')
+        changeNote.textContent = changes.length
+          ? `変更対象：${changes.join('・')}（slug・アイテム・開催期間は維持）`
+          : '現在は変更なしです。'
+      }
+
+      function resetBannerEdit() {
+        if (sourceObjectUrl) URL.revokeObjectURL(sourceObjectUrl)
+        sourceObjectUrl = ''
+        sourceImage = null
+        bannerChanged = false
+        bannerFile.value = ''
+        cropSection.hidden = true
+        clearBanner.disabled = true
+        zoom = 1
+        offsetX = 0
+        offsetY = 0
+        zoomRange.value = '1'
+        zoomValue.textContent = '100%'
+        nextBanner.src = selected?.bannerUrl || ''
+        updateChangeNote()
+      }
+
+      function chooseGacha() {
+        selected = gachas.find((gacha) => gacha.slug === select.value) || null
+        titleInput.value = selected?.title || ''
+        slugInput.value = selected?.slug || ''
+        currentBanner.src = selected?.bannerUrl || ''
+        resetBannerEdit()
+        status.textContent = ''
+        setResult('')
+      }
+
+      function coverScale() {
+        if (!sourceImage) return 1
+        return Math.max(WIDTH / sourceImage.naturalWidth, HEIGHT / sourceImage.naturalHeight) * zoom
+      }
+
+      function clampOffsets() {
+        if (!sourceImage) return
+        const scale = coverScale()
+        const overflowX = Math.max(0, sourceImage.naturalWidth * scale - WIDTH) / 2
+        const overflowY = Math.max(0, sourceImage.naturalHeight * scale - HEIGHT) / 2
+        offsetX = Math.max(-overflowX, Math.min(overflowX, offsetX))
+        offsetY = Math.max(-overflowY, Math.min(overflowY, offsetY))
+      }
+
+      function drawCrop() {
+        if (!sourceImage) return
+        clampOffsets()
+        const scale = coverScale()
+        const drawWidth = sourceImage.naturalWidth * scale
+        const drawHeight = sourceImage.naturalHeight * scale
+        const x = (WIDTH - drawWidth) / 2 + offsetX
+        const y = (HEIGHT - drawHeight) / 2 + offsetY
+        context.fillStyle = '#eef1f5'
+        context.fillRect(0, 0, WIDTH, HEIGHT)
+        context.imageSmoothingEnabled = true
+        context.imageSmoothingQuality = 'high'
+        context.drawImage(sourceImage, x, y, drawWidth, drawHeight)
+        nextBanner.src = canvas.toDataURL('image/jpeg', 0.92)
+      }
+
+      function resetCropPosition() {
+        zoom = 1
+        offsetX = 0
+        offsetY = 0
+        zoomRange.value = '1'
+        zoomValue.textContent = '100%'
+        drawCrop()
+      }
+
+      bannerFile.addEventListener('change', () => {
+        const file = bannerFile.files?.[0]
+        if (!file) return
+        if (sourceObjectUrl) URL.revokeObjectURL(sourceObjectUrl)
+        sourceObjectUrl = URL.createObjectURL(file)
+        const image = new Image()
+        image.onload = () => {
+          sourceImage = image
+          bannerChanged = true
+          cropSection.hidden = false
+          clearBanner.disabled = false
+          resetCropPosition()
+          updateChangeNote()
+        }
+        image.onerror = () => {
+          setResult('画像を読み込めませんでした。別の画像を選択してください。', true)
+          resetBannerEdit()
+        }
+        image.src = sourceObjectUrl
+      })
+
+      clearBanner.addEventListener('click', resetBannerEdit)
+      resetCrop.addEventListener('click', resetCropPosition)
+      titleInput.addEventListener('input', updateChangeNote)
+      select.addEventListener('change', chooseGacha)
+
+      zoomRange.addEventListener('input', () => {
+        const oldScale = coverScale()
+        zoom = Number(zoomRange.value)
+        const newScale = coverScale()
+        if (oldScale > 0) {
+          offsetX *= newScale / oldScale
+          offsetY *= newScale / oldScale
+        }
+        zoomValue.textContent = `${Math.round(zoom * 100)}%`
+        drawCrop()
+      })
+
+      canvasWrap.addEventListener('pointerdown', (event) => {
+        if (!sourceImage) return
+        canvasWrap.setPointerCapture(event.pointerId)
+        drag = { id: event.pointerId, x: event.clientX, y: event.clientY }
+        canvasWrap.classList.add('dragging')
+      })
+      canvasWrap.addEventListener('pointermove', (event) => {
+        if (!drag || drag.id !== event.pointerId) return
+        const rect = canvas.getBoundingClientRect()
+        offsetX += (event.clientX - drag.x) * (WIDTH / rect.width)
+        offsetY += (event.clientY - drag.y) * (HEIGHT / rect.height)
+        drag.x = event.clientX
+        drag.y = event.clientY
+        drawCrop()
+      })
+      function endDrag(event) {
+        if (!drag || drag.id !== event.pointerId) return
+        drag = null
+        canvasWrap.classList.remove('dragging')
+      }
+      canvasWrap.addEventListener('pointerup', endDrag)
+      canvasWrap.addEventListener('pointercancel', endDrag)
+
+      saveButton.addEventListener('click', async () => {
+        if (!selected) return
+        const title = titleInput.value.trim()
+        if (!title) {
+          setResult('ガチャ名を入力してください。', true)
+          return
+        }
+        const titleChanged = title !== selected.title
+        if (!titleChanged && !bannerChanged) {
+          setResult('変更がありません。', true)
+          return
+        }
+        const summary = [
+          `対象：${selected.title}`,
+          titleChanged ? `名前：${selected.title} → ${title}` : '名前：変更なし',
+          bannerChanged ? 'バナー：差し替え' : 'バナー：変更なし',
+          '',
+          'この内容で本番反映しますか？',
+        ].join('\n')
+        if (!window.confirm(summary)) return
+
+        saveButton.disabled = true
+        status.textContent = '保存・ビルド・GitHub反映中です…'
+        setResult('')
+        try {
+          const response = await fetch('/api/save', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              slug: selected.slug,
+              title,
+              bannerDataUrl: bannerChanged ? canvas.toDataURL('image/jpeg', 0.95) : '',
+            }),
+          })
+          const data = await response.json()
+          if (!response.ok || !data.ok) throw new Error(data.error || '保存に失敗しました。')
+          status.textContent = ''
+          setResult(
+            `修正完了\nガチャ名：${data.result.title}\nバナー：${data.result.bannerChanged ? '差し替え済み' : '変更なし'}\nビルド：成功\nGitHub：push完了`,
+          )
+          await loadGachas(data.result.slug)
+        } catch (error) {
+          status.textContent = ''
+          setResult(error.message || String(error), true)
+        } finally {
+          saveButton.disabled = false
+        }
+      })
+
+      async function loadGachas(preferredSlug = '') {
+        const response = await fetch('/api/gachas', { cache: 'no-store' })
+        const data = await response.json()
+        if (!response.ok || !data.ok) throw new Error(data.error || 'ガチャ一覧を読み込めません。')
+        gachas = data.gachas
+        select.innerHTML = gachas
+          .map((gacha) => `<option value="${escapeHtml(gacha.slug)}">${escapeHtml(gacha.title)}（${escapeHtml(gacha.slug)}）</option>`)
+          .join('')
+        if (preferredSlug && gachas.some((gacha) => gacha.slug === preferredSlug)) {
+          select.value = preferredSlug
+        }
+        chooseGacha()
+      }
+
+      function escapeHtml(value) {
+        return String(value)
+          .replaceAll('&', '&amp;')
+          .replaceAll('<', '&lt;')
+          .replaceAll('>', '&gt;')
+          .replaceAll('"', '&quot;')
+          .replaceAll("'", '&#039;')
+      }
+
+      loadGachas().catch((error) => {
+        select.innerHTML = '<option>読み込み失敗</option>'
+        setResult(error.message || String(error), true)
+      })
+    </script>
+  </body>
+</html>
