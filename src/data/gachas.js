@@ -1,3 +1,4 @@
+import gacha25ShunenFukkokuGachaDai1Dan from './gachas/2-5-shunen-fukkoku-gacha-dai-1-dan'
 import anoNatsuNoHokago from './gachas/ano-natsu-no-hokago'
 import yuramekuKurageNoKataomoi from './gachas/yurameku-kurage-no-kataomoi'
 import junnoShiXianBarebaredayo from './gachas/junno-shi-xian-barebaredayo'
@@ -22,6 +23,7 @@ import kimiNoTokubetsu from './gachas/kimi-no-tokubetsu'
 import friendPoint from './gachas/friend-point'
 
 export const gachas = [
+  gacha25ShunenFukkokuGachaDai1Dan,
   anoNatsuNoHokago,
   yuramekuKurageNoKataomoi,
   junnoShiXianBarebaredayo,
