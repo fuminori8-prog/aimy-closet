@@ -1,0 +1,613 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aimy アイテム画像再検出</title>
+    <style>
+      :root {
+        color: #172033;
+        background: #f2f5fa;
+        font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", sans-serif;
+        font-synthesis: none;
+      }
+      * { box-sizing: border-box; }
+      body { margin: 0; min-width: 320px; }
+      button, select, input { font: inherit; }
+      button, label { cursor: pointer; }
+      button:disabled { cursor: wait; opacity: .48; }
+      .page { width: min(1320px, calc(100% - 30px)); margin: 28px auto 130px; }
+      h1 { margin: 0; font-size: clamp(28px, 4vw, 43px); }
+      h2 { margin: 0; font-size: 24px; }
+      .lead { margin: 9px 0 0; color: #5b667a; line-height: 1.7; }
+      .guard {
+        margin-top: 18px; padding: 15px 18px; border: 1px solid #85c7a4;
+        border-radius: 14px; background: #eaf8f0; color: #205b3c; line-height: 1.7;
+      }
+      .panel {
+        margin-top: 18px; padding: clamp(17px, 3vw, 27px); border: 1px solid #d8e0eb;
+        border-radius: 18px; background: #fff; box-shadow: 0 8px 28px rgba(41, 58, 85, .07);
+      }
+      .section-head { display: flex; justify-content: space-between; gap: 18px; align-items: start; }
+      .section-head p { margin: 7px 0 0; color: #657087; line-height: 1.6; }
+      .select-grid { display: grid; grid-template-columns: minmax(260px, 1fr) auto; gap: 13px; align-items: end; }
+      .field { display: grid; gap: 7px; }
+      .field label { font-size: 14px; font-weight: 900; }
+      select {
+        width: 100%; min-height: 48px; padding: 10px 12px; border: 1px solid #b7c3d4;
+        border-radius: 11px; background: #fff; color: #172033;
+      }
+      .stats {
+        display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 11px; margin-top: 16px;
+      }
+      .stat { padding: 13px; border-radius: 12px; background: #f2f5f9; }
+      .stat-label { display: block; color: #677287; font-size: 12px; font-weight: 800; }
+      .stat-value { display: block; margin-top: 4px; font-size: 18px; font-weight: 950; }
+      .source-list { display: grid; gap: 8px; margin: 15px 0 0; padding: 0; list-style: none; }
+      .source-row {
+        display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 10px; align-items: center;
+        padding: 10px 12px; border: 1px solid #dce3ed; border-radius: 10px; background: #fafbfd;
+      }
+      .source-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 800; }
+      .tag { padding: 4px 8px; border-radius: 999px; background: #e9eef5; color: #4e5e77; font-size: 12px; font-weight: 850; }
+      .tag.bad { background: #fff0dc; color: #8b4d0c; }
+      .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 17px; }
+      .button {
+        min-height: 47px; padding: 10px 17px; border: 1px solid #b7c5d8;
+        border-radius: 11px; background: #fff; color: #3a4b67; font-weight: 900;
+      }
+      .button.primary { border-color: #166dd3; background: #166dd3; color: #fff; }
+      .button.soft { border-color: #8eb9ee; background: #edf6ff; color: #155fae; }
+      .drop-zone {
+        display: grid; place-items: center; min-height: 160px; margin-top: 17px; padding: 20px;
+        border: 2px dashed #8fb2dd; border-radius: 15px; background: #f2f8ff; text-align: center;
+      }
+      .drop-zone.drag { border-color: #146bd0; background: #e6f2ff; }
+      .drop-main { font-size: 18px; font-weight: 950; }
+      .drop-sub { margin-top: 7px; color: #5d6d84; line-height: 1.55; }
+      #sourceInput { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+      .chosen-list { display: grid; gap: 8px; margin-top: 12px; }
+      .chosen-item {
+        display: grid; grid-template-columns: 42px minmax(0, 1fr) auto auto; gap: 8px; align-items: center;
+        padding: 9px 11px; border: 1px solid #d8e1ed; border-radius: 10px;
+      }
+      .order { font-weight: 950; color: #52617a; }
+      .mini-button {
+        min-width: 36px; min-height: 35px; border: 1px solid #ccd5e1; border-radius: 8px;
+        background: #f5f7fa; color: #46546c; font-weight: 900;
+      }
+      .status {
+        margin-top: 15px; padding: 13px 15px; border: 1px solid #a9c8eb;
+        border-radius: 11px; background: #eef6ff; color: #28567f; line-height: 1.6; white-space: pre-wrap;
+      }
+      .status.error { border-color: #e3a0a0; background: #fff0f0; color: #942525; }
+      .status[hidden], .results[hidden], .publish-panel[hidden] { display: none; }
+      .summary-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-top: 17px; }
+      .summary-card { padding: 13px; border-radius: 11px; background: #eff3f8; }
+      .summary-card strong { display: block; margin-top: 4px; font-size: 21px; }
+      .warnings { display: grid; gap: 8px; margin: 15px 0 0; padding: 0; list-style: none; }
+      .warning { padding: 11px 13px; border: 1px solid #edbe80; border-radius: 10px; background: #fff7e8; color: #764713; line-height: 1.55; }
+      .mapping-list { display: grid; gap: 14px; margin-top: 18px; }
+      .mapping-row {
+        display: grid; grid-template-columns: 72px minmax(0, 1fr) minmax(0, 1fr) minmax(220px, .9fr);
+        gap: 15px; align-items: center; padding: 15px; border: 1px solid #d7dfea;
+        border-radius: 16px; background: #fbfcfe;
+      }
+      .mapping-row.problem { border-color: #e5a16b; background: #fffaf3; }
+      .number { font-size: 25px; font-weight: 950; text-align: center; }
+      .image-column { min-width: 0; }
+      .image-label { margin-bottom: 7px; color: #5b6880; font-size: 12px; font-weight: 900; }
+      .image-frame { width: min(100%, 210px); aspect-ratio: 1; overflow: hidden; border: 2px solid #cad4e1; border-radius: 13px; background: #edf1f5; }
+      .image-frame.new { border-color: #57aa80; }
+      .image-frame img { display: block; width: 100%; height: 100%; object-fit: cover; image-rendering: auto; }
+      .item-name { font-size: 17px; font-weight: 950; line-height: 1.45; }
+      .details { display: grid; gap: 6px; margin-top: 10px; color: #59677d; font-size: 13px; line-height: 1.45; }
+      .quality-good { color: #167047; font-weight: 900; }
+      .quality-warn { color: #a34c17; font-weight: 900; }
+      .confirm-box {
+        display: flex; gap: 11px; align-items: start; margin-top: 17px; padding: 14px 15px;
+        border: 1px solid #b6c6db; border-radius: 12px; background: #f5f8fc; font-weight: 850; line-height: 1.55;
+      }
+      .confirm-box input { width: 21px; height: 21px; flex: 0 0 auto; }
+      .publish-note { margin: 12px 0 0; color: #66738a; line-height: 1.6; }
+      .save-bar {
+        position: fixed; z-index: 30; left: 0; right: 0; bottom: 0; display: flex; justify-content: center;
+        padding: 13px 18px; border-top: 1px solid #ccd6e2; background: rgba(255, 255, 255, .97);
+        box-shadow: 0 -8px 24px rgba(35, 51, 75, .12); backdrop-filter: blur(10px);
+      }
+      .save-inner { width: min(1288px, 100%); display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+      .save-state { color: #536078; font-weight: 800; white-space: pre-wrap; }
+      .save-button { min-height: 52px; padding: 12px 24px; border: 0; border-radius: 12px; background: #176bd1; color: #fff; font-size: 17px; font-weight: 950; }
+      @media (max-width: 900px) {
+        .mapping-row { grid-template-columns: 54px 1fr 1fr; align-items: start; }
+        .mapping-info { grid-column: 2 / -1; }
+      }
+      @media (max-width: 680px) {
+        .page { width: min(100% - 18px, 1320px); margin-top: 16px; }
+        .select-grid, .stats, .summary-grid { grid-template-columns: 1fr; }
+        .source-row { grid-template-columns: 1fr auto; }
+        .source-row .tag:last-child { grid-column: 1 / -1; }
+        .mapping-row { grid-template-columns: 42px 1fr 1fr; gap: 9px; padding: 11px; }
+        .image-frame { width: 100%; }
+        .mapping-info { grid-column: 1 / -1; }
+        .save-inner { flex-direction: column; align-items: stretch; gap: 8px; }
+        .save-state { text-align: center; font-size: 13px; }
+        .save-button { width: 100%; }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <h1>既存ガチャ・アイテム画像再検出</h1>
+      <p class="lead">元のガチャ詳細スクショから、登録済みアイテムの画像だけを高解像度で取り直します。</p>
+
+      <div class="guard">
+        <strong>変更するのはアイテム画像だけです。</strong><br />
+        手修正済みのバナー、アイテム名、カテゴリ、レアリティ、開催時期、slugには一切触れません。
+        小さい元画像を192pxへ引き伸ばす処理も行いません。
+      </div>
+
+      <section class="panel">
+        <div class="select-grid">
+          <div class="field">
+            <label for="gachaSelect">再検出する既存ガチャ</label>
+            <select id="gachaSelect"><option value="">読み込み中…</option></select>
+          </div>
+          <button class="button" id="reloadButton" type="button">一覧を再読込</button>
+        </div>
+        <div class="stats" id="gachaStats" hidden>
+          <div class="stat"><span class="stat-label">登録アイテム</span><span class="stat-value" id="itemCount">—</span></div>
+          <div class="stat"><span class="stat-label">保存済み元スクショ</span><span class="stat-value" id="storedCount">—</span></div>
+          <div class="stat"><span class="stat-label">現在の画像サイズ</span><span class="stat-value" id="currentSizes">—</span></div>
+        </div>
+        <ul class="source-list" id="storedSources"></ul>
+        <div class="actions">
+          <button class="button soft" id="storedButton" type="button" disabled>保存済みスクショで再検出</button>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="section-head">
+          <div>
+            <h2>フル解像度の元スクショを選ぶ</h2>
+            <p>保存済み素材が低解像度なら、iPhoneから書き出した元画像をここで選びます。目安は横幅1000px以上です。</p>
+          </div>
+        </div>
+        <label class="drop-zone" id="dropZone" for="sourceInput">
+          <span>
+            <span class="drop-main">クリック、またはスクショをまとめてドロップ</span><br />
+            <span class="drop-sub">ガチャ詳細の先頭から末尾まで。バナーだけの画像や切り抜き済みアイテム画像は不要です。</span>
+          </span>
+        </label>
+        <input id="sourceInput" type="file" accept="image/png,image/jpeg,image/webp" multiple />
+        <div class="chosen-list" id="chosenList"></div>
+        <div class="actions">
+          <button class="button primary" id="uploadButton" type="button" disabled>選んだ原本で再検出</button>
+          <button class="button" id="clearButton" type="button" disabled>選択を解除</button>
+        </div>
+        <div class="status" id="status" hidden></div>
+      </section>
+
+      <section class="panel results" id="results" hidden>
+        <div class="section-head">
+          <div>
+            <h2>差し替え前後の確認</h2>
+            <p>左が現在、右が再検出後です。アイテム名は既存データのまま固定されています。</p>
+          </div>
+        </div>
+        <div class="summary-grid">
+          <div class="summary-card">登録数<strong id="resultItems">—</strong></div>
+          <div class="summary-card">検出候補<strong id="resultCandidates">—</strong></div>
+          <div class="summary-card">自動対応<strong id="resultMapped">—</strong></div>
+          <div class="summary-card">反映可否<strong id="resultReady">—</strong></div>
+        </div>
+        <ul class="warnings" id="warnings"></ul>
+        <div class="mapping-list" id="mappingList"></div>
+      </section>
+
+      <section class="panel publish-panel" id="publishPanel" hidden>
+        <h2>本番反映</h2>
+        <label class="confirm-box">
+          <input id="confirmMapping" type="checkbox" />
+          <span>全行の「現在画像／再検出画像／アイテム名」の対応を確認した。バナーや登録情報は変更しない。</span>
+        </label>
+        <p class="publish-note">ビルド確認後、このガチャのアイテム画像だけをcommit・pushします。失敗時はcommit前の画像へ戻します。</p>
+      </section>
+    </main>
+
+    <div class="save-bar">
+      <div class="save-inner">
+        <div class="save-state" id="saveState">ガチャと元スクショを選んで再検出してください。</div>
+        <button class="save-button" id="publishButton" type="button" disabled>アイテム画像だけ本番反映</button>
+      </div>
+    </div>
+
+    <script>
+      const state = {
+        gachas: [],
+        selectedGacha: null,
+        files: [],
+        sessionId: "",
+        result: null,
+        busy: false,
+      };
+
+      const elements = {
+        gachaSelect: document.querySelector("#gachaSelect"),
+        reloadButton: document.querySelector("#reloadButton"),
+        gachaStats: document.querySelector("#gachaStats"),
+        itemCount: document.querySelector("#itemCount"),
+        storedCount: document.querySelector("#storedCount"),
+        currentSizes: document.querySelector("#currentSizes"),
+        storedSources: document.querySelector("#storedSources"),
+        storedButton: document.querySelector("#storedButton"),
+        dropZone: document.querySelector("#dropZone"),
+        sourceInput: document.querySelector("#sourceInput"),
+        chosenList: document.querySelector("#chosenList"),
+        uploadButton: document.querySelector("#uploadButton"),
+        clearButton: document.querySelector("#clearButton"),
+        status: document.querySelector("#status"),
+        results: document.querySelector("#results"),
+        resultItems: document.querySelector("#resultItems"),
+        resultCandidates: document.querySelector("#resultCandidates"),
+        resultMapped: document.querySelector("#resultMapped"),
+        resultReady: document.querySelector("#resultReady"),
+        warnings: document.querySelector("#warnings"),
+        mappingList: document.querySelector("#mappingList"),
+        publishPanel: document.querySelector("#publishPanel"),
+        confirmMapping: document.querySelector("#confirmMapping"),
+        saveState: document.querySelector("#saveState"),
+        publishButton: document.querySelector("#publishButton"),
+      };
+
+      async function api(path, options = {}) {
+        const response = await fetch(path, { cache: "no-store", ...options });
+        let payload;
+        try { payload = await response.json(); }
+        catch { throw new Error(`サーバー応答を読み取れません（${response.status}）`); }
+        if (!response.ok || !payload.ok) throw new Error(payload.error || `処理に失敗しました（${response.status}）`);
+        return payload;
+      }
+
+      function setBusy(value, message = "") {
+        state.busy = value;
+        elements.gachaSelect.disabled = value;
+        elements.reloadButton.disabled = value;
+        elements.storedButton.disabled = value || !state.selectedGacha?.storedSourceCount;
+        elements.uploadButton.disabled = value || !state.selectedGacha || state.files.length === 0;
+        elements.clearButton.disabled = value || state.files.length === 0;
+        refreshPublishButton();
+        if (message) {
+          elements.status.hidden = false;
+          elements.status.classList.remove("error");
+          elements.status.textContent = message;
+          elements.saveState.textContent = message;
+        }
+      }
+
+      function showError(error) {
+        elements.status.hidden = false;
+        elements.status.classList.add("error");
+        elements.status.textContent = error instanceof Error ? error.message : String(error);
+        elements.saveState.textContent = "処理を完了できませんでした。画面のエラーを確認してください。";
+      }
+
+      async function loadGachas(preserveSlug = "") {
+        setBusy(true, "既存ガチャを読み込んでいます…");
+        try {
+          const payload = await api("/api/gachas");
+          state.gachas = payload.gachas;
+          elements.gachaSelect.replaceChildren(new Option("ガチャを選択してください", ""));
+          for (const gacha of state.gachas) {
+            elements.gachaSelect.add(new Option(`${gacha.title}（${gacha.itemCount}件）`, gacha.slug));
+          }
+          if (preserveSlug && state.gachas.some(gacha => gacha.slug === preserveSlug)) {
+            elements.gachaSelect.value = preserveSlug;
+          }
+          selectGacha(elements.gachaSelect.value);
+          elements.status.hidden = true;
+          elements.saveState.textContent = "ガチャと元スクショを選んで再検出してください。";
+        } catch (error) {
+          showError(error);
+        } finally {
+          setBusy(false);
+        }
+      }
+
+      function selectGacha(slug) {
+        state.selectedGacha = state.gachas.find(gacha => gacha.slug === slug) || null;
+        state.result = null;
+        state.sessionId = "";
+        elements.results.hidden = true;
+        elements.publishPanel.hidden = true;
+        elements.confirmMapping.checked = false;
+        elements.gachaStats.hidden = !state.selectedGacha;
+        elements.storedSources.replaceChildren();
+        if (!state.selectedGacha) {
+          elements.storedButton.disabled = true;
+          refreshFileButtons();
+          return;
+        }
+        const gacha = state.selectedGacha;
+        elements.itemCount.textContent = `${gacha.itemCount}件`;
+        elements.storedCount.textContent = `${gacha.storedSourceCount}枚`;
+        elements.currentSizes.textContent = gacha.currentImageSizes.join(" / ") || "不明";
+        for (const source of gacha.storedSources) {
+          const row = document.createElement("li");
+          row.className = "source-row";
+          const name = document.createElement("span");
+          name.className = "source-name";
+          name.textContent = source.name;
+          const size = document.createElement("span");
+          size.className = "tag";
+          size.textContent = `${source.width}×${source.height}`;
+          const quality = document.createElement("span");
+          quality.className = `tag${source.sourceQuality === "十分" ? "" : " bad"}`;
+          quality.textContent = `${source.origin}・${source.sourceQuality}`;
+          row.append(name, size, quality);
+          elements.storedSources.append(row);
+        }
+        elements.storedButton.disabled = state.busy || !gacha.storedSourceCount;
+        elements.saveState.textContent = `${gacha.title}を選択中。元スクショを指定してください。`;
+        refreshFileButtons();
+      }
+
+      function addFiles(fileList) {
+        const allowed = new Set(["image/png", "image/jpeg", "image/webp"]);
+        const incoming = [...fileList].filter(file => allowed.has(file.type) || /\.(png|jpe?g|webp)$/i.test(file.name));
+        const keys = new Set(state.files.map(file => `${file.name}:${file.size}:${file.lastModified}`));
+        for (const file of incoming) {
+          const key = `${file.name}:${file.size}:${file.lastModified}`;
+          if (!keys.has(key)) {
+            state.files.push(file);
+            keys.add(key);
+          }
+        }
+        renderChosenFiles();
+      }
+
+      function moveFile(index, offset) {
+        const next = index + offset;
+        if (next < 0 || next >= state.files.length) return;
+        [state.files[index], state.files[next]] = [state.files[next], state.files[index]];
+        renderChosenFiles();
+      }
+
+      function renderChosenFiles() {
+        elements.chosenList.replaceChildren();
+        state.files.forEach((file, index) => {
+          const row = document.createElement("div");
+          row.className = "chosen-item";
+          const order = document.createElement("span");
+          order.className = "order";
+          order.textContent = String(index + 1).padStart(2, "0");
+          const name = document.createElement("span");
+          name.className = "source-name";
+          name.textContent = `${file.name}（${(file.size / 1024 / 1024).toFixed(1)}MB）`;
+          const up = document.createElement("button");
+          up.className = "mini-button";
+          up.type = "button";
+          up.textContent = "↑";
+          up.disabled = index === 0;
+          up.addEventListener("click", () => moveFile(index, -1));
+          const down = document.createElement("button");
+          down.className = "mini-button";
+          down.type = "button";
+          down.textContent = "↓";
+          down.disabled = index === state.files.length - 1;
+          down.addEventListener("click", () => moveFile(index, 1));
+          row.append(order, name, up, down);
+          elements.chosenList.append(row);
+        });
+        refreshFileButtons();
+      }
+
+      function refreshFileButtons() {
+        elements.uploadButton.disabled = state.busy || !state.selectedGacha || state.files.length === 0;
+        elements.clearButton.disabled = state.busy || state.files.length === 0;
+      }
+
+      async function newSession() {
+        const payload = await api("/api/session", { method: "POST" });
+        return payload.sessionId;
+      }
+
+      async function processStored() {
+        if (!state.selectedGacha) return;
+        setBusy(true, "保存済みスクショを原寸で再検出しています…");
+        try {
+          const sessionId = await newSession();
+          const payload = await api("/api/process", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ slug: state.selectedGacha.slug, sessionId, useStored: true }),
+          });
+          state.sessionId = sessionId;
+          renderResult(payload.result);
+        } catch (error) {
+          showError(error);
+        } finally {
+          setBusy(false);
+        }
+      }
+
+      async function processUploads() {
+        if (!state.selectedGacha || !state.files.length) return;
+        setBusy(true, `元スクショ ${state.files.length}枚を準備しています…`);
+        try {
+          const sessionId = await newSession();
+          for (let index = 0; index < state.files.length; index += 1) {
+            const file = state.files[index];
+            const query = new URLSearchParams({ session: sessionId, order: String(index + 1), name: file.name });
+            setBusy(true, `元スクショを読み込み中 ${index + 1}/${state.files.length}：${file.name}`);
+            await api(`/api/upload?${query}`, { method: "POST", body: file });
+          }
+          setBusy(true, "全画像を検出し、既存アイテム順へ自動対応しています…");
+          const payload = await api("/api/process", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ slug: state.selectedGacha.slug, sessionId, useStored: false }),
+          });
+          state.sessionId = sessionId;
+          renderResult(payload.result);
+        } catch (error) {
+          showError(error);
+        } finally {
+          setBusy(false);
+        }
+      }
+
+      function renderResult(result) {
+        state.result = result;
+        elements.results.hidden = false;
+        elements.publishPanel.hidden = false;
+        elements.resultItems.textContent = `${result.itemCount}件`;
+        elements.resultCandidates.textContent = `${result.candidateCount}件`;
+        elements.resultMapped.textContent = `${result.mappedCount}件`;
+        elements.resultReady.textContent = result.publishReady ? "反映可能" : "要再検出";
+        elements.resultReady.className = result.publishReady ? "quality-good" : "quality-warn";
+        elements.warnings.replaceChildren();
+        for (const warningText of result.warnings) {
+          const row = document.createElement("li");
+          row.className = "warning";
+          row.textContent = warningText;
+          elements.warnings.append(row);
+        }
+        elements.mappingList.replaceChildren();
+        for (const rowData of result.mapping) {
+          const row = document.createElement("article");
+          const problematic = rowData.resolutionQuality !== "十分" || rowData.matchQuality === "弱い";
+          row.className = `mapping-row${problematic ? " problem" : ""}`;
+          const number = document.createElement("div");
+          number.className = "number";
+          number.textContent = String(rowData.index).padStart(2, "0");
+          row.append(number, imageColumn("現在画像", rowData.currentUrl, ""), imageColumn("再検出画像", rowData.candidateUrl, "new"));
+          const info = document.createElement("div");
+          info.className = "mapping-info";
+          const name = document.createElement("div");
+          name.className = "item-name";
+          name.textContent = rowData.name;
+          const details = document.createElement("div");
+          details.className = "details";
+          const qualityClass = rowData.resolutionQuality === "十分" ? "quality-good" : "quality-warn";
+          details.innerHTML = "";
+          const lines = [
+            `現在：${rowData.currentSize.join("×")} / 輪郭値 ${rowData.currentSharpness}`,
+            `新規：${rowData.candidateSize.join("×")} / 輪郭値 ${rowData.candidateSharpness}`,
+            `元画像：${rowData.sourceName}`,
+            `画像対応：${rowData.matchQuality}（差 ${rowData.matchCost}）`,
+          ];
+          for (const text of lines) {
+            const line = document.createElement("span");
+            line.textContent = text;
+            details.append(line);
+          }
+          const resolution = document.createElement("span");
+          resolution.className = qualityClass;
+          resolution.textContent = `原寸判定：${rowData.resolutionQuality}`;
+          details.append(resolution);
+          info.append(name, details);
+          row.append(info);
+          elements.mappingList.append(row);
+        }
+        elements.confirmMapping.checked = false;
+        elements.status.hidden = false;
+        elements.status.classList.remove("error");
+        elements.status.textContent = result.publishReady
+          ? "再検出が完了しました。左右の対応を確認してから本番反映できます。"
+          : "検出は完了しましたが、解像度または件数が不足しています。警告に従って原本を選び直してください。";
+        elements.saveState.textContent = result.publishReady
+          ? "差し替え前後を確認し、確認欄へチェックしてください。"
+          : "この結果は本番反映できません。フル解像度の元スクショで再検出してください。";
+        refreshPublishButton();
+        elements.results.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      function imageColumn(labelText, src, className) {
+        const column = document.createElement("div");
+        column.className = "image-column";
+        const label = document.createElement("div");
+        label.className = "image-label";
+        label.textContent = labelText;
+        const frame = document.createElement("div");
+        frame.className = `image-frame ${className}`.trim();
+        const image = document.createElement("img");
+        image.src = src;
+        image.alt = labelText;
+        frame.append(image);
+        column.append(label, frame);
+        return column;
+      }
+
+      function refreshPublishButton() {
+        elements.publishButton.disabled = state.busy || !state.result?.publishReady || !elements.confirmMapping.checked;
+      }
+
+      async function publish() {
+        if (!state.result?.publishReady || !state.sessionId || !elements.confirmMapping.checked) return;
+        const title = state.result.title;
+        if (!window.confirm(`${title}のアイテム画像 ${state.result.itemCount}件だけを差し替え、commit・pushします。\nバナーと登録情報は変更しません。よろしいですか？`)) return;
+        setBusy(true, "画像を差し替え、本番ビルド・commit・pushを実行しています…");
+        try {
+          const payload = await api("/api/publish", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ sessionId: state.sessionId, confirmed: true }),
+          });
+          const result = payload.result;
+          elements.status.hidden = false;
+          elements.status.classList.remove("error");
+          elements.status.textContent = [
+            "本番反映が完了しました。",
+            `対象：${result.title}`,
+            `差し替え：${result.itemCount}件`,
+            "バナー変更：なし",
+            "登録情報変更：なし",
+            `元スクショ保存：${result.archivedSourceCount}枚`,
+            `commit：${result.commit}`,
+            `push：${result.push}`,
+          ].join("\n");
+          elements.saveState.textContent = "本番反映完了。もう一方のガチャも続けて選択できます。";
+          elements.confirmMapping.checked = false;
+          state.result.publishReady = false;
+          refreshPublishButton();
+          await loadGachas(state.selectedGacha?.slug || "");
+        } catch (error) {
+          showError(error);
+        } finally {
+          setBusy(false);
+        }
+      }
+
+      elements.gachaSelect.addEventListener("change", event => selectGacha(event.target.value));
+      elements.reloadButton.addEventListener("click", () => loadGachas(elements.gachaSelect.value));
+      elements.storedButton.addEventListener("click", processStored);
+      elements.sourceInput.addEventListener("change", event => {
+        addFiles(event.target.files);
+        event.target.value = "";
+      });
+      for (const eventName of ["dragenter", "dragover"]) {
+        elements.dropZone.addEventListener(eventName, event => {
+          event.preventDefault();
+          elements.dropZone.classList.add("drag");
+        });
+      }
+      for (const eventName of ["dragleave", "drop"]) {
+        elements.dropZone.addEventListener(eventName, event => {
+          event.preventDefault();
+          elements.dropZone.classList.remove("drag");
+        });
+      }
+      elements.dropZone.addEventListener("drop", event => addFiles(event.dataTransfer.files));
+      elements.uploadButton.addEventListener("click", processUploads);
+      elements.clearButton.addEventListener("click", () => {
+        state.files = [];
+        renderChosenFiles();
+      });
+      elements.confirmMapping.addEventListener("change", refreshPublishButton);
+      elements.publishButton.addEventListener("click", publish);
+
+      loadGachas();
+    </script>
+  </body>
+</html>

@@ -55,6 +55,7 @@ from detect_cards import _compute_dhash, _detect_boxes, _estimate_rarity, _hammi
 from export_cards import _crop_without_stretch  # noqa: E402
 
 IMAGE_EXTS = {".png", ".jpg", ".jpeg", ".webp"}
+MIN_NATIVE_CARD_SIDE = 150
 CATEGORY_ALIASES = {
     "衣装": "衣装",
     "目": "目",
@@ -573,11 +574,18 @@ def run_ocr(image_path: Path) -> List[OCRLine]:
 
 
 def _crop_item_for_output(image: Image.Image, box: Tuple[int, int, int, int]) -> Image.Image:
-    """Crop a detected card and normalize it to the site's 192x192 item size."""
+    """Crop at native resolution and never manufacture pixels by enlargement."""
     crop = image.crop(box).convert("RGBA")
-    if crop.size != (192, 192):
-        crop = crop.resize((192, 192), Image.Resampling.LANCZOS)
-    return crop
+    if min(crop.size) < MIN_NATIVE_CARD_SIDE:
+        raise AppError(
+            f"元スクショの解像度が不足しています（検出枠 {crop.width}×{crop.height}px）。"
+            "縮小画像を192pxへ引き伸ばすとぼやけるため保存を中止しました。"
+            "iPhoneから書き出した元サイズのスクショ（目安：横幅1000px以上）を使用してください。"
+        )
+    side = min(crop.size)
+    left = (crop.width - side) // 2
+    top = (crop.height - side) // 2
+    return crop.crop((left, top, left + side, top + side))
 
 
 def _normalized_text(text: str) -> str:
@@ -908,12 +916,15 @@ def _normalize_manual_item_image(data: bytes) -> Image.Image:
             "手動追加画像は正方形に切り抜いてください。"
             "縦長・横長画像を縮小して余白付きにはしません。"
         )
-    return ImageOps.fit(
-        image,
-        (192, 192),
-        method=Image.Resampling.LANCZOS,
-        centering=(0.5, 0.5),
-    )
+    if min(image.size) < MIN_NATIVE_CARD_SIDE:
+        raise AppError(
+            f"追加画像が小さすぎます（{image.width}×{image.height}px）。"
+            f"一辺{MIN_NATIVE_CARD_SIDE}px以上の切り抜き画像を選んでください。"
+        )
+    side = min(image.size)
+    left = (image.width - side) // 2
+    top = (image.height - side) // 2
+    return image.crop((left, top, left + side, top + side))
 
 
 def add_manual_items(session_id: str, position: int, payloads: Sequence[Tuple[str, bytes]]) -> Dict[str, Any]:
