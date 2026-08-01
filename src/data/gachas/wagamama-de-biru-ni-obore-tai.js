@@ -6,8 +6,8 @@ const gacha = {
   banner: '/images/gacha/wagamama-de-biru-ni-obore-tai/banner.jpg',
   status: '開催中',
   infoStatus: '確認済み',
-  startDate: '2026/08/11 05:00',
-  endDate: '2026/08/01 15:00',
+  startDate: '2026/08/01 15:00',
+  endDate: '2026/10/03 14:59',
   description: 'わがままデビルに溺れたい！の限定ガチャです。',
   items: [
     {
