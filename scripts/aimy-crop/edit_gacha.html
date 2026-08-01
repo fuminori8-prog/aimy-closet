@@ -3,414 +3,375 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Aimy 既存ガチャ編集</title>
+    <title>Aimy 既存ガチャ総合修正</title>
     <style>
       :root {
         color: #172033;
-        background: #f3f6fb;
+        background: #f2f5fa;
         font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", sans-serif;
         font-synthesis: none;
       }
       * { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
       body { margin: 0; min-width: 320px; }
-      button, input, select { font: inherit; }
-      button { cursor: pointer; }
-      .page { width: min(1080px, calc(100% - 32px)); margin: 34px auto 72px; }
-      h1 { margin: 0; font-size: clamp(28px, 4vw, 42px); }
+      button, input, select, textarea { font: inherit; }
+      button, label.file-button { cursor: pointer; }
+      button:disabled { cursor: wait; opacity: .55; }
+      .page { width: min(1320px, calc(100% - 32px)); margin: 30px auto 130px; }
+      h1 { margin: 0; font-size: clamp(29px, 4vw, 44px); }
+      h2 { margin: 0; font-size: 25px; }
       .lead { margin: 10px 0 0; color: #59657a; line-height: 1.7; }
-      .safety {
-        margin: 22px 0; padding: 16px 18px; border: 1px solid #a7d9bf;
-        border-radius: 14px; background: #edf9f2; color: #245f43; line-height: 1.65;
+      .manual-note {
+        margin: 20px 0; padding: 16px 18px; border: 1px solid #9bd2b4;
+        border-radius: 14px; background: #ebf8f1; color: #245c40; line-height: 1.7;
       }
       .panel {
-        margin-top: 18px; padding: clamp(18px, 3vw, 30px); border: 1px solid #dce3ed;
-        border-radius: 20px; background: #fff; box-shadow: 0 10px 34px rgba(40, 55, 82, .08);
+        margin-top: 18px; padding: clamp(18px, 3vw, 28px); border: 1px solid #d9e0eb;
+        border-radius: 18px; background: #fff; box-shadow: 0 9px 30px rgba(43, 58, 84, .07);
       }
-      .field { display: grid; gap: 8px; margin-bottom: 20px; }
-      label, .label { font-weight: 800; font-size: 15px; }
-      select, input[type="text"] {
-        width: 100%; padding: 13px 14px; border: 1px solid #bac5d5; border-radius: 11px;
-        background: #fff; color: #172033; font-size: 17px;
+      .selector-panel {
+        position: sticky; top: 0; z-index: 20; display: grid;
+        grid-template-columns: minmax(280px, 1fr) auto auto; gap: 12px; align-items: end;
+        box-shadow: 0 8px 24px rgba(43, 58, 84, .14);
       }
-      input[readonly] { background: #f1f4f8; color: #657087; }
-      .hint { margin: 0; color: #68748a; font-size: 13px; line-height: 1.55; }
-      .comparison { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 14px; }
-      .preview-card { min-width: 0; }
-      .preview-title { margin: 0 0 9px; font-weight: 800; }
+      .field { display: grid; gap: 7px; min-width: 0; }
+      .field > label, .field-label { font-size: 14px; font-weight: 850; }
+      input[type="text"], select, textarea {
+        width: 100%; min-height: 45px; padding: 10px 12px; border: 1px solid #b8c4d5;
+        border-radius: 10px; background: #fff; color: #172033;
+      }
+      textarea { min-height: 108px; resize: vertical; line-height: 1.6; }
+      input:focus, select:focus, textarea:focus {
+        outline: 3px solid rgba(45, 125, 226, .18); border-color: #397ed4;
+      }
+      .button {
+        min-height: 45px; padding: 10px 16px; border: 1px solid #c6cfdb;
+        border-radius: 10px; background: #fff; color: #42516a; font-weight: 800;
+      }
+      .button.primary { border-color: #176bd1; background: #176bd1; color: #fff; }
+      .button.danger { border-color: #efb0b0; background: #fff2f2; color: #ad2828; }
+      .button.soft { border-color: #9fc2ed; background: #edf6ff; color: #1764bd; }
+      .dirty-badge {
+        align-self: center; min-width: 92px; padding: 8px 11px; border-radius: 999px;
+        background: #eef1f5; color: #6a7486; text-align: center; font-size: 13px; font-weight: 900;
+      }
+      .dirty-badge.active { background: #fff0c2; color: #765500; }
+      .quick-links { display: flex; flex-wrap: wrap; gap: 9px; margin: 16px 0 0; }
+      .quick-links a {
+        padding: 8px 12px; border-radius: 999px; background: #e9eef6;
+        color: #31405a; text-decoration: none; font-weight: 800; font-size: 14px;
+      }
+      .section-head { display: flex; justify-content: space-between; gap: 16px; align-items: start; margin-bottom: 20px; }
+      .section-head p { margin: 6px 0 0; color: #657189; line-height: 1.55; }
+      .form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 17px; }
+      .span-2 { grid-column: 1 / -1; }
+      .hint { margin: 0; color: #6a758a; font-size: 12px; line-height: 1.55; }
+      .checkbox-row {
+        display: flex; align-items: center; gap: 10px; min-height: 45px; padding: 10px 12px;
+        border: 1px solid #d4dce8; border-radius: 10px; background: #f7f9fc;
+      }
+      .checkbox-row input { width: 20px; height: 20px; }
+      details.advanced { margin-top: 18px; border-top: 1px solid #e2e7ef; padding-top: 14px; }
+      details.advanced summary { cursor: pointer; color: #3f506c; font-weight: 850; }
+      .warning-text { color: #a44722; }
+      .banner-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+      .banner-title { margin: 0 0 8px; font-weight: 850; }
       .banner-frame {
-        position: relative; width: 100%; aspect-ratio: 1125 / 202; overflow: hidden;
-        border: 2px solid #d3dae6; border-radius: 12px; background: #eef1f5;
+        display: grid; place-items: center; width: 100%; aspect-ratio: 1125 / 202;
+        overflow: hidden; border: 2px solid #d4dce7; border-radius: 12px; background: #edf1f6;
       }
-      .banner-frame img { width: 100%; height: 100%; object-fit: cover; display: block; }
-      .empty-banner { display: grid; place-items: center; height: 100%; color: #7b8495; }
-      .file-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 16px; }
-      .file-button, .secondary-button {
+      .banner-frame img { display: block; width: 100%; height: 100%; object-fit: contain; }
+      .image-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 15px; align-items: center; }
+      .file-button {
         display: inline-flex; align-items: center; justify-content: center; min-height: 44px;
-        padding: 10px 16px; border: 1px solid #9bbce9; border-radius: 10px;
-        background: #eef6ff; color: #1764bd; font-weight: 800;
+        padding: 10px 15px; border: 1px solid #93b9ea; border-radius: 10px;
+        background: #edf6ff; color: #1764bd; font-weight: 850;
       }
-      .secondary-button { background: #fff; color: #526078; border-color: #c9d1dd; }
       input[type="file"] { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
-      .crop-section { margin-top: 18px; padding-top: 18px; border-top: 1px solid #e1e6ee; }
-      .crop-section[hidden] { display: none; }
-      .crop-head { display: flex; justify-content: space-between; gap: 14px; align-items: start; }
-      .crop-head h2 { margin: 0; font-size: 20px; }
-      .crop-canvas-wrap {
-        width: 100%; margin-top: 12px; overflow: hidden; border: 3px solid #3b82f6;
-        border-radius: 13px; background: #dce3ed; touch-action: none; cursor: grab;
+      .file-status { color: #5e6b80; font-size: 13px; }
+      .file-status.changed { color: #16704a; font-weight: 800; }
+      .item-toolbar {
+        display: grid; grid-template-columns: minmax(220px, 1fr) auto auto;
+        gap: 10px; align-items: center; margin-bottom: 15px;
       }
-      .crop-canvas-wrap.dragging { cursor: grabbing; }
-      canvas { display: block; width: 100%; height: auto; }
-      .crop-help { margin: 9px 0 0; color: #526078; font-size: 13px; }
-      .controls { display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: center; margin-top: 14px; }
-      input[type="range"] { width: 100%; }
-      .zoom-value { min-width: 52px; text-align: right; font-weight: 800; }
-      .change-note {
-        margin-top: 18px; padding: 14px 16px; border-radius: 11px; background: #fff8db;
-        color: #6f5615; line-height: 1.6;
+      .item-count { font-weight: 900; color: #33435e; }
+      .filter-note { margin: -5px 0 14px; color: #7b5a14; font-size: 13px; }
+      .item-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 15px; }
+      .item-card {
+        display: grid; grid-template-columns: 190px minmax(0, 1fr); gap: 16px;
+        padding: 16px; border: 1px solid #d7dfea; border-radius: 16px; background: #fbfcfe;
       }
-      .actions { display: flex; gap: 12px; align-items: center; margin-top: 24px; }
+      .item-card[hidden] { display: none; }
+      .item-media { min-width: 0; }
+      .item-image {
+        position: relative; width: 100%; aspect-ratio: 1; overflow: hidden;
+        border: 2px solid #cbd5e2; border-radius: 13px; background: #edf1f5;
+      }
+      .item-image img { display: block; width: 100%; height: 100%; object-fit: cover; }
+      .item-image.missing { border-color: #e78d8d; background: #fff0f0; }
+      .missing-label { display: grid; place-items: center; height: 100%; color: #a52929; font-weight: 900; }
+      .position-badge {
+        position: absolute; top: 8px; left: 8px; z-index: 2; min-width: 38px;
+        padding: 5px 7px; border-radius: 999px; background: rgba(18, 31, 51, .9);
+        color: #fff; text-align: center; font-weight: 900;
+      }
+      .replace-badge {
+        position: absolute; right: 8px; bottom: 8px; padding: 5px 7px; border-radius: 7px;
+        background: #14734d; color: #fff; font-size: 11px; font-weight: 900;
+      }
+      .item-media .file-button { width: 100%; margin-top: 9px; }
+      .item-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; align-content: start; }
+      .item-fields .name-field, .item-fields .motion-field, .item-fields details { grid-column: 1 / -1; }
+      .item-fields input, .item-fields select { min-height: 42px; }
+      .motion-field { display: flex; align-items: center; gap: 9px; font-size: 13px; font-weight: 750; }
+      .motion-field input { width: 18px; height: 18px; }
+      .item-id-details summary { cursor: pointer; color: #61708a; font-size: 12px; font-weight: 800; }
+      .item-controls {
+        grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 7px; margin-top: 2px;
+        padding-top: 10px; border-top: 1px solid #e0e6ee;
+      }
+      .item-controls .button { min-height: 38px; padding: 7px 11px; font-size: 13px; }
+      .bottom-add { display: flex; justify-content: center; margin-top: 18px; }
+      .result {
+        margin: 20px 0 0; padding: 17px 19px; border: 1px solid #8bcdaa;
+        border-radius: 13px; background: #eaf8f0; color: #1d5e3d; line-height: 1.75; white-space: pre-wrap;
+      }
+      .result.error { border-color: #eda0a0; background: #fff0f0; color: #9e2323; }
+      .result[hidden] { display: none; }
+      .save-bar {
+        position: fixed; z-index: 40; left: 0; right: 0; bottom: 0; display: flex;
+        justify-content: center; padding: 13px 18px; border-top: 1px solid #cfd7e3;
+        background: rgba(255, 255, 255, .96); backdrop-filter: blur(10px);
+        box-shadow: 0 -8px 24px rgba(35, 49, 72, .12);
+      }
+      .save-inner {
+        width: min(1288px, 100%); display: flex; justify-content: space-between;
+        align-items: center; gap: 16px;
+      }
+      .save-state { color: #536078; font-weight: 750; white-space: pre-wrap; }
       .save-button {
-        min-height: 52px; padding: 13px 26px; border: 0; border-radius: 12px;
+        min-height: 52px; padding: 12px 25px; border: 0; border-radius: 12px;
         background: #176bd1; color: #fff; font-size: 17px; font-weight: 900;
         box-shadow: 0 7px 18px rgba(23, 107, 209, .25);
       }
-      .save-button:disabled { cursor: wait; opacity: .55; }
-      .status { margin: 0; color: #526078; white-space: pre-wrap; }
-      .result {
-        margin-top: 20px; padding: 18px; border: 1px solid #8ed0ac; border-radius: 13px;
-        background: #ecf9f2; color: #185839; line-height: 1.75;
+      @media (max-width: 1050px) {
+        .item-grid { grid-template-columns: 1fr; }
       }
-      .result[hidden] { display: none; }
-      .error { border-color: #f0a3a3; background: #fff0f0; color: #9e2323; }
       @media (max-width: 760px) {
-        .comparison { grid-template-columns: 1fr; }
-        .page { width: min(100% - 20px, 1080px); margin-top: 18px; }
-        .controls { grid-template-columns: auto 1fr; }
-        .zoom-value { grid-column: 2; }
-        .actions { align-items: stretch; flex-direction: column; }
+        .page { width: min(100% - 18px, 1320px); margin-top: 16px; }
+        .selector-panel { position: static; grid-template-columns: 1fr; }
+        .form-grid, .banner-grid { grid-template-columns: 1fr; }
+        .span-2 { grid-column: auto; }
+        .item-toolbar { grid-template-columns: 1fr; }
+        .item-card { grid-template-columns: 132px minmax(0, 1fr); padding: 12px; gap: 12px; }
+        .item-fields { grid-template-columns: 1fr; }
+        .item-fields > * { grid-column: 1 !important; }
+        .save-inner { align-items: stretch; flex-direction: column; gap: 8px; }
+        .save-state { text-align: center; font-size: 13px; }
+        .save-button { width: 100%; }
       }
     </style>
   </head>
   <body>
     <main class="page">
-      <h1>既存ガチャ編集</h1>
-      <p class="lead">登録済みガチャの名前とバナーを修正します。アイテム・開催期間・URLは変更しません。</p>
+      <h1>既存ガチャ総合修正</h1>
+      <p class="lead">登録済みガチャの全情報を、検出に頼らず手動で修正します。</p>
 
-      <div class="safety">
-        slugは固定なので、名前を直しても既存のURLやアイテムへのリンクは壊れません。<br />
-        保存すると本番ビルドを確認し、今回の対象ファイルだけをcommit・pushします。
+      <div class="manual-note">
+        画像の自動切り抜きは行いません。バナーとアイテム画像は、切り抜き済み画像を選ぶとその画像自体を保存します。<br />
+        アイテムの追加・削除・並べ替えでは、名前・カテゴリ・画像を一つの塊として動かします。
       </div>
 
-      <section class="panel">
+      <section class="panel selector-panel">
         <div class="field">
           <label for="gachaSelect">修正するガチャ</label>
           <select id="gachaSelect"><option value="">読み込み中…</option></select>
         </div>
+        <button class="button" id="reloadButton" type="button">保存前に戻す</button>
+        <span class="dirty-badge" id="dirtyBadge">変更なし</span>
+      </section>
 
-        <div class="field">
-          <label for="titleInput">ガチャ名</label>
-          <input id="titleInput" type="text" maxlength="120" autocomplete="off" />
-        </div>
+      <nav class="quick-links" aria-label="修正項目">
+        <a href="#basic">基本情報</a>
+        <a href="#banner">バナー</a>
+        <a href="#items">アイテム</a>
+      </nav>
 
-        <div class="field">
-          <label for="slugInput">slug（変更しません）</label>
-          <input id="slugInput" type="text" readonly />
-        </div>
-
-        <div class="comparison">
-          <div class="preview-card">
-            <p class="preview-title">現在のバナー</p>
-            <div class="banner-frame" id="currentBannerFrame">
-              <img id="currentBanner" alt="現在のバナー" />
-            </div>
-          </div>
-          <div class="preview-card">
-            <p class="preview-title">修正後のバナー</p>
-            <div class="banner-frame" id="nextBannerFrame">
-              <img id="nextBanner" alt="修正後のバナー" />
-            </div>
-          </div>
-        </div>
-
-        <div class="file-row">
-          <label class="file-button" for="bannerFile">新しい画像を選ぶ</label>
-          <input id="bannerFile" type="file" accept="image/png,image/jpeg,image/webp" />
-          <button class="secondary-button" id="clearBanner" type="button" disabled>バナー変更を取り消す</button>
-        </div>
-        <p class="hint">バナー単体でも、バナーが写ったスクリーンショット全体でも選択できます。</p>
-
-        <section class="crop-section" id="cropSection" hidden>
-          <div class="crop-head">
+      <form id="editorForm">
+        <section class="panel" id="basic">
+          <div class="section-head">
             <div>
-              <h2>青枠にバナーを合わせる</h2>
-              <p class="crop-help">画像をドラッグして位置を動かします。縦横比は潰れません。</p>
+              <h2>ガチャ基本情報</h2>
+              <p>開催時期を含む、サイトに登録される情報をすべて修正できます。</p>
             </div>
-            <button class="secondary-button" id="resetCrop" type="button">位置を戻す</button>
           </div>
-          <div class="crop-canvas-wrap" id="canvasWrap">
-            <canvas id="cropCanvas" width="1125" height="202"></canvas>
+
+          <div class="form-grid">
+            <div class="field">
+              <label for="titleInput">ガチャ名</label>
+              <input id="titleInput" type="text" maxlength="120" autocomplete="off" required />
+            </div>
+            <div class="field">
+              <label for="typeInput">ガチャ種類</label>
+              <input id="typeInput" type="text" maxlength="80" autocomplete="off" required />
+            </div>
+            <div class="field">
+              <label for="startDateInput">開始日時</label>
+              <input id="startDateInput" type="text" placeholder="2026/08/01 15:00" autocomplete="off" required />
+              <p class="hint">通常ガチャは「年/月/日 時:分」で入力</p>
+            </div>
+            <div class="field">
+              <label for="endDateInput">終了日時</label>
+              <input id="endDateInput" type="text" placeholder="2026/10/01 14:59" autocomplete="off" required />
+              <p class="hint">開始より後の日時を入力</p>
+            </div>
+            <div class="field">
+              <label for="statusInput">表示状態</label>
+              <select id="statusInput">
+                <option value="開催中">開催中</option>
+                <option value="開催終了">開催終了</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="infoStatusInput">情報確認状態</label>
+              <select id="infoStatusInput">
+                <option value="確認済み">確認済み</option>
+                <option value="情報収集中">情報収集中</option>
+              </select>
+            </div>
+            <div class="field span-2">
+              <label class="checkbox-row">
+                <input id="permanentInput" type="checkbox" />
+                <span>常設ガチャとして登録する</span>
+              </label>
+              <button class="button soft" id="fillPermanentButton" type="button">「常設／終了予定なし」を入力</button>
+            </div>
+            <div class="field span-2">
+              <label for="descriptionInput">説明文</label>
+              <textarea id="descriptionInput" maxlength="600" required></textarea>
+            </div>
           </div>
-          <div class="controls">
-            <label for="zoomRange">拡大</label>
-            <input id="zoomRange" type="range" min="1" max="5" value="1" step="0.01" />
-            <span class="zoom-value" id="zoomValue">100%</span>
+
+          <details class="advanced">
+            <summary>ID・slugの修正</summary>
+            <div class="form-grid" style="margin-top: 15px">
+              <div class="field">
+                <label for="gachaIdInput">ガチャID</label>
+                <input id="gachaIdInput" type="text" autocomplete="off" required />
+              </div>
+              <div class="field">
+                <label for="slugInput">slug</label>
+                <input id="slugInput" type="text" autocomplete="off" required />
+                <p class="hint warning-text">slugを変えるとガチャURLも変わります。データ・画像フォルダはツールがまとめて移動します。</p>
+              </div>
+            </div>
+          </details>
+        </section>
+
+        <section class="panel" id="banner">
+          <div class="section-head">
+            <div>
+              <h2>バナー画像</h2>
+              <p>横長に切り抜いた画像をそのまま差し替えます。ここでは切り抜きや変形をしません。</p>
+            </div>
+          </div>
+          <div class="banner-grid">
+            <div>
+              <p class="banner-title">現在の画像</p>
+              <div class="banner-frame"><img id="currentBanner" alt="現在のバナー" /></div>
+            </div>
+            <div>
+              <p class="banner-title">保存後の画像</p>
+              <div class="banner-frame"><img id="nextBanner" alt="保存後のバナー" /></div>
+            </div>
+          </div>
+          <div class="image-actions">
+            <label class="file-button">
+              切り抜き済みバナーを選ぶ
+              <input id="bannerFile" type="file" accept="image/png,image/jpeg,image/webp" />
+            </label>
+            <button class="button" id="clearBannerButton" type="button" disabled>差し替えを取り消す</button>
+            <span class="file-status" id="bannerStatus">現在のバナーを維持</span>
           </div>
         </section>
 
-        <div class="change-note" id="changeNote">ガチャを選択してください。</div>
+        <section class="panel" id="items">
+          <div class="section-head">
+            <div>
+              <h2>アイテム情報</h2>
+              <p>画像・名前・レアリティ・カテゴリ・モーション・IDを手動で直せます。</p>
+            </div>
+          </div>
+          <div class="item-toolbar">
+            <input id="itemSearch" type="text" placeholder="番号・名前・IDで絞り込み" autocomplete="off" />
+            <span class="item-count" id="itemCount">0件</span>
+            <button class="button primary" id="addItemTop" type="button">末尾にアイテム追加</button>
+          </div>
+          <p class="filter-note" id="filterNote" hidden>絞り込み中は並べ替えボタンを無効にしています。</p>
+          <div class="item-grid" id="itemGrid"></div>
+          <div class="bottom-add">
+            <button class="button primary" id="addItemBottom" type="button">末尾にアイテム追加</button>
+          </div>
+        </section>
+      </form>
 
-        <div class="actions">
-          <button class="save-button" id="saveButton" type="button">修正を保存して本番反映</button>
-          <p class="status" id="status"></p>
-        </div>
-        <div class="result" id="result" hidden></div>
-      </section>
+      <div class="result" id="result" hidden></div>
     </main>
 
+    <div class="save-bar">
+      <div class="save-inner">
+        <div class="save-state" id="saveState">ガチャを読み込み中…</div>
+        <button class="save-button" id="saveButton" type="button">全変更を確認して本番反映</button>
+      </div>
+    </div>
+
     <script>
-      const WIDTH = 1125
-      const HEIGHT = 202
-      const select = document.querySelector('#gachaSelect')
-      const titleInput = document.querySelector('#titleInput')
-      const slugInput = document.querySelector('#slugInput')
-      const currentBanner = document.querySelector('#currentBanner')
-      const nextBanner = document.querySelector('#nextBanner')
-      const bannerFile = document.querySelector('#bannerFile')
-      const clearBanner = document.querySelector('#clearBanner')
-      const cropSection = document.querySelector('#cropSection')
-      const canvas = document.querySelector('#cropCanvas')
-      const canvasWrap = document.querySelector('#canvasWrap')
-      const context = canvas.getContext('2d', { alpha: false })
-      const zoomRange = document.querySelector('#zoomRange')
-      const zoomValue = document.querySelector('#zoomValue')
-      const resetCrop = document.querySelector('#resetCrop')
-      const changeNote = document.querySelector('#changeNote')
-      const saveButton = document.querySelector('#saveButton')
-      const status = document.querySelector('#status')
-      const result = document.querySelector('#result')
+      const $ = (selector) => document.querySelector(selector)
+      const select = $('#gachaSelect')
+      const reloadButton = $('#reloadButton')
+      const dirtyBadge = $('#dirtyBadge')
+      const form = $('#editorForm')
+      const titleInput = $('#titleInput')
+      const typeInput = $('#typeInput')
+      const startDateInput = $('#startDateInput')
+      const endDateInput = $('#endDateInput')
+      const statusInput = $('#statusInput')
+      const infoStatusInput = $('#infoStatusInput')
+      const permanentInput = $('#permanentInput')
+      const fillPermanentButton = $('#fillPermanentButton')
+      const descriptionInput = $('#descriptionInput')
+      const gachaIdInput = $('#gachaIdInput')
+      const slugInput = $('#slugInput')
+      const currentBanner = $('#currentBanner')
+      const nextBanner = $('#nextBanner')
+      const bannerFile = $('#bannerFile')
+      const clearBannerButton = $('#clearBannerButton')
+      const bannerStatus = $('#bannerStatus')
+      const itemSearch = $('#itemSearch')
+      const itemCount = $('#itemCount')
+      const itemGrid = $('#itemGrid')
+      const filterNote = $('#filterNote')
+      const addItemTop = $('#addItemTop')
+      const addItemBottom = $('#addItemBottom')
+      const saveButton = $('#saveButton')
+      const saveState = $('#saveState')
+      const result = $('#result')
 
-      let gachas = []
-      let selected = null
-      let sourceImage = null
-      let sourceObjectUrl = ''
-      let bannerChanged = false
-      let zoom = 1
-      let offsetX = 0
-      let offsetY = 0
-      let drag = null
-
-      function setResult(message, isError = false) {
-        result.textContent = message
-        result.classList.toggle('error', isError)
-        result.hidden = !message
-      }
-
-      function updateChangeNote() {
-        if (!selected) {
-          changeNote.textContent = 'ガチャを選択してください。'
-          return
-        }
-        const changes = []
-        if (titleInput.value.trim() !== selected.title) changes.push('ガチャ名')
-        if (bannerChanged) changes.push('バナー')
-        changeNote.textContent = changes.length
-          ? `変更対象：${changes.join('・')}（slug・アイテム・開催期間は維持）`
-          : '現在は変更なしです。'
-      }
-
-      function resetBannerEdit() {
-        if (sourceObjectUrl) URL.revokeObjectURL(sourceObjectUrl)
-        sourceObjectUrl = ''
-        sourceImage = null
-        bannerChanged = false
-        bannerFile.value = ''
-        cropSection.hidden = true
-        clearBanner.disabled = true
-        zoom = 1
-        offsetX = 0
-        offsetY = 0
-        zoomRange.value = '1'
-        zoomValue.textContent = '100%'
-        nextBanner.src = selected?.bannerUrl || ''
-        updateChangeNote()
-      }
-
-      function chooseGacha() {
-        selected = gachas.find((gacha) => gacha.slug === select.value) || null
-        titleInput.value = selected?.title || ''
-        slugInput.value = selected?.slug || ''
-        currentBanner.src = selected?.bannerUrl || ''
-        resetBannerEdit()
-        status.textContent = ''
-        setResult('')
-      }
-
-      function coverScale() {
-        if (!sourceImage) return 1
-        return Math.max(WIDTH / sourceImage.naturalWidth, HEIGHT / sourceImage.naturalHeight) * zoom
-      }
-
-      function clampOffsets() {
-        if (!sourceImage) return
-        const scale = coverScale()
-        const overflowX = Math.max(0, sourceImage.naturalWidth * scale - WIDTH) / 2
-        const overflowY = Math.max(0, sourceImage.naturalHeight * scale - HEIGHT) / 2
-        offsetX = Math.max(-overflowX, Math.min(overflowX, offsetX))
-        offsetY = Math.max(-overflowY, Math.min(overflowY, offsetY))
-      }
-
-      function drawCrop() {
-        if (!sourceImage) return
-        clampOffsets()
-        const scale = coverScale()
-        const drawWidth = sourceImage.naturalWidth * scale
-        const drawHeight = sourceImage.naturalHeight * scale
-        const x = (WIDTH - drawWidth) / 2 + offsetX
-        const y = (HEIGHT - drawHeight) / 2 + offsetY
-        context.fillStyle = '#eef1f5'
-        context.fillRect(0, 0, WIDTH, HEIGHT)
-        context.imageSmoothingEnabled = true
-        context.imageSmoothingQuality = 'high'
-        context.drawImage(sourceImage, x, y, drawWidth, drawHeight)
-        nextBanner.src = canvas.toDataURL('image/jpeg', 0.92)
-      }
-
-      function resetCropPosition() {
-        zoom = 1
-        offsetX = 0
-        offsetY = 0
-        zoomRange.value = '1'
-        zoomValue.textContent = '100%'
-        drawCrop()
-      }
-
-      bannerFile.addEventListener('change', () => {
-        const file = bannerFile.files?.[0]
-        if (!file) return
-        if (sourceObjectUrl) URL.revokeObjectURL(sourceObjectUrl)
-        sourceObjectUrl = URL.createObjectURL(file)
-        const image = new Image()
-        image.onload = () => {
-          sourceImage = image
-          bannerChanged = true
-          cropSection.hidden = false
-          clearBanner.disabled = false
-          resetCropPosition()
-          updateChangeNote()
-        }
-        image.onerror = () => {
-          setResult('画像を読み込めませんでした。別の画像を選択してください。', true)
-          resetBannerEdit()
-        }
-        image.src = sourceObjectUrl
-      })
-
-      clearBanner.addEventListener('click', resetBannerEdit)
-      resetCrop.addEventListener('click', resetCropPosition)
-      titleInput.addEventListener('input', updateChangeNote)
-      select.addEventListener('change', chooseGacha)
-
-      zoomRange.addEventListener('input', () => {
-        const oldScale = coverScale()
-        zoom = Number(zoomRange.value)
-        const newScale = coverScale()
-        if (oldScale > 0) {
-          offsetX *= newScale / oldScale
-          offsetY *= newScale / oldScale
-        }
-        zoomValue.textContent = `${Math.round(zoom * 100)}%`
-        drawCrop()
-      })
-
-      canvasWrap.addEventListener('pointerdown', (event) => {
-        if (!sourceImage) return
-        canvasWrap.setPointerCapture(event.pointerId)
-        drag = { id: event.pointerId, x: event.clientX, y: event.clientY }
-        canvasWrap.classList.add('dragging')
-      })
-      canvasWrap.addEventListener('pointermove', (event) => {
-        if (!drag || drag.id !== event.pointerId) return
-        const rect = canvas.getBoundingClientRect()
-        offsetX += (event.clientX - drag.x) * (WIDTH / rect.width)
-        offsetY += (event.clientY - drag.y) * (HEIGHT / rect.height)
-        drag.x = event.clientX
-        drag.y = event.clientY
-        drawCrop()
-      })
-      function endDrag(event) {
-        if (!drag || drag.id !== event.pointerId) return
-        drag = null
-        canvasWrap.classList.remove('dragging')
-      }
-      canvasWrap.addEventListener('pointerup', endDrag)
-      canvasWrap.addEventListener('pointercancel', endDrag)
-
-      saveButton.addEventListener('click', async () => {
-        if (!selected) return
-        const title = titleInput.value.trim()
-        if (!title) {
-          setResult('ガチャ名を入力してください。', true)
-          return
-        }
-        const titleChanged = title !== selected.title
-        if (!titleChanged && !bannerChanged) {
-          setResult('変更がありません。', true)
-          return
-        }
-        const summary = [
-          `対象：${selected.title}`,
-          titleChanged ? `名前：${selected.title} → ${title}` : '名前：変更なし',
-          bannerChanged ? 'バナー：差し替え' : 'バナー：変更なし',
-          '',
-          'この内容で本番反映しますか？',
-        ].join('\n')
-        if (!window.confirm(summary)) return
-
-        saveButton.disabled = true
-        status.textContent = '保存・ビルド・GitHub反映中です…'
-        setResult('')
-        try {
-          const response = await fetch('/api/save', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              slug: selected.slug,
-              title,
-              bannerDataUrl: bannerChanged ? canvas.toDataURL('image/jpeg', 0.95) : '',
-            }),
-          })
-          const data = await response.json()
-          if (!response.ok || !data.ok) throw new Error(data.error || '保存に失敗しました。')
-          status.textContent = ''
-          setResult(
-            `修正完了\nガチャ名：${data.result.title}\nバナー：${data.result.bannerChanged ? '差し替え済み' : '変更なし'}\nビルド：成功\nGitHub：push完了`,
-          )
-          await loadGachas(data.result.slug)
-        } catch (error) {
-          status.textContent = ''
-          setResult(error.message || String(error), true)
-        } finally {
-          saveButton.disabled = false
-        }
-      })
-
-      async function loadGachas(preferredSlug = '') {
-        const response = await fetch('/api/gachas', { cache: 'no-store' })
-        const data = await response.json()
-        if (!response.ok || !data.ok) throw new Error(data.error || 'ガチャ一覧を読み込めません。')
-        gachas = data.gachas
-        select.innerHTML = gachas
-          .map((gacha) => `<option value="${escapeHtml(gacha.slug)}">${escapeHtml(gacha.title)}（${escapeHtml(gacha.slug)}）</option>`)
-          .join('')
-        if (preferredSlug && gachas.some((gacha) => gacha.slug === preferredSlug)) {
-          select.value = preferredSlug
-        }
-        chooseGacha()
-      }
+      let summaries = []
+      let current = null
+      let originalSlug = ''
+      let items = []
+      let categories = []
+      let rarities = []
+      let originalItemCount = 0
+      let bannerDataUrl = ''
+      let dirty = false
+      let saving = false
+      let newCounter = 0
+      let baselineSnapshot = ''
 
       function escapeHtml(value) {
-        return String(value)
+        return String(value ?? '')
           .replaceAll('&', '&amp;')
           .replaceAll('<', '&lt;')
           .replaceAll('>', '&gt;')
@@ -418,10 +379,503 @@
           .replaceAll("'", '&#039;')
       }
 
-      loadGachas().catch((error) => {
-        select.innerHTML = '<option>読み込み失敗</option>'
-        setResult(error.message || String(error), true)
+      function setResult(message, isError = false) {
+        result.textContent = message
+        result.classList.toggle('error', isError)
+        result.hidden = !message
+        if (message) result.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      }
+
+      function setDirty(value = true) {
+        dirty = value
+        dirtyBadge.textContent = dirty ? '未保存あり' : '変更なし'
+        dirtyBadge.classList.toggle('active', dirty)
+        saveState.textContent = saving
+          ? '保存・ビルド・GitHub反映中…'
+          : dirty
+            ? '未保存の変更があります'
+            : current
+              ? `${current.title}：保存済み状態`
+              : 'ガチャを読み込み中…'
+      }
+
+      function editorSnapshot() {
+        return JSON.stringify({
+          gacha: metadataPayload(),
+          bannerChanged: Boolean(bannerDataUrl),
+          items: items.map((item) => ({
+            clientKey: item.clientKey,
+            id: item.id,
+            name: item.name,
+            rarity: item.rarity,
+            category: item.category,
+            hasMotion: Boolean(item.hasMotion),
+            sourceImage: item.sourceImage,
+            replacementDataUrl: item.replacementDataUrl,
+          })),
+        })
+      }
+
+      function refreshDirty() {
+        setDirty(editorSnapshot() !== baselineSnapshot)
+      }
+
+      function metadataPayload() {
+        return {
+          id: gachaIdInput.value.trim(),
+          slug: slugInput.value.trim(),
+          title: titleInput.value.trim(),
+          type: typeInput.value.trim(),
+          status: statusInput.value,
+          infoStatus: infoStatusInput.value,
+          startDate: startDateInput.value.trim(),
+          endDate: endDateInput.value.trim(),
+          description: descriptionInput.value.trim(),
+          isPermanent: permanentInput.checked,
+        }
+      }
+
+      async function fetchJson(url, options) {
+        const response = await fetch(url, options)
+        const data = await response.json()
+        if (!response.ok || !data.ok) throw new Error(data.error || '処理に失敗しました。')
+        return data
+      }
+
+      async function loadSummaries(preferredSlug = '') {
+        const data = await fetchJson('/api/gachas', { cache: 'no-store' })
+        summaries = data.gachas
+        select.innerHTML = summaries
+          .map((gacha) => `<option value="${escapeHtml(gacha.slug)}">${escapeHtml(gacha.title)}（${escapeHtml(gacha.slug)}）</option>`)
+          .join('')
+        if (preferredSlug && summaries.some((gacha) => gacha.slug === preferredSlug)) {
+          select.value = preferredSlug
+        }
+      }
+
+      async function loadGacha(slug, askBeforeDiscard = true) {
+        if (dirty && askBeforeDiscard && !window.confirm('未保存の変更を破棄して別のガチャを開きますか？')) {
+          select.value = originalSlug
+          return
+        }
+        saveButton.disabled = true
+        saveState.textContent = 'ガチャ情報を読み込み中…'
+        setResult('')
+        try {
+          const data = await fetchJson(`/api/gacha/${encodeURIComponent(slug)}`, { cache: 'no-store' })
+          current = data.gacha
+          originalSlug = current.slug
+          categories = current.categories
+          rarities = current.rarities
+          originalItemCount = current.items.length
+          newCounter = 0
+          items = current.items.map((item) => ({ ...item, replacementDataUrl: '' }))
+          titleInput.value = current.title
+          typeInput.value = current.type
+          startDateInput.value = current.startDate
+          endDateInput.value = current.endDate
+          statusInput.value = current.status
+          infoStatusInput.value = current.infoStatus
+          permanentInput.checked = current.isPermanent
+          descriptionInput.value = current.description
+          gachaIdInput.value = current.id
+          slugInput.value = current.slug
+          currentBanner.src = current.bannerUrl
+          nextBanner.src = current.bannerUrl
+          bannerDataUrl = ''
+          bannerFile.value = ''
+          bannerStatus.textContent = '現在のバナーを維持'
+          bannerStatus.classList.remove('changed')
+          clearBannerButton.disabled = true
+          itemSearch.value = ''
+          renderItems()
+          baselineSnapshot = editorSnapshot()
+          setDirty(false)
+        } catch (error) {
+          setResult(error.message || String(error), true)
+          saveState.textContent = '読み込みに失敗しました'
+        } finally {
+          saveButton.disabled = false
+        }
+      }
+
+      function optionsHtml(values, selected) {
+        return values
+          .map((value) => `<option value="${escapeHtml(value)}" ${value === selected ? 'selected' : ''}>${escapeHtml(value)}</option>`)
+          .join('')
+      }
+
+      function renderItems(focusKey = '') {
+        itemCount.textContent = `${items.length}件`
+        const filtering = Boolean(itemSearch.value.trim())
+        itemGrid.innerHTML = items.map((item, index) => {
+          const preview = item.replacementDataUrl || item.imageUrl || ''
+          const missing = !preview
+          return `
+            <article class="item-card" data-key="${escapeHtml(item.clientKey)}">
+              <div class="item-media">
+                <div class="item-image ${missing ? 'missing' : ''}">
+                  <span class="position-badge">${String(index + 1).padStart(2, '0')}</span>
+                  ${preview ? `<img src="${escapeHtml(preview)}" alt="${escapeHtml(item.name || 'アイテム画像')}" />` : '<span class="missing-label">画像を選択</span>'}
+                  ${item.replacementDataUrl ? '<span class="replace-badge">差し替え</span>' : ''}
+                </div>
+                <label class="file-button">
+                  ${preview ? '画像を差し替える' : '画像を選ぶ'}
+                  <input type="file" data-action="image" accept="image/png,image/jpeg,image/webp" />
+                </label>
+                ${item.replacementDataUrl ? '<button class="button" style="width:100%;margin-top:7px" data-action="clear-image" type="button">画像変更を取り消す</button>' : ''}
+              </div>
+              <div class="item-fields">
+                <div class="field name-field">
+                  <label>アイテム名</label>
+                  <input type="text" data-field="name" value="${escapeHtml(item.name)}" autocomplete="off" />
+                </div>
+                <div class="field">
+                  <label>レアリティ</label>
+                  <select data-field="rarity">${optionsHtml(rarities, item.rarity)}</select>
+                </div>
+                <div class="field">
+                  <label>カテゴリ</label>
+                  <select data-field="category">${optionsHtml(categories, item.category)}</select>
+                </div>
+                <label class="motion-field">
+                  <input type="checkbox" data-field="hasMotion" ${item.hasMotion ? 'checked' : ''} />
+                  モーションあり
+                </label>
+                <details class="item-id-details">
+                  <summary>アイテムIDを修正</summary>
+                  <div class="field" style="margin-top:7px">
+                    <input type="text" data-field="id" value="${escapeHtml(item.id)}" autocomplete="off" />
+                  </div>
+                </details>
+                <div class="item-controls">
+                  <button class="button" data-action="up" type="button" ${index === 0 || filtering ? 'disabled' : ''}>↑ 上へ</button>
+                  <button class="button" data-action="down" type="button" ${index === items.length - 1 || filtering ? 'disabled' : ''}>↓ 下へ</button>
+                  <button class="button soft" data-action="add-after" type="button">この下に追加</button>
+                  <button class="button danger" data-action="delete" type="button">削除</button>
+                </div>
+              </div>
+            </article>
+          `
+        }).join('')
+        applyItemFilter()
+        if (focusKey) {
+          requestAnimationFrame(() => {
+            const card = [...itemGrid.querySelectorAll('.item-card')].find((element) => element.dataset.key === focusKey)
+            card?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+            card?.querySelector('[data-field="name"]')?.focus()
+          })
+        }
+      }
+
+      function applyItemFilter() {
+        const query = itemSearch.value.trim().toLowerCase()
+        filterNote.hidden = !query
+        itemGrid.querySelectorAll('.item-card').forEach((card, index) => {
+          const item = items[index]
+          const searchable = `${index + 1} ${item.name} ${item.id}`.toLowerCase()
+          card.hidden = Boolean(query) && !searchable.includes(query)
+          card.querySelectorAll('[data-action="up"], [data-action="down"]').forEach((button) => {
+            button.disabled = Boolean(query) || (button.dataset.action === 'up' ? index === 0 : index === items.length - 1)
+          })
+        })
+      }
+
+      function uniqueNewId() {
+        const slug = slugInput.value.trim() || originalSlug || 'gacha'
+        const used = new Set(items.map((item) => item.id))
+        let candidate
+        do {
+          newCounter += 1
+          candidate = `${slug}-new-${String(newCounter).padStart(2, '0')}`
+        } while (used.has(candidate))
+        return candidate
+      }
+
+      function addItem(position = items.length) {
+        const key = `new-${Date.now()}-${Math.random().toString(16).slice(2)}`
+        items.splice(position, 0, {
+          clientKey: key,
+          id: uniqueNewId(),
+          name: '',
+          rarity: 'SR',
+          category: '衣装',
+          hasMotion: false,
+          sourceImage: '',
+          imageUrl: '',
+          replacementDataUrl: '',
+        })
+        itemSearch.value = ''
+        refreshDirty()
+        renderItems(key)
+      }
+
+      function itemIndexFromElement(element) {
+        const key = element.closest('.item-card')?.dataset.key
+        return items.findIndex((item) => item.clientKey === key)
+      }
+
+      function readImage(file, kind) {
+        return new Promise((resolve, reject) => {
+          if (!file || !/^image\/(png|jpeg|webp)$/.test(file.type)) {
+            reject(new Error('PNG・JPEG・WebP画像を選択してください。'))
+            return
+          }
+          const reader = new FileReader()
+          reader.onerror = () => reject(new Error('画像ファイルを読み込めませんでした。'))
+          reader.onload = () => {
+            const image = new Image()
+            image.onerror = () => reject(new Error('画像として開けませんでした。'))
+            image.onload = () => {
+              const ratio = image.naturalWidth / image.naturalHeight
+              if (kind === 'item' && (ratio < 0.9 || ratio > 1.1)) {
+                reject(new Error(`アイテム画像は正方形に切り抜いてください（現在 ${image.naturalWidth}×${image.naturalHeight}）。`))
+                return
+              }
+              if (kind === 'banner' && (ratio < 4.5 || ratio > 6.5)) {
+                reject(new Error(`バナー画像は横長に切り抜いてください（現在 ${image.naturalWidth}×${image.naturalHeight}）。`))
+                return
+              }
+              resolve({ dataUrl: String(reader.result), width: image.naturalWidth, height: image.naturalHeight })
+            }
+            image.src = String(reader.result)
+          }
+          reader.readAsDataURL(file)
+        })
+      }
+
+      itemGrid.addEventListener('input', (event) => {
+        const field = event.target.dataset.field
+        if (!field) return
+        const index = itemIndexFromElement(event.target)
+        if (index < 0) return
+        items[index][field] = event.target.type === 'checkbox' ? event.target.checked : event.target.value
+        refreshDirty()
       })
+
+      itemGrid.addEventListener('change', async (event) => {
+        if (event.target.dataset.action !== 'image') return
+        const index = itemIndexFromElement(event.target)
+        const file = event.target.files?.[0]
+        if (index < 0 || !file) return
+        try {
+          const image = await readImage(file, 'item')
+          items[index].replacementDataUrl = image.dataUrl
+          refreshDirty()
+          renderItems(items[index].clientKey)
+        } catch (error) {
+          setResult(error.message || String(error), true)
+          event.target.value = ''
+        }
+      })
+
+      itemGrid.addEventListener('click', (event) => {
+        const button = event.target.closest('button[data-action]')
+        if (!button) return
+        const index = itemIndexFromElement(button)
+        if (index < 0) return
+        const action = button.dataset.action
+        if (action === 'clear-image') {
+          items[index].replacementDataUrl = ''
+          refreshDirty()
+          renderItems(items[index].clientKey)
+          return
+        }
+        if (action === 'up' && index > 0) {
+          ;[items[index - 1], items[index]] = [items[index], items[index - 1]]
+          refreshDirty()
+          renderItems(items[index - 1].clientKey)
+          return
+        }
+        if (action === 'down' && index < items.length - 1) {
+          ;[items[index], items[index + 1]] = [items[index + 1], items[index]]
+          refreshDirty()
+          renderItems(items[index + 1].clientKey)
+          return
+        }
+        if (action === 'add-after') {
+          addItem(index + 1)
+          return
+        }
+        if (action === 'delete') {
+          const name = items[index].name || `${index + 1}番の未入力アイテム`
+          if (!window.confirm(`「${name}」を画像ごと削除しますか？`)) return
+          items.splice(index, 1)
+          refreshDirty()
+          renderItems()
+        }
+      })
+
+      itemSearch.addEventListener('input', () => {
+        renderItems()
+      })
+      addItemTop.addEventListener('click', () => addItem())
+      addItemBottom.addEventListener('click', () => addItem())
+
+      bannerFile.addEventListener('change', async () => {
+        const file = bannerFile.files?.[0]
+        if (!file) return
+        try {
+          const image = await readImage(file, 'banner')
+          bannerDataUrl = image.dataUrl
+          nextBanner.src = image.dataUrl
+          bannerStatus.textContent = `差し替え画像：${image.width}×${image.height}（加工せず保存）`
+          bannerStatus.classList.add('changed')
+          clearBannerButton.disabled = false
+          refreshDirty()
+        } catch (error) {
+          setResult(error.message || String(error), true)
+          bannerFile.value = ''
+        }
+      })
+
+      clearBannerButton.addEventListener('click', () => {
+        bannerDataUrl = ''
+        bannerFile.value = ''
+        nextBanner.src = current.bannerUrl
+        bannerStatus.textContent = '現在のバナーを維持'
+        bannerStatus.classList.remove('changed')
+        clearBannerButton.disabled = true
+        refreshDirty()
+      })
+
+      form.addEventListener('input', (event) => {
+        if (!event.target.closest('#itemGrid') && event.target !== itemSearch) refreshDirty()
+      })
+      form.addEventListener('change', (event) => {
+        if (!event.target.closest('#itemGrid') && event.target !== bannerFile) refreshDirty()
+      })
+      fillPermanentButton.addEventListener('click', () => {
+        permanentInput.checked = true
+        startDateInput.value = '常設'
+        endDateInput.value = '終了予定なし'
+        statusInput.value = '開催中'
+        refreshDirty()
+      })
+
+      function validateClient() {
+        const metadata = metadataPayload()
+        const missing = [
+          [metadata.title, titleInput, 'ガチャ名'],
+          [metadata.type, typeInput, 'ガチャ種類'],
+          [metadata.startDate, startDateInput, '開始日時'],
+          [metadata.endDate, endDateInput, '終了日時'],
+          [metadata.description, descriptionInput, '説明文'],
+          [metadata.id, gachaIdInput, 'ガチャID'],
+          [metadata.slug, slugInput, 'slug'],
+        ].find(([value]) => !value)
+        if (missing) {
+          missing[1].focus()
+          throw new Error(`${missing[2]}を入力してください。`)
+        }
+        const ids = new Set()
+        for (let index = 0; index < items.length; index += 1) {
+          const item = items[index]
+          if (!item.name.trim()) throw new Error(`${String(index + 1).padStart(2, '0')}番のアイテム名を入力してください。`)
+          if (!item.id.trim()) throw new Error(`${String(index + 1).padStart(2, '0')}番のアイテムIDを入力してください。`)
+          if (ids.has(item.id.trim())) throw new Error(`アイテムIDが重複しています：${item.id}`)
+          ids.add(item.id.trim())
+          if (!item.replacementDataUrl && (!item.sourceImage || item.sourceImage === 'placeholder')) {
+            throw new Error(`${String(index + 1).padStart(2, '0')}番のアイテム画像を選んでください。`)
+          }
+        }
+        return metadata
+      }
+
+      saveButton.addEventListener('click', async () => {
+        if (!current || saving) return
+        if (!dirty) {
+          setResult('変更がありません。', true)
+          return
+        }
+        let metadata
+        try {
+          metadata = validateClient()
+        } catch (error) {
+          setResult(error.message || String(error), true)
+          return
+        }
+        const replacementCount = items.filter((item) => item.replacementDataUrl).length
+        const slugWarning = metadata.slug !== originalSlug
+          ? `\n注意：URLが /gacha/${originalSlug} から /gacha/${metadata.slug} へ変わります。`
+          : ''
+        const summary = [
+          `対象：${current.title}`,
+          `保存後の名前：${metadata.title}`,
+          `開催期間：${metadata.startDate} ～ ${metadata.endDate}`,
+          `アイテム：${originalItemCount}件 → ${items.length}件`,
+          `アイテム画像差し替え：${replacementCount}件`,
+          `バナー差し替え：${bannerDataUrl ? 'あり' : 'なし'}`,
+          slugWarning,
+          '',
+          'この内容で本番反映しますか？',
+        ].join('\n')
+        if (!window.confirm(summary)) return
+
+        saving = true
+        saveButton.disabled = true
+        setDirty(dirty)
+        setResult('')
+        try {
+          const payload = {
+            originalSlug,
+            gacha: metadata,
+            bannerDataUrl,
+            items: items.map((item) => ({
+              id: item.id.trim(),
+              name: item.name.trim(),
+              rarity: item.rarity,
+              category: item.category,
+              hasMotion: Boolean(item.hasMotion),
+              sourceImage: item.sourceImage,
+              replacementDataUrl: item.replacementDataUrl,
+            })),
+          }
+          const data = await fetchJson('/api/save', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+          })
+          setDirty(false)
+          await loadSummaries(data.result.slug)
+          select.value = data.result.slug
+          await loadGacha(data.result.slug, false)
+          setResult(
+            `修正完了\nガチャ：${data.result.title}\n開催期間：${metadata.startDate} ～ ${metadata.endDate}\nアイテム：${data.result.itemCount}件\n本番ビルド：成功\nGitHub：push完了`,
+          )
+        } catch (error) {
+          setResult(error.message || String(error), true)
+        } finally {
+          saving = false
+          saveButton.disabled = false
+          setDirty(dirty)
+        }
+      })
+
+      select.addEventListener('change', () => loadGacha(select.value))
+      reloadButton.addEventListener('click', () => {
+        if (!current) return
+        if (dirty && !window.confirm('未保存の変更をすべて破棄して、保存済み状態へ戻しますか？')) return
+        loadGacha(originalSlug, false)
+      })
+      window.addEventListener('beforeunload', (event) => {
+        if (!dirty || saving) return
+        event.preventDefault()
+        event.returnValue = ''
+      })
+
+      ;(async () => {
+        try {
+          await loadSummaries()
+          if (!summaries.length) throw new Error('登録済みガチャがありません。')
+          select.value = summaries[0].slug
+          await loadGacha(select.value, false)
+        } catch (error) {
+          setResult(error.message || String(error), true)
+          saveState.textContent = '起動に失敗しました'
+          saveButton.disabled = true
+        }
+      })()
     </script>
   </body>
 </html>
