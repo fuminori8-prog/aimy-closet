@@ -1,3 +1,4 @@
+import rinGoAmeToOtomeNoHimiTsu from './gachas/rin-go-ame-to-otome-no-himi-tsu'
 import wagamamaDeBiruNiOboreTai from './gachas/wagamama-de-biru-ni-obore-tai'
 import gacha25ShunenFukkokuGachaDai1Dan from './gachas/2-5-shunen-fukkoku-gacha-dai-1-dan'
 import anoNatsuNoHokago from './gachas/ano-natsu-no-hokago'
@@ -24,6 +25,7 @@ import kimiNoTokubetsu from './gachas/kimi-no-tokubetsu'
 import friendPoint from './gachas/friend-point'
 
 export const gachas = [
+  rinGoAmeToOtomeNoHimiTsu,
   wagamamaDeBiruNiOboreTai,
   gacha25ShunenFukkokuGachaDai1Dan,
   anoNatsuNoHokago,
