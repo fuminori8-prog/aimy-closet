@@ -40,6 +40,9 @@
     .hidden { display: none !important; }
     .warnings { background: #fff8df; border: 1px solid #ecd98d; border-radius: 10px; padding: 12px 16px; }
     .warnings:empty { display: none; }
+    .source-sizes { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; margin: 10px 0 16px; color: #4b5563; font-size: 12px; }
+    .source-size { border-radius: 999px; padding: 4px 8px; background: #e8f7ef; color: #16794b; font-weight: 800; }
+    .source-size.low { background: #fff0e6; color: #9a3412; }
     .banner { display: block; max-width: 100%; width: auto; border: 1px solid #dfe3e8; border-radius: 12px; margin-bottom: 18px; }
     .form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
     label { display: grid; gap: 6px; font-size: 14px; font-weight: 700; }
@@ -55,6 +58,9 @@
     .item-image-wrap { text-align: center; }
     .item-image { width: 112px; height: 112px; object-fit: contain; border-radius: 10px; background: #f2f3f5; }
     .item-number { font-weight: 800; margin-top: 5px; }
+    .quality-note { display: inline-block; margin-top: 5px; border-radius: 999px; padding: 3px 7px; font-size: 11px; font-weight: 800; }
+    .quality-note.good { color: #16794b; background: #e8f7ef; }
+    .quality-note.low { color: #9a3412; background: #fff0e6; }
     .item-fields { display: grid; gap: 8px; }
     .item-fields label { font-size: 12px; }
     .item-row { display: grid; grid-template-columns: 1fr 1.35fr; gap: 8px; }
@@ -124,6 +130,7 @@
   <section class="panel hidden" id="reviewPanel">
     <h2>2. 確認</h2>
     <div class="warnings" id="warnings"></div>
+    <div class="source-sizes" id="sourceSizes"></div>
     <p><strong>バナー</strong></p>
     <img class="banner" id="banner" alt="自動切り抜きされたガチャバナー">
 
@@ -363,7 +370,17 @@
   function renderItems() {
     const container = $('items');
     container.innerHTML = '';
-    $('itemCount').textContent = `${state.draft.items.length}件`;
+    const resolutionSide = item => Math.min(
+      Number(item.cropWidth || 0),
+      Number(item.cropHeight || 0),
+    );
+    const lowResolutionCount = state.draft.items.filter(item => {
+      const side = resolutionSide(item);
+      return item.resolutionQuality === 'low' || (side > 0 && side < 150);
+    }).length;
+    $('itemCount').textContent = lowResolutionCount
+      ? `${state.draft.items.length}件（低解像度 ${lowResolutionCount}件）`
+      : `${state.draft.items.length}件（全画像150px以上）`;
     state.draft.items.forEach((item, index) => {
       const card = document.createElement('article');
       card.className = 'item-card';
@@ -378,6 +395,20 @@
       number.className = 'item-number';
       number.textContent = String(index + 1).padStart(2, '0');
       imageWrap.append(img, number);
+      const cropWidth = Number(item.cropWidth || 0);
+      const cropHeight = Number(item.cropHeight || 0);
+      if (cropWidth > 0 && cropHeight > 0) {
+        const quality = document.createElement('div');
+        const isLow = item.resolutionQuality === 'low' || Math.min(cropWidth, cropHeight) < 150;
+        quality.className = `quality-note ${isLow ? 'low' : 'good'}`;
+        const sourceWidth = Number(item.sourceWidth || 0);
+        const sourceHeight = Number(item.sourceHeight || 0);
+        const sourceText = sourceWidth > 0 && sourceHeight > 0
+          ? ` / 元${sourceWidth}×${sourceHeight}`
+          : '';
+        quality.textContent = `${isLow ? '要確認' : '原寸'} ${cropWidth}×${cropHeight}${sourceText}`;
+        imageWrap.appendChild(quality);
+      }
       if ((item.confidence || 0) < 0.55) {
         const low = document.createElement('div');
         low.className = 'confidence-low';
@@ -451,6 +482,13 @@
     $('endDate').value = draft.endDate || '';
     $('description').value = draft.description || '';
     $('warnings').innerHTML = (draft.warnings || []).map(x => `<div>⚠ ${escapeHtml(x)}</div>`).join('');
+    const summaries = draft.sourceDimensionSummary || [];
+    $('sourceSizes').innerHTML = summaries.length
+      ? `<strong>投入スクショの実寸:</strong>${summaries.map(row => {
+          const lowClass = Number(row.width || 0) < 900 ? ' low' : '';
+          return `<span class="source-size${lowClass}">${Number(row.width)}×${Number(row.height)}：${Number(row.count)}枚</span>`;
+        }).join('')}`
+      : '';
     renderItems();
     manualInsertPosition.max = String((draft.items || []).length + 1);
   }

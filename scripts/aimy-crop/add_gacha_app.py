@@ -36,7 +36,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional, Sequence, Tuple
 
-from PIL import Image, ImageChops, ImageOps, ImageStat
+from PIL import Image, ImageChops, ImageFilter, ImageOps, ImageStat
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 PROJECT_ROOT = SCRIPT_DIR.parent.parent
@@ -55,6 +55,10 @@ from detect_cards import _compute_dhash, _detect_boxes, _estimate_rarity, _hammi
 from export_cards import _crop_without_stretch  # noqa: E402
 
 IMAGE_EXTS = {".png", ".jpg", ".jpeg", ".webp"}
+MIN_GOOD_CARD_SIDE = 150
+FULL_SIZE_SCREENSHOT_WIDTH = 900
+REFERENCE_SCREENSHOT_WIDTH = 1179
+REFERENCE_CARD_SIDE = 192
 CATEGORY_ALIASES = {
     "衣装": "衣装",
     "目": "目",
@@ -572,13 +576,85 @@ def run_ocr(image_path: Path) -> List[OCRLine]:
     return _run_tesseract_ocr(image_path)
 
 
+def _square_card_box(
+    image_size: Tuple[int, int], box: Tuple[int, int, int, int]
+) -> Tuple[Tuple[int, int, int, int], bool]:
+    """Expand a detected border to a native square instead of cutting its long side off."""
+    image_width, image_height = image_size
+    left, top, right, bottom = box
+    raw_width = max(1, right - left)
+    raw_height = max(1, bottom - top)
+    side = max(raw_width, raw_height)
+    adjusted = raw_width != raw_height
+
+    # On a full-size iPhone screenshot, a fragmentary pale border can make the
+    # detector return only the inner part of a card. Restore the expected card
+    # geometry from the screenshot scale, while still cropping source pixels.
+    if image_width >= FULL_SIZE_SCREENSHOT_WIDTH and side < MIN_GOOD_CARD_SIDE:
+        expected_side = round(REFERENCE_CARD_SIDE * image_width / REFERENCE_SCREENSHOT_WIDTH)
+        side = max(side, expected_side)
+        adjusted = True
+
+    side = min(side, image_width, image_height)
+    center_x = (left + right) / 2.0
+    center_y = (top + bottom) / 2.0
+    square_left = round(center_x - side / 2.0)
+    square_top = round(center_y - side / 2.0)
+    square_left = max(0, min(image_width - side, square_left))
+    square_top = max(0, min(image_height - side, square_top))
+    return (
+        square_left,
+        square_top,
+        square_left + side,
+        square_top + side,
+    ), adjusted
+
+
 def _crop_item_for_output(image: Image.Image, box: Tuple[int, int, int, int]) -> Image.Image:
-    """Crop at native resolution and never manufacture pixels by enlargement."""
-    crop = image.crop(box).convert("RGBA")
-    side = min(crop.size)
-    left = (crop.width - side) // 2
-    top = (crop.height - side) // 2
-    return crop.crop((left, top, left + side, top + side))
+    """Crop a native square without resizing or discarding part of the card border."""
+    square_box, _ = _square_card_box(image.size, box)
+    return image.crop(square_box).convert("RGBA")
+
+
+def _card_sharpness(image: Image.Image) -> float:
+    """Measure detail at a fixed comparison size so different source sizes are comparable."""
+    comparison = ImageOps.fit(
+        image.convert("L"),
+        (96, 96),
+        method=Image.Resampling.LANCZOS,
+    )
+    edges = comparison.filter(ImageFilter.FIND_EDGES)
+    return round(float(ImageStat.Stat(edges).var[0]), 2)
+
+
+def _candidate_quality_key(candidate: Dict[str, Any]) -> Tuple[int, int, float, int]:
+    """Prefer a genuinely larger native crop, then the sharper source."""
+    side = int(min(candidate.get("cropWidth", 0), candidate.get("cropHeight", 0)))
+    source_pixels = int(candidate.get("imageWidth", 0)) * int(candidate.get("imageHeight", 0))
+    return (
+        1 if side >= MIN_GOOD_CARD_SIDE else 0,
+        side,
+        float(candidate.get("sharpness", 0.0)),
+        source_pixels,
+    )
+
+
+def _replace_duplicate_with_better_image(
+    previous: Dict[str, Any], candidate: Dict[str, Any]
+) -> Dict[str, Any]:
+    """Keep OCR metadata as reliable as possible while choosing the better native image."""
+    if _candidate_quality_key(candidate) <= _candidate_quality_key(previous):
+        return previous
+
+    replacement = dict(candidate)
+    if float(previous.get("nameConfidence", 0.0)) > float(candidate.get("nameConfidence", 0.0)):
+        replacement["name"] = previous.get("name", "")
+        replacement["nameConfidence"] = previous.get("nameConfidence", 0.0)
+    if replacement.get("category") == "未分類" and previous.get("category") != "未分類":
+        replacement["category"] = previous.get("category")
+    if not replacement.get("rarity") or replacement.get("rarity") == "UNKNOWN":
+        replacement["rarity"] = previous.get("rarity", "SR")
+    return replacement
 
 
 def _normalized_text(text: str) -> str:
@@ -950,6 +1026,14 @@ def add_manual_items(session_id: str, position: int, payloads: Sequence[Tuple[st
                 "confidence": 0,
                 "source": f"manual:{_safe_filename(filename)}",
                 "box": [0, 0, output.width, output.height],
+                "cropWidth": output.width,
+                "cropHeight": output.height,
+                "sourceWidth": output.width,
+                "sourceHeight": output.height,
+                "sharpness": _card_sharpness(output),
+                "resolutionQuality": (
+                    "good" if min(output.size) >= MIN_GOOD_CARD_SIDE else "low"
+                ),
                 "imageUrl": (
                     f"/workspace/{session_id}/generated/items/"
                     f"{urllib.parse.quote(image_file)}?v={time.time_ns()}"
@@ -1056,12 +1140,16 @@ def process_session(session_id: str) -> Dict[str, Any]:
                 metadata[key] = value
 
     detected: List[Dict[str, Any]] = []
+    source_dimensions: Dict[str, Tuple[int, int]] = {}
+    overlap_duplicate_count = 0
+    quality_upgrade_count = 0
     current_category = ""
     current_rarity = ""
 
     for source_index, path in enumerate(screenshots):
         with Image.open(path) as image:
             rgb = image.convert("RGB")
+            source_dimensions[path.name] = rgb.size
             boxes = _detect_boxes(rgb)
             lines = ocr_by_file.get(path.name, [])
 
@@ -1077,7 +1165,9 @@ def process_session(session_id: str) -> Dict[str, Any]:
                 elif re.search(r"(^|[^S])SR", normalized) and "ラインナップ" in normalized:
                     rarity_events.append((line.top, "SR"))
 
-            for box in boxes:
+            for detected_box in boxes:
+                raw_box = tuple(int(value) for value in detected_box)
+                box, box_adjusted = _square_card_box(rgb.size, raw_box)
                 top = box[1]
                 for event_y, category in sorted(category_events):
                     if event_y <= top + 30:
@@ -1093,17 +1183,22 @@ def process_session(session_id: str) -> Dict[str, Any]:
                 if rarity == "UNKNOWN":
                     rarity = "SR"
 
-                crop = rgb.crop(box)
+                crop = _crop_item_for_output(rgb, box)
                 candidate = {
                     "source": path.name,
                     "sourceIndex": source_index,
                     "imageWidth": rgb.width,
                     "imageHeight": rgb.height,
                     "box": list(box),
+                    "rawBox": list(raw_box),
+                    "boxAdjusted": box_adjusted,
                     "name": name,
                     "nameConfidence": round(confidence, 3),
                     "category": current_category or "未分類",
                     "rarity": rarity,
+                    "cropWidth": crop.width,
+                    "cropHeight": crop.height,
+                    "sharpness": _card_sharpness(crop),
                     "dhash": _compute_dhash(crop),
                     "thumbnail": crop.resize((32, 32), Image.Resampling.LANCZOS),
                 }
@@ -1113,6 +1208,14 @@ def process_session(session_id: str) -> Dict[str, Any]:
                     # OCRで同じ正式名と確認できた場合だけスクロール重複として除外する。
                     same_name = name and _item_name_key(name) == _item_name_key(duplicate.get("name", ""))
                     if same_name:
+                        overlap_duplicate_count += 1
+                        replacement = _replace_duplicate_with_better_image(duplicate, candidate)
+                        if replacement is not duplicate:
+                            duplicate_index = next(
+                                index for index, old in enumerate(detected) if old is duplicate
+                            )
+                            detected[duplicate_index] = replacement
+                            quality_upgrade_count += 1
                         continue
                 detected.append(candidate)
 
@@ -1142,6 +1245,14 @@ def process_session(session_id: str) -> Dict[str, Any]:
                 "confidence": candidate["nameConfidence"],
                 "source": candidate["source"],
                 "box": candidate["box"],
+                "cropWidth": output.width,
+                "cropHeight": output.height,
+                "sourceWidth": candidate["imageWidth"],
+                "sourceHeight": candidate["imageHeight"],
+                "sharpness": candidate["sharpness"],
+                "resolutionQuality": (
+                    "good" if min(output.size) >= MIN_GOOD_CARD_SIDE else "low"
+                ),
                 "imageUrl": f"/workspace/{session_id}/generated/items/{index:02d}.png",
             }
         )
@@ -1150,6 +1261,30 @@ def process_session(session_id: str) -> Dict[str, Any]:
     base_slug = _slugify(title, metadata["startDate"])
     slug = _unique_slug(base_slug)
     warnings = []
+    low_resolution_items = [item for item in items if item["resolutionQuality"] == "low"]
+    if quality_upgrade_count:
+        warnings.append(
+            f"スクロール重複{overlap_duplicate_count}件を比較し、"
+            f"{quality_upgrade_count}件はより大きく鮮明な元画像へ自動で差し替えました。"
+        )
+    if low_resolution_items:
+        affected_sources = {
+            str(item["source"]): (int(item["sourceWidth"]), int(item["sourceHeight"]))
+            for item in low_resolution_items
+        }
+        affected_size_counts: Dict[Tuple[int, int], int] = {}
+        for size in affected_sources.values():
+            affected_size_counts[size] = affected_size_counts.get(size, 0) + 1
+        size_text = "、".join(
+            f"{width}×{height}が{count}枚"
+            for (width, height), count in sorted(affected_size_counts.items())
+        )
+        warnings.append(
+            f"{len(low_resolution_items)}件は、縮小された元ファイル"
+            f"{len(affected_sources)}枚から検出されています（{size_text}）。"
+            "別の1179px画像が同じ一式に含まれていても、その画像に写っていないアイテムの"
+            "解像度は補えません。公開は止めませんが、該当スクショだけ元サイズへ差し替えると改善します。"
+        )
     if title == "タイトル未認識":
         warnings.append("タイトルを自動認識できませんでした。タイトル欄を修正してください。")
     missing_names = sum(1 for item in items if item["name"].startswith("アイテム "))
@@ -1157,6 +1292,10 @@ def process_session(session_id: str) -> Dict[str, Any]:
         warnings.append(f"{missing_names}件のアイテム名を認識できませんでした。該当欄を修正してください。")
     if any(item["category"] == "未分類" for item in items):
         warnings.append("カテゴリ未分類のアイテムがあります。")
+
+    source_size_counts: Dict[Tuple[int, int], int] = {}
+    for size in source_dimensions.values():
+        source_size_counts[size] = source_size_counts.get(size, 0) + 1
 
     draft = {
         "sessionId": session_id,
@@ -1173,6 +1312,16 @@ def process_session(session_id: str) -> Dict[str, Any]:
         "warnings": warnings,
         "screenshotCount": len(screenshots),
         "screenshotOrder": [path.name for path in screenshots],
+        "sourceDimensions": [
+            {"file": path.name, "width": source_dimensions[path.name][0], "height": source_dimensions[path.name][1]}
+            for path in screenshots
+        ],
+        "sourceDimensionSummary": [
+            {"width": width, "height": height, "count": count}
+            for (width, height), count in sorted(source_size_counts.items())
+        ],
+        "overlapDuplicateCount": overlap_duplicate_count,
+        "qualityUpgradeCount": quality_upgrade_count,
     }
     (session_dir / "draft.json").write_text(json.dumps(draft, ensure_ascii=False, indent=2), encoding="utf-8")
     return draft
