@@ -3,7 +3,6 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import '../App.css'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
-import AdBanner from '../components/AdBanner'
 import GachaItemCard from '../components/GachaItemCard'
 import FavoriteButton from '../components/FavoriteButton'
 import { gachas } from '../data/gachas'
@@ -181,8 +180,6 @@ function ItemDetail() {
             </div>
           </div>
         </section>
-
-        <AdBanner slot="itemDetail" />
 
         {relatedItems.length > 0 ? (
           <section className="lineup-section">

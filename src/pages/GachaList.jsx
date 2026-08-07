@@ -1,10 +1,9 @@
 import '../App.css'
-import { Fragment, useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useSearchParams } from 'react-router-dom'
 import Header from '../components/Header'
 import SearchBar from '../components/SearchBar'
-import AdBanner from '../components/AdBanner'
 import Footer from '../components/Footer'
 import GachaCard from '../components/GachaCard'
 import { gachas } from '../data/gachas'
@@ -16,8 +15,6 @@ const GACHA_FILTERS = [
   { key: 'ended', label: '開催終了' },
   { key: 'collecting', label: '情報収集中' },
 ]
-
-const GACHA_INLINE_AD_INTERVAL = 6
 
 function parseStartDate(value) {
   if (!value) {
@@ -129,25 +126,15 @@ useEffect(() => {
 
           <p className="result-count">{filteredGachas.length}件 / 全{gachas.length}件</p>
 
-          <AdBanner slot="gachaList" />
-
           {filteredGachas.length > 0 ? (
             <div className="gacha-grid">
-              {filteredGachas.map((gacha, index) => (
-                <Fragment key={gacha.id}>
-                  <GachaCard
-                    gacha={gacha}
-                    onView={() => navigate(`/gacha/${gacha.slug}`)}
-                    currentTime={currentTime}
-                  />
-
-                  {(index + 1) % GACHA_INLINE_AD_INTERVAL === 0 &&
-                  index < filteredGachas.length - 1 ? (
-                    <div className="grid-inline-ad">
-                      <AdBanner slot="gachaList" />
-                    </div>
-                  ) : null}
-                </Fragment>
+              {filteredGachas.map((gacha) => (
+                <GachaCard
+                  key={gacha.id}
+                  gacha={gacha}
+                  onView={() => navigate(`/gacha/${gacha.slug}`)}
+                  currentTime={currentTime}
+                />
               ))}
             </div>
           ) : (

@@ -1,9 +1,8 @@
 import '../App.css'
-import { Fragment, useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
-import AdBanner from '../components/AdBanner'
 import SearchBar from '../components/SearchBar'
 import GachaItemCard from '../components/GachaItemCard'
 import { getAllItems } from '../utils/items'
@@ -18,9 +17,6 @@ const SUB_CATEGORY_OPTIONS = {
   アクセサリー: ['あたま', 'めがね', 'ピアス'],
   パーツ: ['メイク', '目', '口', '鼻', 'まゆげ'],
 }
-
-const ITEM_INLINE_AD_INTERVAL = 15
-const ITEM_INLINE_AD_LIMIT = 5
 
 function ItemList() {
   const [searchParams] = useSearchParams()
@@ -193,38 +189,23 @@ function ItemList() {
             {filteredItems.length}件 / 全{allItems.length}件
           </p>
 
-          <AdBanner slot="itemList" />
-
           {filteredItems.length > 0 ? (
             <div className="card-grid item-grid">
-              {filteredItems.map((item, index) => {
+              {filteredItems.map((item) => {
                 const categoryLabel = item.subCategory
                   ? `${item.normalizedCategory}：${item.subCategory}`
                   : item.normalizedCategory
 
-                const inlineAdNumber = (index + 1) / ITEM_INLINE_AD_INTERVAL
-                const showInlineAd =
-                  Number.isInteger(inlineAdNumber) &&
-                  inlineAdNumber <= ITEM_INLINE_AD_LIMIT &&
-                  index < filteredItems.length - 1
-
                 return (
-                  <Fragment key={item.id}>
-                    <GachaItemCard
-                      item={{ ...item, category: categoryLabel }}
-                      subtext={
-                        item.sourceType === 'historical'
-                          ? `${item.implementationPeriod}・ガチャ未特定`
-                          : `ガチャ: ${item.gachaTitle}`
-                      }
-                    />
-
-                    {showInlineAd ? (
-                      <div className="grid-inline-ad">
-                        <AdBanner slot="itemList" />
-                      </div>
-                    ) : null}
-                  </Fragment>
+                  <GachaItemCard
+                    key={item.id}
+                    item={{ ...item, category: categoryLabel }}
+                    subtext={
+                      item.sourceType === 'historical'
+                        ? `${item.implementationPeriod}・ガチャ未特定`
+                        : `ガチャ: ${item.gachaTitle}`
+                    }
+                  />
                 )
               })}
             </div>

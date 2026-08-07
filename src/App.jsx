@@ -5,7 +5,6 @@ import SearchBar from './components/SearchBar'
 import LatestGacha from './components/LatestGacha'
 import CategoryGrid from './components/CategoryGrid'
 import PopularItems from './components/PopularItems'
-import AdBanner from './components/AdBanner'
 import Footer from './components/Footer'
 import { getAllItems } from './utils/items'
 import { MAIN_CATEGORIES } from './utils/itemCategory'
@@ -60,10 +59,8 @@ function App() {
       <main>
         <SearchBar />
         <LatestGacha />
-        <AdBanner slot="homePrimary" />
         <CategoryGrid categories={categories} />
         <PopularItems />
-        <AdBanner slot="homeSecondary" />
       </main>
       <Footer />
     </div>
