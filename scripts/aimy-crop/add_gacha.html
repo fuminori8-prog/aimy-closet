@@ -406,7 +406,9 @@
         const sourceText = sourceWidth > 0 && sourceHeight > 0
           ? ` / 元${sourceWidth}×${sourceHeight}`
           : '';
-        quality.textContent = `${isLow ? '要確認' : '原寸'} ${cropWidth}×${cropHeight}${sourceText}`;
+        const outputWidth = Number(item.outputWidth || 192);
+        const outputHeight = Number(item.outputHeight || 192);
+        quality.textContent = `${isLow ? '補間' : '原寸'} ${cropWidth}×${cropHeight} → 保存${outputWidth}×${outputHeight}${sourceText}`;
         imageWrap.appendChild(quality);
       }
       if ((item.confidence || 0) < 0.55) {

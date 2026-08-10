@@ -59,6 +59,7 @@ MIN_GOOD_CARD_SIDE = 150
 FULL_SIZE_SCREENSHOT_WIDTH = 900
 REFERENCE_SCREENSHOT_WIDTH = 1179
 REFERENCE_CARD_SIDE = 192
+ITEM_OUTPUT_SIDE = 192
 CATEGORY_ALIASES = {
     "衣装": "衣装",
     "目": "目",
@@ -610,10 +611,41 @@ def _square_card_box(
     ), adjusted
 
 
-def _crop_item_for_output(image: Image.Image, box: Tuple[int, int, int, int]) -> Image.Image:
-    """Crop a native square without resizing or discarding part of the card border."""
+def _native_item_crop(image: Image.Image, box: Tuple[int, int, int, int]) -> Image.Image:
+    """Crop the full card border at the source image's native resolution."""
     square_box, _ = _square_card_box(image.size, box)
     return image.crop(square_box).convert("RGBA")
+
+
+def _normalize_item_output(crop: Image.Image) -> Image.Image:
+    """Create the site's 192px asset with deterministic high-quality resampling.
+
+    The site displays item cards at 192x192. Saving a 58-100px native crop and
+    letting the browser enlarge it caused the recent visible quality regression.
+    Resampling once here is the same stable pipeline used before that regression.
+    Source dimensions remain recorded separately, so this does not pretend that
+    a thumbnail contains genuine 192px detail.
+    """
+    rgba = crop.convert("RGBA")
+    if rgba.size == (ITEM_OUTPUT_SIDE, ITEM_OUTPUT_SIDE):
+        return rgba
+
+    normalized = rgba.resize(
+        (ITEM_OUTPUT_SIDE, ITEM_OUTPUT_SIDE),
+        Image.Resampling.LANCZOS,
+    )
+    if min(rgba.size) < MIN_GOOD_CARD_SIDE:
+        # A restrained edge recovery keeps text/borders crisp after enlargement
+        # without using a generative model that could invent item details.
+        normalized = normalized.filter(
+            ImageFilter.UnsharpMask(radius=0.75, percent=85, threshold=3)
+        )
+    return normalized
+
+
+def _crop_item_for_output(image: Image.Image, box: Tuple[int, int, int, int]) -> Image.Image:
+    """Crop the whole card and normalize the published asset to 192x192."""
+    return _normalize_item_output(_native_item_crop(image, box))
 
 
 def _card_sharpness(image: Image.Image) -> float:
@@ -863,18 +895,68 @@ def _extract_banner(
     }
 
 
-def _parse_datetime(text: str) -> Optional[str]:
-    value = _normalized_text(text)
+def _parse_datetimes(text: str) -> List[str]:
+    """Parse real datetimes while preserving the day/hour separator."""
+    value = str(text)
+    value = value.replace("　", " ")
     value = value.replace("年", "/").replace("月", "/").replace("日", " ")
+    value = value.replace("（", "(").replace("）", ")")
     value = value.replace("．", ".").replace("：", ":")
-    match = re.search(
-        r"(20\d{2})[/.\-](\d{1,2})[/.\-](\d{1,2})(?:\([^)]*\))?\s*(\d{1,2})[:.](\d{2})",
-        value,
+    value = re.sub(r"[ \t]+", " ", value)
+
+    results: List[str] = []
+    pattern = re.compile(
+        r"(20\d{2})\s*[/.\-]\s*(\d{1,2})\s*[/.\-]\s*(\d{1,2})"
+        r"(?:\s*\([^)]*\))?\s+(\d{1,2})\s*[:.]\s*(\d{2})"
     )
-    if not match:
-        return None
-    year, month, day, hour, minute = (int(x) for x in match.groups())
-    return f"{year:04d}/{month:02d}/{day:02d} {hour:02d}:{minute:02d}"
+    for match in pattern.finditer(value):
+        year, month, day, hour, minute = (int(x) for x in match.groups())
+        try:
+            parsed = datetime(year, month, day, hour, minute)
+        except ValueError:
+            continue
+        normalized = parsed.strftime("%Y/%m/%d %H:%M")
+        if normalized not in results:
+            results.append(normalized)
+    return results
+
+
+def _parse_datetime(text: str) -> Optional[str]:
+    parsed = _parse_datetimes(text)
+    return parsed[0] if parsed else None
+
+
+def _extract_period_dates(all_lines: Sequence[OCRLine]) -> List[str]:
+    """Read dates only from the rows immediately following the 開催期間 heading.
+
+    A publication date above the banner must not become the gacha period. If
+    the period heading is not detected, leave the fields empty for manual entry
+    instead of guessing from an unrelated date.
+    """
+    ordered = sorted(all_lines, key=lambda line: (line.top, line.left))
+    marker_indexes = [
+        index
+        for index, line in enumerate(ordered)
+        if "開催期間" in _normalized_text(line.text)
+    ]
+    if not marker_indexes:
+        return []
+
+    dates: List[str] = []
+    for marker_index in marker_indexes:
+        window = ordered[marker_index : marker_index + 10]
+        texts: List[str] = [line.text for line in window]
+        texts.extend(
+            f"{window[index].text} {window[index + 1].text}"
+            for index in range(len(window) - 1)
+        )
+        for text in texts:
+            for value in _parse_datetimes(text):
+                if value not in dates:
+                    dates.append(value)
+                if len(dates) == 2:
+                    return dates
+    return dates
 
 
 def _extract_metadata(all_lines: Sequence[OCRLine]) -> Dict[str, str]:
@@ -901,13 +983,9 @@ def _extract_metadata(all_lines: Sequence[OCRLine]) -> Dict[str, str]:
                     title = candidate
                     break
 
-    unique_dates: List[str] = []
-    for text in texts:
-        dt = _parse_datetime(text)
-        if dt and dt not in unique_dates:
-            unique_dates.append(dt)
-    start_date = unique_dates[0] if unique_dates else ""
-    end_date = unique_dates[1] if len(unique_dates) >= 2 else ""
+    period_dates = _extract_period_dates(all_lines)
+    start_date = period_dates[0] if period_dates else ""
+    end_date = period_dates[1] if len(period_dates) >= 2 else ""
 
     gacha_type = "アイミーボックス" if "アイミーボックス" in compact else "ガチャ"
     return {
@@ -1012,7 +1090,8 @@ def add_manual_items(session_id: str, position: int, payloads: Sequence[Tuple[st
     additions = []
     for offset, (filename, data) in enumerate(payloads):
         item_index = insert_at + offset + 1
-        output = _normalize_manual_item_image(data)
+        native_output = _normalize_manual_item_image(data)
+        output = _normalize_item_output(native_output)
         image_file = f"manual-{time.time_ns()}-{offset + 1}.png"
         output.save(items_dir / image_file, "PNG")
         additions.append(
@@ -1025,14 +1104,16 @@ def add_manual_items(session_id: str, position: int, payloads: Sequence[Tuple[st
                 "category": "未分類",
                 "confidence": 0,
                 "source": f"manual:{_safe_filename(filename)}",
-                "box": [0, 0, output.width, output.height],
-                "cropWidth": output.width,
-                "cropHeight": output.height,
-                "sourceWidth": output.width,
-                "sourceHeight": output.height,
-                "sharpness": _card_sharpness(output),
+                "box": [0, 0, native_output.width, native_output.height],
+                "cropWidth": native_output.width,
+                "cropHeight": native_output.height,
+                "outputWidth": output.width,
+                "outputHeight": output.height,
+                "sourceWidth": native_output.width,
+                "sourceHeight": native_output.height,
+                "sharpness": _card_sharpness(native_output),
                 "resolutionQuality": (
-                    "good" if min(output.size) >= MIN_GOOD_CARD_SIDE else "low"
+                    "good" if min(native_output.size) >= MIN_GOOD_CARD_SIDE else "low"
                 ),
                 "imageUrl": (
                     f"/workspace/{session_id}/generated/items/"
@@ -1183,7 +1264,8 @@ def process_session(session_id: str) -> Dict[str, Any]:
                 if rarity == "UNKNOWN":
                     rarity = "SR"
 
-                crop = _crop_item_for_output(rgb, box)
+                native_crop = _native_item_crop(rgb, box)
+                normalized_crop = _normalize_item_output(native_crop)
                 candidate = {
                     "source": path.name,
                     "sourceIndex": source_index,
@@ -1196,11 +1278,13 @@ def process_session(session_id: str) -> Dict[str, Any]:
                     "nameConfidence": round(confidence, 3),
                     "category": current_category or "未分類",
                     "rarity": rarity,
-                    "cropWidth": crop.width,
-                    "cropHeight": crop.height,
-                    "sharpness": _card_sharpness(crop),
-                    "dhash": _compute_dhash(crop),
-                    "thumbnail": crop.resize((32, 32), Image.Resampling.LANCZOS),
+                    "cropWidth": native_crop.width,
+                    "cropHeight": native_crop.height,
+                    "outputWidth": normalized_crop.width,
+                    "outputHeight": normalized_crop.height,
+                    "sharpness": _card_sharpness(native_crop),
+                    "dhash": _compute_dhash(normalized_crop),
+                    "thumbnail": normalized_crop.resize((32, 32), Image.Resampling.LANCZOS),
                 }
                 duplicate = _is_cross_screenshot_duplicate(candidate, detected)
                 if duplicate is not None:
@@ -1245,13 +1329,17 @@ def process_session(session_id: str) -> Dict[str, Any]:
                 "confidence": candidate["nameConfidence"],
                 "source": candidate["source"],
                 "box": candidate["box"],
-                "cropWidth": output.width,
-                "cropHeight": output.height,
+                "cropWidth": candidate["cropWidth"],
+                "cropHeight": candidate["cropHeight"],
+                "outputWidth": output.width,
+                "outputHeight": output.height,
                 "sourceWidth": candidate["imageWidth"],
                 "sourceHeight": candidate["imageHeight"],
                 "sharpness": candidate["sharpness"],
                 "resolutionQuality": (
-                    "good" if min(output.size) >= MIN_GOOD_CARD_SIDE else "low"
+                    "good"
+                    if min(candidate["cropWidth"], candidate["cropHeight"]) >= MIN_GOOD_CARD_SIDE
+                    else "low"
                 ),
                 "imageUrl": f"/workspace/{session_id}/generated/items/{index:02d}.png",
             }
@@ -1282,11 +1370,17 @@ def process_session(session_id: str) -> Dict[str, Any]:
         warnings.append(
             f"{len(low_resolution_items)}件は、縮小された元ファイル"
             f"{len(affected_sources)}枚から検出されています（{size_text}）。"
+            "公開画像はツール側で一度だけ高品質補間し、192×192で保存します。"
             "別の1179px画像が同じ一式に含まれていても、その画像に写っていないアイテムの"
-            "解像度は補えません。公開は止めませんが、該当スクショだけ元サイズへ差し替えると改善します。"
+            "元の細部までは補えませんが、ブラウザ任せの拡大によるガビつきは発生させません。"
         )
     if title == "タイトル未認識":
         warnings.append("タイトルを自動認識できませんでした。タイトル欄を修正してください。")
+    if not metadata.get("startDate") or not metadata.get("endDate"):
+        warnings.append(
+            "開催期間の見出し直下から開始・終了日時を2件取得できませんでした。"
+            "記事公開日時は代用せず、日時欄を手動で入力してください。"
+        )
     missing_names = sum(1 for item in items if item["name"].startswith("アイテム "))
     if missing_names:
         warnings.append(f"{missing_names}件のアイテム名を認識できませんでした。該当欄を修正してください。")
@@ -1403,6 +1497,17 @@ def _validate_draft(draft: Dict[str, Any]) -> None:
     title = str(draft.get("title", "")).strip()
     if not title or title == "タイトル未認識":
         raise AppError("ガチャタイトルを確認してください。")
+    parsed_dates: Dict[str, datetime] = {}
+    for key, label in (("startDate", "開始日時"), ("endDate", "終了日時")):
+        value = str(draft.get(key, "")).strip()
+        try:
+            parsed_dates[key] = datetime.strptime(value, "%Y/%m/%d %H:%M")
+        except ValueError as ex:
+            raise AppError(
+                f"{label}を YYYY/MM/DD HH:MM の正しい日時で入力してください。"
+            ) from ex
+    if parsed_dates["endDate"] <= parsed_dates["startDate"]:
+        raise AppError("終了日時は開始日時より後にしてください。")
     items = draft.get("items", [])
     if not isinstance(items, list) or not items:
         raise AppError("アイテムがありません。")
