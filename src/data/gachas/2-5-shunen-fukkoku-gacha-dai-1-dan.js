@@ -370,14 +370,14 @@ const gacha = {
     {
       id: '2-5-shunen-fukkoku-gacha-dai-1-dan-52',
       rarity: 'SR',
-      category: '衣装',
+      category: 'めがね',
       name: '踊り子のフェイスペール',
       image: '/images/items/2-5-shunen-fukkoku-gacha-dai-1-dan/52.png',
     },
     {
       id: '2-5-shunen-fukkoku-gacha-dai-1-dan-53',
       rarity: 'SR',
-      category: '衣装',
+      category: 'めがね',
       name: 'ローズの眼帯',
       image: '/images/items/2-5-shunen-fukkoku-gacha-dai-1-dan/53.png',
     },
