@@ -370,14 +370,14 @@ const gacha = {
     {
       id: '2-5-shunen-fukkoku-gacha-dai-2-dan-52',
       rarity: 'SR',
-      category: '衣装',
+      category: 'めがね',
       name: 'チェーン付き下縁メガネ',
       image: '/images/items/2-5-shunen-fukkoku-gacha-dai-2-dan/52.png',
     },
     {
       id: '2-5-shunen-fukkoku-gacha-dai-2-dan-53',
       rarity: 'SR',
-      category: '衣装',
+      category: 'めがね',
       name: 'ハートの眼帯',
       image: '/images/items/2-5-shunen-fukkoku-gacha-dai-2-dan/53.png',
     },
