@@ -90,7 +90,7 @@ const gacha = {
     {
       id: 'chuuni-kanojo-fuin-gantai',
       rarity: 'SR',
-      category: 'あたま',
+      category: 'めがね',
       name: '封印の眼帯',
       image: '/images/items/chuuni-kanojo/12.png',
     },
