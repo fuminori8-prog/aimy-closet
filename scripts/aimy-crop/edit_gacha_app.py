@@ -123,6 +123,16 @@ def _js_string(value: str) -> str:
     )
 
 
+def _entry_start_timestamp(entry: RegistryEntry) -> float:
+    try:
+        text = entry.data_file.read_text(encoding="utf-8")
+        value = _read_field(text, "startDate")
+        parsed = datetime.strptime(value, "%Y/%m/%d %H:%M")
+        return parsed.timestamp()
+    except (AppError, OSError, UnicodeError, ValueError):
+        return float("-inf")
+
+
 def _registered_entries() -> List[RegistryEntry]:
     if not REGISTRY_PATH.is_file():
         raise AppError("src/data/gachas.js が見つかりません。")
@@ -139,6 +149,7 @@ def _registered_entries() -> List[RegistryEntry]:
         if data_file.is_file() and data_file not in seen:
             entries.append(RegistryEntry(variable, module_name, data_file))
             seen.add(data_file)
+    entries.sort(key=_entry_start_timestamp, reverse=True)
     return entries
 
 

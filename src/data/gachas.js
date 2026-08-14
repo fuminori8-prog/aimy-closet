@@ -1,3 +1,4 @@
+import { compareGachasByStartDate } from '../utils/gachaOrder'
 import kimiToIruToNoboseChau from './gachas/kimi-to-iru-to-nobose-chau'
 import kimiGaNatsuNoHiroin from './gachas/kimi-ga-natsu-no-hiroin'
 import karafuruSamaSupurasshu from './gachas/karafuru-sama-supurasshu'
@@ -58,4 +59,4 @@ export const gachas = [
   steamAntique,
   kimiNoTokubetsu,
   friendPoint,
-]
+].sort(compareGachasByStartDate)

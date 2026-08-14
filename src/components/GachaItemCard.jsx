@@ -1,13 +1,15 @@
 import { Link } from 'react-router-dom'
 import FavoriteButton from './FavoriteButton'
+import { getCanonicalItemId } from '../utils/items'
 
 function GachaItemCard({ item, id, name, rarity, category, image, subtext }) {
   const itemData = item || { id, name, rarity, category, image }
+  const canonicalItemId = getCanonicalItemId(itemData.id)
   const hasImage = Boolean(itemData.image) && itemData.image !== 'placeholder'
 
   return (
     <article className="card item-card gacha-item-card">
-      <Link to={`/item/${itemData.id}`} className="item-card-main-link">
+      <Link to={`/item/${canonicalItemId}`} className="item-card-main-link">
         <div className="item-image">
           {hasImage ? (
             <img
@@ -24,7 +26,7 @@ function GachaItemCard({ item, id, name, rarity, category, image, subtext }) {
         {subtext ? <p className="item-subtext">{subtext}</p> : null}
       </Link>
 
-      <FavoriteButton itemId={itemData.id} />
+      <FavoriteButton itemId={canonicalItemId} />
     </article>
   )
 }
