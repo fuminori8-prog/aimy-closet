@@ -1,14 +1,14 @@
 const gacha = {
   id: 'ichuvcreamcollection',
   slug: 'ichuvcreamcollection',
-  title: 'IchuvCreamCollection',
+  title: 'І chu♡Cream Collection',
   type: 'アイミーボックス',
   banner: '/images/gacha/ichuvcreamcollection/banner.jpg',
   status: '開催中',
   infoStatus: '確認済み',
   startDate: '2026/08/17 15:00',
   endDate: '2026/10/19 14:59',
-  description: 'IchuvCreamCollectionの限定ガチャです。',
+  description: 'І chu♡Cream Collectionの限定ガチャです。',
   items: [
     {
       id: 'ichuvcreamcollection-01',
