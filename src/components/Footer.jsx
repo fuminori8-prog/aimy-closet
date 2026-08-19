@@ -7,6 +7,9 @@ function Footer() {
       <p>このサイトはAimy公式とは関係ありません</p>
 
       <nav className="footer-links" aria-label="フッターナビ">
+        <Link to="/guide">使い方</Link>
+        <Link to="/about">このサイトについて</Link>
+        <Link to="/data-policy">データ確認・修正方針</Link>
         <Link to="/privacy">プライバシーポリシー</Link>
         <Link to="/disclaimer">免責事項</Link>
         <Link to="/contact">お問い合わせ</Link>

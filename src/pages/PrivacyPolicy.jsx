@@ -81,9 +81,24 @@ function PrivacyPolicy() {
       <section className="legal-section">
         <h2>5. 広告・アフィリエイトについて</h2>
         <p>
-          当サイトは、広告またはアフィリエイトプログラムを利用する場合があります。
-          広告を掲載する際は、「PR」「広告」等の表示により広告であることを明示します。
-          広告リンク先で取得される情報は、各事業者のプライバシーポリシーに従って取り扱われます。
+          当サイトは、第三者配信の広告サービス「Google AdSense」を利用する場合があります。
+          Googleを含む第三者配信事業者は、利用者の興味に応じた広告を表示するため、
+          Cookie等を使用することがあります。
+        </p>
+        <p>
+          広告設定は
+          <a href="https://adssettings.google.com/" target="_blank" rel="noreferrer">
+            Google広告設定
+          </a>
+          から管理できます。Googleによる情報の取扱いについては、
+          <a
+            href="https://policies.google.com/technologies/ads?hl=ja"
+            target="_blank"
+            rel="noreferrer"
+          >
+            広告に関するGoogleのポリシー
+          </a>
+          をご確認ください。
         </p>
       </section>
 

@@ -111,7 +111,11 @@ function ItemList() {
         <section className="item-list-page">
           <div className="item-list-intro">
             <h1>アイテム図鑑</h1>
-            <p>確認済みのアイテムを一覧で確認できます。</p>
+            <p>
+              確認済みの全{allItems.length}件を、名前・カテゴリ・レアリティ・
+              収録ガチャから検索できます。復刻で再収録された同一アイテムは、
+              図鑑では重複させず一件にまとめています。
+            </p>
           </div>
 
           <Link to="/image-search" className="image-search-entry-link">

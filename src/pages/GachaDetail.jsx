@@ -49,13 +49,26 @@ function GachaDetail() {
 
   const hasLineup = gacha.items?.length > 0
   const status = getGachaStatus(gacha, currentTime)
-  const groupedItems = groupItemsByCategory(gacha.items || [])
+  const items = gacha.items || []
+  const groupedItems = groupItemsByCategory(items)
+  const rarityCounts = items.reduce((counts, item) => {
+    const rarity = String(item.rarity || '未確認')
+    counts[rarity] = (counts[rarity] || 0) + 1
+    return counts
+  }, {})
+  const raritySummary = ['SSR', 'SR', 'R', '未確認']
+    .filter((rarity) => rarityCounts[rarity])
+    .map((rarity) => `${rarity} ${rarityCounts[rarity]}件`)
+    .join('・')
+  const categorySummary = groupedItems
+    .map(([category, categoryItems]) => `${category} ${categoryItems.length}件`)
+    .join('・')
 
   const pageTitle = `${gacha.title}｜排出アイテム・開催期間｜Aimy Closet`
 
   const pageDescription =
-    `${gacha.title}の開催期間と排出アイテム一覧を掲載しています。` +
-    `服・髪型などカテゴリ別のラインナップを確認できるAimy非公式ガチャデータベースです。`
+    `${gacha.title}は${gacha.startDate}から${gacha.endDate}まで開催。` +
+    `確認済み${items.length}件の排出アイテムを、レアリティ・カテゴリ別に掲載しています。`
 
   const pageUrl = `https://aimycloset.jp/gacha/${gacha.slug}`
 
@@ -126,7 +139,42 @@ function GachaDetail() {
           <p className="gacha-description">{gacha.description}</p>
 
           <p className="confirmed-count">
-            確認済みアイテム数: {gacha.items.length}
+            確認済みアイテム数: {items.length}
+          </p>
+        </section>
+
+        <section className="gacha-data-summary" aria-labelledby="gacha-data-summary-title">
+          <h2 id="gacha-data-summary-title">このガチャの登録内容</h2>
+          {hasLineup ? (
+            <>
+              <p>
+                当サイトで確認できた{items.length}件を掲載しています。
+                レアリティ別では{raritySummary || '情報確認中'}、
+                カテゴリ別では{categorySummary || '情報確認中'}です。
+              </p>
+              <dl className="gacha-summary-grid">
+                <div>
+                  <dt>開催期間</dt>
+                  <dd>{gacha.startDate} ～ {gacha.endDate}</dd>
+                </div>
+                <div>
+                  <dt>レアリティ構成</dt>
+                  <dd>{raritySummary || '情報確認中'}</dd>
+                </div>
+                <div>
+                  <dt>カテゴリ構成</dt>
+                  <dd>{categorySummary || '情報確認中'}</dd>
+                </div>
+              </dl>
+            </>
+          ) : (
+            <p>
+              開催期間と基本情報を先に掲載しています。ラインナップは確認後に追加します。
+            </p>
+          )}
+          <p className="data-policy-link">
+            自動検出だけで確定せず、画像・名称・カテゴリを確認して登録しています。{' '}
+            <Link to="/data-policy">掲載データの確認・修正方針を見る</Link>
           </p>
         </section>
 

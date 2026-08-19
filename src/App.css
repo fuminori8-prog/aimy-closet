@@ -237,6 +237,46 @@ main {
   margin-bottom: 24px;
 }
 
+.home-intro {
+  margin-bottom: 24px;
+  padding: 24px 26px;
+  border: 1px solid #eadfe6;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 10px 26px rgba(145, 116, 137, 0.08);
+}
+
+.home-intro h1 {
+  margin: 0 0 12px;
+  color: #5f4560;
+  font-size: clamp(24px, 4vw, 34px);
+}
+
+.home-intro > p:not(.gacha-label) {
+  max-width: 900px;
+  margin: 0;
+  color: #626675;
+  line-height: 1.9;
+}
+
+.home-intro-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.home-intro-links a {
+  padding: 9px 14px;
+  border: 1px solid #d7e8f4;
+  border-radius: 999px;
+  background: #f2f9ff;
+  color: #4c78a0;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
 .categories h2,
 .latest h2,
 .popular h2 {
@@ -462,6 +502,63 @@ main {
   margin: 0;
   color: #7d8192;
   font-size: 14px;
+}
+
+.gacha-data-summary {
+  margin-bottom: 20px;
+  padding: 22px 24px;
+  border: 1px solid #e4eaf0;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.92);
+}
+
+.gacha-data-summary h2 {
+  margin: 0 0 12px;
+  color: #5f4560;
+  font-size: 22px;
+}
+
+.gacha-data-summary p {
+  color: #626675;
+  line-height: 1.8;
+}
+
+.gacha-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin: 18px 0;
+}
+
+.gacha-summary-grid > div {
+  padding: 14px;
+  border-radius: 14px;
+  background: #f5f8fb;
+}
+
+.gacha-summary-grid dt {
+  margin-bottom: 6px;
+  color: #7d8192;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.gacha-summary-grid dd {
+  margin: 0;
+  color: #554c5b;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.6;
+}
+
+.data-policy-link {
+  margin-bottom: 0;
+  font-size: 14px;
+}
+
+.data-policy-link a {
+  color: #4c78a0;
+  font-weight: 700;
 }
 
 .lineup-section {
@@ -1618,5 +1715,89 @@ footer p {
 
   .image-crop-preview canvas {
     width: 96px;
+  }
+}
+
+@media (max-width: 700px) {
+  .home-intro {
+    padding: 20px 18px;
+  }
+
+  .gacha-summary-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* JavaScriptの読み込み前にも主要内容を表示するための事前生成HTML */
+.prerender-shell {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #faf2f6 0%, #f0f7fb 100%);
+  color: #4f3f53;
+}
+
+.prerender-header {
+  padding: 18px 32px;
+  border-bottom: 1px solid #f1dfe8;
+  background: rgba(255, 255, 255, 0.92);
+}
+
+.prerender-header a {
+  color: #5f5b73;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.prerender-brand {
+  margin-right: 24px;
+  color: #ec5f98 !important;
+  font-size: 24px;
+  font-weight: 900 !important;
+}
+
+.prerender-header nav {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.prerender-main {
+  width: min(100%, 1040px);
+  margin: 0 auto;
+  padding: 32px;
+}
+
+.prerender-main article,
+.prerender-main section {
+  margin-bottom: 18px;
+  padding: 22px;
+  border: 1px solid #eadfe6;
+  border-radius: 20px;
+  background: #ffffff;
+}
+
+.prerender-main h1,
+.prerender-main h2 {
+  color: #5f4560;
+}
+
+.prerender-main p,
+.prerender-main li,
+.prerender-main dd {
+  line-height: 1.8;
+}
+
+.prerender-main a {
+  color: #4c78a0;
+}
+
+@media (max-width: 700px) {
+  .prerender-header,
+  .prerender-main {
+    padding: 20px;
+  }
+
+  .prerender-brand {
+    display: block;
+    margin: 0 0 12px;
   }
 }

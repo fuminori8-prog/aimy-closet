@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "generate:sitemap": "node scripts/generate-sitemap.js",
-    "build": "npm run generate:sitemap && vite build",
+    "build": "npm run generate:sitemap && vite build && node scripts/prerender.js",
     "lint": "oxlint src scripts",
     "preview": "vite preview",
     "add-gacha": "python3 scripts/aimy-crop/add_gacha_app.py",

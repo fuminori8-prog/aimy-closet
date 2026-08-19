@@ -108,7 +108,10 @@ useEffect(() => {
         <section className="gacha-list-page">
           <div className="gacha-list-intro">
             <h1>ガチャ履歴</h1>
-            <p>開催中・終了済みのガチャと排出アイテムを確認できます。</p>
+            <p>
+              登録済みの全{gachas.length}件を開始日時が新しい順に掲載しています。
+              開催期間、確認済み件数、カテゴリ別の排出アイテムを確認できます。
+            </p>
           </div>
 
           <div className="filter-group" aria-label="gacha filters">

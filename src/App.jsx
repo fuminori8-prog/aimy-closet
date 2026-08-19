@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import './App.css'
 import Header from './components/Header'
 import SearchBar from './components/SearchBar'
@@ -58,6 +59,20 @@ function App() {
       <Header />
       <main>
         <SearchBar />
+        <section className="home-intro">
+          <p className="gacha-label">Aimy非公式ファンデータベース</p>
+          <h1>Aimyの衣装・アイテムとガチャ履歴を探す</h1>
+          <p>
+            服・髪型・アクセサリー・目・背景など全{allItems.length}件と、
+            登録済みガチャの開催期間・確認済みラインナップをまとめています。
+            名前が分からないアイテムは画像からも検索できます。
+          </p>
+          <div className="home-intro-links">
+            <Link to="/guide">はじめての方へ・使い方</Link>
+            <Link to="/data-policy">掲載データの確認方法</Link>
+            <Link to="/about">Aimy Closetについて</Link>
+          </div>
+        </section>
         <LatestGacha />
         <CategoryGrid categories={categories} />
         <PopularItems />

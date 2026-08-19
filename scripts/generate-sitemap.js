@@ -95,13 +95,16 @@ async function loadHistoricalItems() {
   return Array.isArray(items) ? items : []
 }
 
-function createUrlSet(gachas, historicalItems) {
+function createUrlSet(gachas) {
   const paths = new Set([
     '/',
     '/item',
     '/gacha',
     '/image-search',
     '/historical-items',
+    '/guide',
+    '/about',
+    '/data-policy',
     '/contact',
     '/disclaimer',
     '/privacy',
@@ -114,21 +117,6 @@ function createUrlSet(gachas, historicalItems) {
       paths.add(`/gacha/${encodeURIComponent(gachaSlug)}`)
     }
 
-    for (const item of gacha.items || []) {
-      const itemId = String(item.id || '').trim()
-
-      if (itemId) {
-        paths.add(`/item/${encodeURIComponent(itemId)}`)
-      }
-    }
-  }
-
-  for (const item of historicalItems) {
-    const itemId = String(item.id || '').trim()
-
-    if (itemId && !item.matchedItemId) {
-      paths.add(`/item/${encodeURIComponent(itemId)}`)
-    }
   }
 
   return [...paths]
@@ -165,7 +153,7 @@ async function generateSitemap() {
   try {
     const gachas = await loadGachas()
     const historicalItems = await loadHistoricalItems()
-    const paths = createUrlSet(gachas, historicalItems)
+    const paths = createUrlSet(gachas)
     const sitemapXml = createSitemapXml(paths)
 
     await writeFile(outputFilePath, sitemapXml, 'utf8')
@@ -182,6 +170,7 @@ async function generateSitemap() {
     console.log(`ガチャ数: ${gachas.length}`)
     console.log(`アイテム数: ${itemCount}`)
     console.log(`ガチャ未特定アイテム数: ${historicalItems.length}`)
+    console.log('個別アイテムURL: サイト内では利用可・審査用サイトマップから除外')
     console.log(`URL数: ${paths.length}`)
     console.log(`出力先: ${outputFilePath}`)
   } catch (error) {

@@ -13,7 +13,11 @@ import HistoricalItemList from './pages/HistoricalItemList.jsx'
 import PrivacyPolicy from './pages/PrivacyPolicy.jsx'
 import Disclaimer from './pages/Disclaimer.jsx'
 import Contact from './pages/Contact.jsx'
+import About from './pages/About.jsx'
+import Guide from './pages/Guide.jsx'
+import DataPolicy from './pages/DataPolicy.jsx'
 import ScrollToTop from './components/ScrollToTop'
+import RouteSeo from './components/RouteSeo.jsx'
 import { FavoritesProvider } from './contexts/FavoritesContext.jsx'
 
 createRoot(document.getElementById('root')).render(
@@ -21,6 +25,7 @@ createRoot(document.getElementById('root')).render(
     <BrowserRouter>
       <FavoritesProvider>
         <ScrollToTop />
+        <RouteSeo />
 
         <Routes>
           <Route path="/" element={<App />} />
@@ -34,6 +39,9 @@ createRoot(document.getElementById('root')).render(
           <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="/disclaimer" element={<Disclaimer />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/guide" element={<Guide />} />
+          <Route path="/data-policy" element={<DataPolicy />} />
         </Routes>
       </FavoritesProvider>
     </BrowserRouter>
