@@ -1152,6 +1152,47 @@ def _unique_slug(base: str) -> str:
     return slug
 
 
+def _existing_gacha_slug(
+    base: str,
+    title: str,
+    start_date: str,
+    end_date: str,
+) -> Optional[str]:
+    """Return an existing slug only when this is the same event being retried."""
+    data_dir = PROJECT_ROOT / "src" / "data" / "gachas"
+    if not data_dir.is_dir():
+        return None
+
+    expected = {
+        "title": title.replace("\\", "\\\\").replace("'", "\\'").replace("\n", "\\n"),
+        "startDate": start_date,
+        "endDate": end_date,
+    }
+    candidates = sorted(
+        data_dir.glob("*.js"),
+        key=lambda data_file: (data_file.stem != base, data_file.name),
+    )
+    for data_file in candidates:
+        try:
+            source = data_file.read_text(encoding="utf-8")
+        except OSError:
+            continue
+
+        same_event = True
+        for field, value in expected.items():
+            match = re.search(
+                rf"^\s*{re.escape(field)}:\s*'((?:\\.|[^'])*)'",
+                source,
+                flags=re.MULTILINE,
+            )
+            if not match or match.group(1) != value:
+                same_event = False
+                break
+        if same_event:
+            return data_file.stem
+
+    return None
+
 def _item_name_key(name: str) -> str:
     return re.sub(r"[\s・,.。()（）\-ー]", "", name).lower()
 
@@ -1347,8 +1388,19 @@ def process_session(session_id: str) -> Dict[str, Any]:
 
     title = metadata["title"] or "タイトル未認識"
     base_slug = _slugify(title, metadata["startDate"])
-    slug = _unique_slug(base_slug)
+    existing_slug = _existing_gacha_slug(
+        base_slug,
+        title,
+        metadata["startDate"],
+        metadata["endDate"],
+    )
+    slug = existing_slug or _unique_slug(base_slug)
     warnings = []
+    if existing_slug:
+        warnings.append(
+            "同じタイトル・開催期間のガチャがすでに登録されています。"
+            f"再実行として既存slug「{existing_slug}」を使用し、重複登録を防ぎます。"
+        )
     low_resolution_items = [item for item in items if item["resolutionQuality"] == "low"]
     if quality_upgrade_count:
         warnings.append(

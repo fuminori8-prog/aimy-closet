@@ -1,4 +1,3 @@
-import anataSenzokuShikurettobani2 from './gachas/anata-senzoku-shikurettobani-2'
 import anataSenzokuShikurettobani from './gachas/anata-senzoku-shikurettobani'
 import koisuruMarinBuru from './gachas/koisuru-marin-buru'
 import ichuvcreamcollection from './gachas/ichuvcreamcollection'
@@ -35,8 +34,7 @@ import kimiNoTokubetsu from './gachas/kimi-no-tokubetsu'
 import friendPoint from './gachas/friend-point'
 
 export const gachas = [
-  anataSenzokuShikurettobani2,
-  anataSenzokuShikurettobani,
+anataSenzokuShikurettobani,
   koisuruMarinBuru,
   ichuvcreamcollection,
   gacha25ShunenFukkokuGachaDai3Dan,
