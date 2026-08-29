@@ -1,184 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-
-  <url>
-    <loc>https://aimycloset.jp/</loc>
-  </url>
-
-  <url>
-    <loc>https://aimycloset.jp/about</loc>
-  </url>
-
-  <url>
-    <loc>https://aimycloset.jp/contact</loc>
-  </url>
-
-  <url>
-    <loc>https://aimycloset.jp/data-policy</loc>
-  </url>
-
-  <url>
-    <loc>https://aimycloset.jp/disclaimer</loc>
-  </url>
-
-  <url>
-    <loc>https://aimycloset.jp/gacha</loc>
-  </url>
-
-  <url>
-    <loc>https://aimycloset.jp/gacha/2-5-shunen-fukkoku-gacha-dai-1-dan</loc>
-  </url>
-
-  <url>
-    <loc>https://aimycloset.jp/gacha/2-5-shunen-fukkoku-gacha-dai-2-dan</loc>
-  </url>
-
-  <url>
-    <loc>https://aimycloset.jp/gacha/2-5-shunen-fukkoku-gacha-dai-3-dan</loc>
-  </url>
-
-  <url>
-    <loc>https://aimycloset.jp/gacha/anata-senzoku-shikurettobani</loc>
-  </url>
-
-  <url>
-    <loc>https://aimycloset.jp/gacha/ano-natsu-no-hokago</loc>
-  </url>
-
-  <url>
-    <loc>https://aimycloset.jp/gacha/bara-ochakai</loc>
-  </url>
-
-  <url>
-    <loc>https://aimycloset.jp/gacha/chuuni-kanojo</loc>
-  </url>
-
-  <url>
-    <loc>https://aimycloset.jp/gacha/dokidoki-dousei</loc>
-  </url>
-
-  <url>
-    <loc>https://aimycloset.jp/gacha/friend-point</loc>
-  </url>
-
-  <url>
-    <loc>https://aimycloset.jp/gacha/hanayome-secret-night</loc>
-  </url>
-
-  <url>
-    <loc>https://aimycloset.jp/gacha/haruurara</loc>
-  </url>
-
-  <url>
-    <loc>https://aimycloset.jp/gacha/hikoboshi</loc>
-  </url>
-
-  <url>
-    <loc>https://aimycloset.jp/gacha/hydrangea</loc>
-  </url>
-
-  <url>
-    <loc>https://aimycloset.jp/gacha/ichuvcreamcollection</loc>
-  </url>
-
-  <url>
-    <loc>https://aimycloset.jp/gacha/junno-shi-xian-barebaredayo</loc>
-  </url>
-
-  <url>
-    <loc>https://aimycloset.jp/gacha/junpaku-hanayome</loc>
-  </url>
-
-  <url>
-    <loc>https://aimycloset.jp/gacha/karafuru-sama-supurasshu</loc>
-  </url>
-
-  <url>
-    <loc>https://aimycloset.jp/gacha/kimi-ga-natsu-no-hiroin</loc>
-  </url>
-
-  <url>
-    <loc>https://aimycloset.jp/gacha/kimi-no-tokubetsu</loc>
-  </url>
-
-  <url>
-    <loc>https://aimycloset.jp/gacha/kimi-to-iru-to-nobose-chau</loc>
-  </url>
-
-  <url>
-    <loc>https://aimycloset.jp/gacha/koisuru-marin-buru</loc>
-  </url>
-
-  <url>
-    <loc>https://aimycloset.jp/gacha/kyo-wa-kimi-o-hitorijime</loc>
-  </url>
-
-  <url>
-    <loc>https://aimycloset.jp/gacha/kyuketsuki</loc>
-  </url>
-
-  <url>
-    <loc>https://aimycloset.jp/gacha/mermaid-festival</loc>
-  </url>
-
-  <url>
-    <loc>https://aimycloset.jp/gacha/monochrome-rendezvous</loc>
-  </url>
-
-  <url>
-    <loc>https://aimycloset.jp/gacha/nagisa-kanbanmusume</loc>
-  </url>
-
-  <url>
-    <loc>https://aimycloset.jp/gacha/namahamuko-futari-kiri</loc>
-  </url>
-
-  <url>
-    <loc>https://aimycloset.jp/gacha/nemuru-2</loc>
-  </url>
-
-  <url>
-    <loc>https://aimycloset.jp/gacha/rin-go-ame-to-otome-no-himi-tsu</loc>
-  </url>
-
-  <url>
-    <loc>https://aimycloset.jp/gacha/steam-antique</loc>
-  </url>
-
-  <url>
-    <loc>https://aimycloset.jp/gacha/usagi-amaete</loc>
-  </url>
-
-  <url>
-    <loc>https://aimycloset.jp/gacha/wagamama-de-biru-ni-obore-tai</loc>
-  </url>
-
-  <url>
-    <loc>https://aimycloset.jp/gacha/watashi-wo-mitashite</loc>
-  </url>
-
-  <url>
-    <loc>https://aimycloset.jp/gacha/yurameku-kurage-no-kataomoi</loc>
-  </url>
-
-  <url>
-    <loc>https://aimycloset.jp/guide</loc>
-  </url>
-
-  <url>
-    <loc>https://aimycloset.jp/historical-items</loc>
-  </url>
-
-  <url>
-    <loc>https://aimycloset.jp/image-search</loc>
-  </url>
-
-  <url>
-    <loc>https://aimycloset.jp/item</loc>
-  </url>
-
-  <url>
-    <loc>https://aimycloset.jp/privacy</loc>
-  </url>
-
+  <url><loc>https://aimycloset.jp/</loc></url>
+  <url><loc>https://aimycloset.jp/item</loc></url>
+  <url><loc>https://aimycloset.jp/gacha</loc></url>
+  <url><loc>https://aimycloset.jp/image-search</loc></url>
+  <url><loc>https://aimycloset.jp/historical-items</loc></url>
+  <url><loc>https://aimycloset.jp/guide</loc></url>
+  <url><loc>https://aimycloset.jp/about</loc></url>
+  <url><loc>https://aimycloset.jp/data-policy</loc></url>
+  <url><loc>https://aimycloset.jp/contact</loc></url>
+  <url><loc>https://aimycloset.jp/disclaimer</loc></url>
+  <url><loc>https://aimycloset.jp/privacy</loc></url>
+  <url><loc>https://aimycloset.jp/insights</loc></url>
+  <url><loc>https://aimycloset.jp/guides/gacha-cycle</loc></url>
+  <url><loc>https://aimycloset.jp/guides/reprints</loc></url>
+  <url><loc>https://aimycloset.jp/guides/image-search</loc></url>
+  <url><loc>https://aimycloset.jp/gacha/2-5-shunen-fukkoku-gacha-dai-1-dan</loc></url>
+  <url><loc>https://aimycloset.jp/gacha/2-5-shunen-fukkoku-gacha-dai-2-dan</loc></url>
+  <url><loc>https://aimycloset.jp/gacha/2-5-shunen-fukkoku-gacha-dai-3-dan</loc></url>
+  <url><loc>https://aimycloset.jp/gacha/anata-senzoku-shikurettobani</loc></url>
+  <url><loc>https://aimycloset.jp/gacha/ano-natsu-no-hokago</loc></url>
+  <url><loc>https://aimycloset.jp/gacha/bara-ochakai</loc></url>
+  <url><loc>https://aimycloset.jp/gacha/chuuni-kanojo</loc></url>
+  <url><loc>https://aimycloset.jp/gacha/dokidoki-dousei</loc></url>
+  <url><loc>https://aimycloset.jp/gacha/friend-point</loc></url>
+  <url><loc>https://aimycloset.jp/gacha/hanayome-secret-night</loc></url>
+  <url><loc>https://aimycloset.jp/gacha/haruurara</loc></url>
+  <url><loc>https://aimycloset.jp/gacha/hikoboshi</loc></url>
+  <url><loc>https://aimycloset.jp/gacha/hydrangea</loc></url>
+  <url><loc>https://aimycloset.jp/gacha/ichuvcreamcollection</loc></url>
+  <url><loc>https://aimycloset.jp/gacha/junno-shi-xian-barebaredayo</loc></url>
+  <url><loc>https://aimycloset.jp/gacha/junpaku-hanayome</loc></url>
+  <url><loc>https://aimycloset.jp/gacha/karafuru-sama-supurasshu</loc></url>
+  <url><loc>https://aimycloset.jp/gacha/kimi-ga-natsu-no-hiroin</loc></url>
+  <url><loc>https://aimycloset.jp/gacha/kimi-no-tokubetsu</loc></url>
+  <url><loc>https://aimycloset.jp/gacha/kimi-to-iru-to-nobose-chau</loc></url>
+  <url><loc>https://aimycloset.jp/gacha/koisuru-marin-buru</loc></url>
+  <url><loc>https://aimycloset.jp/gacha/kyo-wa-kimi-o-hitorijime</loc></url>
+  <url><loc>https://aimycloset.jp/gacha/kyuketsuki</loc></url>
+  <url><loc>https://aimycloset.jp/gacha/mermaid-festival</loc></url>
+  <url><loc>https://aimycloset.jp/gacha/monochrome-rendezvous</loc></url>
+  <url><loc>https://aimycloset.jp/gacha/nagisa-kanbanmusume</loc></url>
+  <url><loc>https://aimycloset.jp/gacha/namahamuko-futari-kiri</loc></url>
+  <url><loc>https://aimycloset.jp/gacha/nemuru-2</loc></url>
+  <url><loc>https://aimycloset.jp/gacha/rin-go-ame-to-otome-no-himi-tsu</loc></url>
+  <url><loc>https://aimycloset.jp/gacha/steam-antique</loc></url>
+  <url><loc>https://aimycloset.jp/gacha/usagi-amaete</loc></url>
+  <url><loc>https://aimycloset.jp/gacha/wagamama-de-biru-ni-obore-tai</loc></url>
+  <url><loc>https://aimycloset.jp/gacha/watashi-wo-mitashite</loc></url>
+  <url><loc>https://aimycloset.jp/gacha/yurameku-kurage-no-kataomoi</loc></url>
 </urlset>

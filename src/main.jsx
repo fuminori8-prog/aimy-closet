@@ -16,6 +16,7 @@ import Contact from './pages/Contact.jsx'
 import About from './pages/About.jsx'
 import Guide from './pages/Guide.jsx'
 import DataPolicy from './pages/DataPolicy.jsx'
+import Insights, { GachaCycleGuide, ImageSearchGuide, ReprintGuide } from './pages/Insights.jsx'
 import ScrollToTop from './components/ScrollToTop'
 import RouteSeo from './components/RouteSeo.jsx'
 import { FavoritesProvider } from './contexts/FavoritesContext.jsx'
@@ -42,6 +43,10 @@ createRoot(document.getElementById('root')).render(
           <Route path="/about" element={<About />} />
           <Route path="/guide" element={<Guide />} />
           <Route path="/data-policy" element={<DataPolicy />} />
+          <Route path="/insights" element={<Insights />} />
+          <Route path="/guides/gacha-cycle" element={<GachaCycleGuide />} />
+          <Route path="/guides/reprints" element={<ReprintGuide />} />
+          <Route path="/guides/image-search" element={<ImageSearchGuide />} />
         </Routes>
       </FavoritesProvider>
     </BrowserRouter>

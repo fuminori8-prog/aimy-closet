@@ -70,6 +70,7 @@ function App() {
           <div className="home-intro-links">
             <Link to="/guide">はじめての方へ・使い方</Link>
             <Link to="/data-policy">掲載データの確認方法</Link>
+            <Link to="/insights">ガチャ・復刻データ分析</Link>
             <Link to="/about">Aimy Closetについて</Link>
           </div>
         </section>

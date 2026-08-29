@@ -882,6 +882,28 @@ footer p {
   }
 }
 
+.insight-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  margin: 24px 0;
+}
+
+.insight-stat-grid div {
+  padding: 18px;
+  border: 1px solid #eadfe6;
+  border-radius: 16px;
+  background: #fffafc;
+}
+
+.insight-stat-grid dt { color: #746777; font-size: 13px; }
+.insight-stat-grid dd { margin: 8px 0 0; color: #5f4560; font-size: 24px; font-weight: 900; }
+.insight-link-list { line-height: 2; }
+.insight-table-wrap { overflow-x: auto; }
+.insight-table { width: 100%; border-collapse: collapse; min-width: 680px; }
+.insight-table th, .insight-table td { padding: 12px; border-bottom: 1px solid #eadfe6; text-align: left; }
+.insight-table th { background: #fff6fa; color: #5f4560; }
+
 
 
 .nav-button {

@@ -8,6 +8,7 @@ import { gachas } from '../data/gachas'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { MAIN_CATEGORIES, getMainCategory } from '../utils/itemCategory'
 import { getGachaStatus } from '../utils/gachaStatus'
+import { getGachaInsight } from '../utils/siteInsights'
 
 const categoryOrder = MAIN_CATEGORIES
 
@@ -50,6 +51,7 @@ function GachaDetail() {
   const hasLineup = gacha.items?.length > 0
   const status = getGachaStatus(gacha, currentTime)
   const items = gacha.items || []
+  const insight = getGachaInsight(gachas, gacha.slug)
   const groupedItems = groupItemsByCategory(items)
   const rarityCounts = items.reduce((counts, item) => {
     const rarity = String(item.rarity || '未確認')
@@ -165,7 +167,27 @@ function GachaDetail() {
                   <dt>カテゴリ構成</dt>
                   <dd>{categorySummary || '情報確認中'}</dd>
                 </div>
+                <div>
+                  <dt>開催日数</dt>
+                  <dd>{insight?.durationDays ? `${insight.durationDays}日` : '常設・未確認'}</dd>
+                </div>
+                <div>
+                  <dt>過去収録と一致</dt>
+                  <dd>{insight ? `${insight.returningItems}件` : '確認中'}</dd>
+                </div>
+                <div>
+                  <dt>前回の開始から</dt>
+                  <dd>{insight?.intervalFromPrevious ? `${insight.intervalFromPrevious}日` : '比較対象なし'}</dd>
+                </div>
               </dl>
+              {insight ? (
+                <p>
+                  正式名とレアリティを過去ガチャと照合した結果、
+                  過去収録と一致する候補は{insight.returningItems}件、
+                  この時点での初登場候補は{insight.firstSeenItems}件です。
+                  <Link to="/guides/reprints"> 集計方法を見る</Link>
+                </p>
+              ) : null}
             </>
           ) : (
             <p>

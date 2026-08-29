@@ -53,6 +53,15 @@ function Guide() {
       </section>
 
       <section className="legal-section">
+        <h2>ガチャの追加ペース・復刻を調べる</h2>
+        <p>
+          <Link to="/insights">Aimyデータ分析</Link>では、登録済みデータから
+          開始間隔・開催日数・再収録数を同じ基準で集計しています。
+          数値の数え方も各ページで公開しています。
+        </p>
+      </section>
+
+      <section className="legal-section">
         <h2>お気に入り</h2>
         <p>
           各アイテムのハートを押すと、同じブラウザの
