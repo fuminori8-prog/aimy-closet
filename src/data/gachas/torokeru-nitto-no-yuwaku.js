@@ -3,7 +3,7 @@ const gacha = {
   slug: 'torokeru-nitto-no-yuwaku',
   title: 'とろけるニットの誘惑',
   type: 'アイミーボックス',
-  banner: '/images/gacha/torokeru-nitto-no-yuwaku/banner.jpg',
+  banner: '/images/gacha/torokeru-nitto-no-yuwaku/banner.png',
   status: '開催中',
   infoStatus: '確認済み',
   startDate: '2026/09/01 15:00',
