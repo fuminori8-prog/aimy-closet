@@ -1,3 +1,4 @@
+import bichiDeOKyujiShiChaiMasu from './gachas/bichi-de-o-kyuji-shi-chai-masu'
 import torokeruNittoNoYuwaku from './gachas/torokeru-nitto-no-yuwaku'
 import kyoWaKimiOHitorijime from './gachas/kyo-wa-kimi-o-hitorijime'
 import anataSenzokuShikurettobani from './gachas/anata-senzoku-shikurettobani'
@@ -36,6 +37,7 @@ import kimiNoTokubetsu from './gachas/kimi-no-tokubetsu'
 import friendPoint from './gachas/friend-point'
 
 export const gachas = [
+  bichiDeOKyujiShiChaiMasu,
   torokeruNittoNoYuwaku,
   kyoWaKimiOHitorijime,
 anataSenzokuShikurettobani,
