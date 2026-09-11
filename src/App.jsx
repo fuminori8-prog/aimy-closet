@@ -40,7 +40,7 @@ const categories = categoryConfig.map((category) => ({
 
 function App() {
   useEffect(() => {
-    document.title = 'Aimy Closet｜Aimy非公式アイテム図鑑・ガチャデータベース'
+    document.title = 'Aimy Closet｜Aimy非公式アイテム図鑑・ガチャ履歴'
 
     let meta = document.querySelector('meta[name="description"]')
 
@@ -65,13 +65,42 @@ function App() {
           <p>
             服・髪型・アクセサリー・目・背景など全{allItems.length}件と、
             登録済みガチャの開催期間・確認済みラインナップをまとめています。
-            名前が分からないアイテムは画像からも検索できます。
+            ゲーム内画面を確認して登録し、名前が分からないアイテムは画像・時期・
+            カテゴリから候補を探せます。
           </p>
           <div className="home-intro-links">
             <Link to="/guide">はじめての方へ・使い方</Link>
             <Link to="/data-policy">掲載データの確認方法</Link>
             <Link to="/insights">ガチャ・復刻データ分析</Link>
             <Link to="/about">Aimy Closetについて</Link>
+          </div>
+        </section>
+
+        <section className="home-editorial" aria-labelledby="home-editorial-title">
+          <div className="section-heading-row">
+            <div>
+              <p className="gacha-label">調べ方と検証結果</p>
+              <h2 id="home-editorial-title">一覧を見る前に、目的から探す</h2>
+            </div>
+            <Link to="/insights" className="text-link">すべてのガイドを見る</Link>
+          </div>
+
+          <div className="editorial-card-grid">
+            <Link to="/guides/item-finder" className="editorial-card">
+              <span className="editorial-card-kicker">探し方</span>
+              <h3>名前が分からない衣装を探す</h3>
+              <p>画像・見た時期・カテゴリのうち、手元にある情報から最短の探し方を選びます。</p>
+            </Link>
+            <Link to="/guides/gacha-cycle" className="editorial-card">
+              <span className="editorial-card-kicker">実測</span>
+              <h3>ガチャは何日間隔で追加される？</h3>
+              <p>登録済みの開始日時から、間隔の分布と開催日数を計算し、読み方も説明します。</p>
+            </Link>
+            <Link to="/guides/reprints" className="editorial-card">
+              <span className="editorial-card-kicker">検証</span>
+              <h3>復刻アイテムをどう数える？</h3>
+              <p>完全一致した項目と、過去データ不足で判断できない項目を分けて公開します。</p>
+            </Link>
           </div>
         </section>
         <LatestGacha />

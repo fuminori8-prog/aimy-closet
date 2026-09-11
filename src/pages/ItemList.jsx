@@ -5,13 +5,14 @@ import Header from '../components/Header'
 import Footer from '../components/Footer'
 import SearchBar from '../components/SearchBar'
 import GachaItemCard from '../components/GachaItemCard'
-import { getAllItems } from '../utils/items'
+import { getAllItems, getCanonicalItemId } from '../utils/items'
 import {
   MAIN_CATEGORIES,
   getMainCategory,
 } from '../utils/itemCategory'
 
 const CATEGORY_LABELS = MAIN_CATEGORIES
+const PAGE_SIZE = 48
 
 const SUB_CATEGORY_OPTIONS = {
   アクセサリー: ['あたま', 'めがね', 'ピアス'],
@@ -22,10 +23,15 @@ function ItemList() {
   const [searchParams] = useSearchParams()
   const [selectedCategory, setSelectedCategory] = useState('すべて')
   const [selectedSubCategory, setSelectedSubCategory] = useState('すべて')
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE)
   const allItems = useMemo(() => getAllItems(), [])
 
   const query = (searchParams.get('q') || '').trim().toLowerCase()
   const categoryQuery = (searchParams.get('category') || '').trim()
+  const itemQuery = (searchParams.get('item') || '').trim()
+  const canonicalItemQuery = itemQuery
+    ? getCanonicalItemId(itemQuery)
+    : ''
 
   useEffect(() => {
     if (!categoryQuery) {
@@ -43,6 +49,10 @@ function ItemList() {
   }, [categoryQuery])
 
   useEffect(() => {
+    setVisibleCount(PAGE_SIZE)
+  }, [itemQuery, query, selectedCategory, selectedSubCategory])
+
+  useEffect(() => {
     document.title = 'アイテム図鑑｜Aimy Closet'
 
     let meta = document.querySelector('meta[name="description"]')
@@ -54,12 +64,16 @@ function ItemList() {
     }
 
     meta.content =
-      'Aimyの服・髪型・アクセサリー・パーツ・背景・チェキフレームを検索・一覧表示できる非公式アイテム図鑑です。'
+      'Aimyの服・髪型・アクセサリー・パーツ・背景・チェキフレームを、名前・カテゴリ・ガチャから検索できる非公式アイテム図鑑です。'
   }, [])
 
   const filteredItems = useMemo(
     () =>
       allItems.filter((item) => {
+        if (itemQuery) {
+          return item.id === canonicalItemQuery
+        }
+
         const byCategory =
           selectedCategory === 'すべて' ||
           item.normalizedCategory === selectedCategory
@@ -92,9 +106,10 @@ function ItemList() {
           String(field || '').toLowerCase().includes(query),
         )
       }),
-    [allItems, query, selectedCategory, selectedSubCategory],
+    [allItems, canonicalItemQuery, itemQuery, query, selectedCategory, selectedSubCategory],
   )
 
+  const visibleItems = filteredItems.slice(0, visibleCount)
   const subCategoryOptions = SUB_CATEGORY_OPTIONS[selectedCategory] || []
 
   return (
@@ -114,8 +129,15 @@ function ItemList() {
             <p>
               確認済みの全{allItems.length}件を、名前・カテゴリ・レアリティ・
               収録ガチャから検索できます。復刻で再収録された同一アイテムは、
-              図鑑では重複させず一件にまとめています。
+              図鑑では重複させず1件にまとめています。
             </p>
+          </div>
+
+          <div className="item-guide-strip">
+            <p><strong>探し方に迷ったら</strong></p>
+            <Link to="/guides/item-finder">手掛かり別の探し方</Link>
+            <Link to="/guides/categories">カテゴリの分け方</Link>
+            <Link to="/guides/reprints">復刻の重複判定</Link>
           </div>
 
           <Link to="/image-search" className="image-search-entry-link">
@@ -126,95 +148,123 @@ function ItemList() {
             🗂 ガチャ名・名称が未特定の過去アイテムを見る
           </Link>
 
-          <SearchBar targetPath="/item" />
+          {itemQuery ? (
+            <div className="focused-item-notice">
+              <p>選択したアイテムを図鑑内で表示しています。</p>
+              <Link to="/item">絞り込みを解除</Link>
+            </div>
+          ) : (
+            <>
+              <SearchBar targetPath="/item" />
 
-          <div className="filter-group" aria-label="item category filters">
-            <button
-              type="button"
-              className={`filter-button ${
-                selectedCategory === 'すべて' ? 'active' : ''
-              }`}
-              onClick={() => {
-                setSelectedCategory('すべて')
-                setSelectedSubCategory('すべて')
-              }}
-            >
-              すべて
-            </button>
-
-            {CATEGORY_LABELS.map((category) => (
-              <button
-                key={category}
-                type="button"
-                className={`filter-button ${
-                  selectedCategory === category ? 'active' : ''
-                }`}
-                onClick={() => {
-                  setSelectedCategory(category)
-                  setSelectedSubCategory('すべて')
-                }}
-              >
-                {category}
-              </button>
-            ))}
-          </div>
-
-          {subCategoryOptions.length > 0 ? (
-            <div
-              className="filter-group subcategory-filter-group"
-              aria-label="item subcategory filters"
-            >
-              <button
-                type="button"
-                className={`filter-button ${
-                  selectedSubCategory === 'すべて' ? 'active' : ''
-                }`}
-                onClick={() => setSelectedSubCategory('すべて')}
-              >
-                種類：すべて
-              </button>
-
-              {subCategoryOptions.map((subCategory) => (
+              <div className="filter-group" aria-label="item category filters">
                 <button
-                  key={subCategory}
                   type="button"
                   className={`filter-button ${
-                    selectedSubCategory === subCategory ? 'active' : ''
+                    selectedCategory === 'すべて' ? 'active' : ''
                   }`}
-                  onClick={() => setSelectedSubCategory(subCategory)}
+                  onClick={() => {
+                    setSelectedCategory('すべて')
+                    setSelectedSubCategory('すべて')
+                  }}
                 >
-                  {subCategory}
+                  すべて
                 </button>
-              ))}
-            </div>
-          ) : null}
+
+                {CATEGORY_LABELS.map((category) => (
+                  <button
+                    key={category}
+                    type="button"
+                    className={`filter-button ${
+                      selectedCategory === category ? 'active' : ''
+                    }`}
+                    onClick={() => {
+                      setSelectedCategory(category)
+                      setSelectedSubCategory('すべて')
+                    }}
+                  >
+                    {category}
+                  </button>
+                ))}
+              </div>
+
+              {subCategoryOptions.length > 0 ? (
+                <div
+                  className="filter-group subcategory-filter-group"
+                  aria-label="item subcategory filters"
+                >
+                  <button
+                    type="button"
+                    className={`filter-button ${
+                      selectedSubCategory === 'すべて' ? 'active' : ''
+                    }`}
+                    onClick={() => setSelectedSubCategory('すべて')}
+                  >
+                    種類：すべて
+                  </button>
+
+                  {subCategoryOptions.map((subCategory) => (
+                    <button
+                      key={subCategory}
+                      type="button"
+                      className={`filter-button ${
+                        selectedSubCategory === subCategory ? 'active' : ''
+                      }`}
+                      onClick={() => setSelectedSubCategory(subCategory)}
+                    >
+                      {subCategory}
+                    </button>
+                  ))}
+                </div>
+              ) : null}
+            </>
+          )}
 
           <p className="result-count">
             {filteredItems.length}件 / 全{allItems.length}件
+            {filteredItems.length > PAGE_SIZE
+              ? `（現在${visibleItems.length}件を表示）`
+              : ''}
           </p>
 
-          {filteredItems.length > 0 ? (
-            <div className="card-grid item-grid">
-              {filteredItems.map((item) => {
-                const categoryLabel = item.subCategory
-                  ? `${item.normalizedCategory}：${item.subCategory}`
-                  : item.normalizedCategory
+          {visibleItems.length > 0 ? (
+            <>
+              <div className="card-grid item-grid">
+                {visibleItems.map((item) => {
+                  const categoryLabel = item.subCategory
+                    ? `${item.normalizedCategory}：${item.subCategory}`
+                    : item.normalizedCategory
 
-                return (
-                  <GachaItemCard
-                    key={item.id}
-                    item={{ ...item, category: categoryLabel }}
-                    subtext={
-                      item.sourceType === 'historical'
-                        ? `${item.implementationPeriod}・ガチャ未特定`
-                        : `ガチャ: ${item.gachaTitle}`
-                    }
-                  />
-                )
-              })}
-            </div>
+                  return (
+                    <GachaItemCard
+                      key={item.id}
+                      item={{ ...item, category: categoryLabel }}
+                      subtext={
+                        item.sourceType === 'historical'
+                          ? `${item.implementationPeriod}・ガチャ未特定`
+                          : `ガチャ: ${item.gachaTitle}`
+                      }
+                    />
+                  )
+                })}
+              </div>
+
+              {visibleItems.length < filteredItems.length ? (
+                <button
+                  type="button"
+                  className="load-more-button"
+                  onClick={() => setVisibleCount((count) => count + PAGE_SIZE)}
+                >
+                  次の{Math.min(PAGE_SIZE, filteredItems.length - visibleItems.length)}件を表示
+                </button>
+              ) : null}
+            </>
           ) : (
-            <p className="lineup-note">該当するアイテムはありません</p>
+            <div className="empty-result-panel">
+              <p>該当するアイテムはありません。</p>
+              <p>名前を短くする、カテゴリを変える、画像検索を使う方法をお試しください。</p>
+              <Link to="/guides/item-finder">見つからないときの確認順を見る</Link>
+            </div>
           )}
         </section>
       </main>

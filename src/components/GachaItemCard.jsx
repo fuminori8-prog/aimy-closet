@@ -9,7 +9,11 @@ function GachaItemCard({ item, id, name, rarity, category, image, subtext }) {
 
   return (
     <article className="card item-card gacha-item-card">
-      <Link to={`/item/${canonicalItemId}`} className="item-card-main-link">
+      <Link
+        to={`/item?item=${encodeURIComponent(canonicalItemId)}`}
+        className="item-card-main-link"
+        aria-label={`${itemData.name}を図鑑で確認`}
+      >
         <div className="item-image">
           {hasImage ? (
             <img

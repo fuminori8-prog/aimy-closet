@@ -450,6 +450,12 @@ function ImageSearch() {
             縦長・横長の範囲も、形を潰さず余白を足して比較します。
           </div>
 
+          <p className="image-search-guide-link">
+            初めて使う方や候補が合わない方は、
+            <Link to="/guides/image-search">切り抜き方・カテゴリ選択・やり直し方</Link>
+            を先に確認できます。
+          </p>
+
           <div className="image-search-controls card">
             <label className="image-search-field">
               <span>1．カテゴリを選択</span>

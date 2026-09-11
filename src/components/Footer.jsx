@@ -8,6 +8,7 @@ function Footer() {
 
       <nav className="footer-links" aria-label="フッターナビ">
         <Link to="/guide">使い方</Link>
+        <Link to="/insights">データ分析・ガイド</Link>
         <Link to="/about">このサイトについて</Link>
         <Link to="/data-policy">データ確認・修正方針</Link>
         <Link to="/privacy">プライバシーポリシー</Link>

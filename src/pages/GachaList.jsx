@@ -1,13 +1,13 @@
 import '../App.css'
 import { useEffect, useMemo, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { useSearchParams } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import Header from '../components/Header'
 import SearchBar from '../components/SearchBar'
 import Footer from '../components/Footer'
 import GachaCard from '../components/GachaCard'
 import { gachas } from '../data/gachas'
 import { getGachaStatus } from '../utils/gachaStatus'
+import { dedupeGachasBySlug } from '../utils/siteInsights'
 
 const GACHA_FILTERS = [
   { key: 'all', label: 'すべて' },
@@ -40,6 +40,7 @@ function GachaList() {
   const [searchParams] = useSearchParams()
   const [selectedFilter, setSelectedFilter] = useState('all')
   const [currentTime, setCurrentTime] = useState(Date.now())
+  const uniqueGachas = useMemo(() => dedupeGachasBySlug(gachas), [])
 
   const query = (searchParams.get('q') || '').trim().toLowerCase()
 
@@ -53,12 +54,12 @@ function GachaList() {
 
   const sortedGachas = useMemo(
     () =>
-      [...gachas].sort((a, b) => {
+      [...uniqueGachas].sort((a, b) => {
         const timeA = parseStartDate(a.startDate)
         const timeB = parseStartDate(b.startDate)
         return timeB - timeA
       }),
-    [],
+    [uniqueGachas],
   )
 
 useEffect(() => {
@@ -109,9 +110,16 @@ useEffect(() => {
           <div className="gacha-list-intro">
             <h1>ガチャ履歴</h1>
             <p>
-              登録済みの全{gachas.length}件を開始日時が新しい順に掲載しています。
+              登録済みの全{uniqueGachas.length}件を開始日時が新しい順に掲載しています。
               開催期間、確認済み件数、カテゴリ別の排出アイテムを確認できます。
             </p>
+          </div>
+
+          <div className="item-guide-strip">
+            <p><strong>履歴を読み解く</strong></p>
+            <Link to="/guides/gacha-cycle">追加間隔と開催日数</Link>
+            <Link to="/guides/reprints">復刻アイテムの照合</Link>
+            <Link to="/guides/item-finder">時期から衣装を探す</Link>
           </div>
 
           <div className="filter-group" aria-label="gacha filters">
@@ -127,7 +135,7 @@ useEffect(() => {
             ))}
           </div>
 
-          <p className="result-count">{filteredGachas.length}件 / 全{gachas.length}件</p>
+          <p className="result-count">{filteredGachas.length}件 / 全{uniqueGachas.length}件</p>
 
           {filteredGachas.length > 0 ? (
             <div className="gacha-grid">

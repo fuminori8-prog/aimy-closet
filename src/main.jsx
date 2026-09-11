@@ -2,6 +2,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import './index.css'
+import './v4.css'
 import App from './App.jsx'
 import GachaDetail from './pages/GachaDetail.jsx'
 import GachaList from './pages/GachaList.jsx'
@@ -16,7 +17,13 @@ import Contact from './pages/Contact.jsx'
 import About from './pages/About.jsx'
 import Guide from './pages/Guide.jsx'
 import DataPolicy from './pages/DataPolicy.jsx'
-import Insights, { GachaCycleGuide, ImageSearchGuide, ReprintGuide } from './pages/Insights.jsx'
+import Insights, {
+  CategoryGuide,
+  GachaCycleGuide,
+  ImageSearchGuide,
+  ItemFinderGuide,
+  ReprintGuide,
+} from './pages/Insights.jsx'
 import ScrollToTop from './components/ScrollToTop'
 import RouteSeo from './components/RouteSeo.jsx'
 import { FavoritesProvider } from './contexts/FavoritesContext.jsx'
@@ -47,6 +54,8 @@ createRoot(document.getElementById('root')).render(
           <Route path="/guides/gacha-cycle" element={<GachaCycleGuide />} />
           <Route path="/guides/reprints" element={<ReprintGuide />} />
           <Route path="/guides/image-search" element={<ImageSearchGuide />} />
+          <Route path="/guides/item-finder" element={<ItemFinderGuide />} />
+          <Route path="/guides/categories" element={<CategoryGuide />} />
         </Routes>
       </FavoritesProvider>
     </BrowserRouter>

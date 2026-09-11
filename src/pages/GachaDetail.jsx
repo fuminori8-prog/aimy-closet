@@ -172,7 +172,7 @@ function GachaDetail() {
                   <dd>{insight?.durationDays ? `${insight.durationDays}日` : '常設・未確認'}</dd>
                 </div>
                 <div>
-                  <dt>過去収録と一致</dt>
+                  <dt>登録済み履歴と一致</dt>
                   <dd>{insight ? `${insight.returningItems}件` : '確認中'}</dd>
                 </div>
                 <div>
@@ -181,12 +181,24 @@ function GachaDetail() {
                 </div>
               </dl>
               {insight ? (
-                <p>
-                  正式名とレアリティを過去ガチャと照合した結果、
-                  過去収録と一致する候補は{insight.returningItems}件、
-                  この時点での初登場候補は{insight.firstSeenItems}件です。
-                  <Link to="/guides/reprints"> 集計方法を見る</Link>
-                </p>
+                <div className="gacha-verification-note">
+                  <p>
+                    開始日時が古い登録ガチャと、正式名・レアリティの両方が一致したものは
+                    {insight.returningItems}件です。残り{insight.unmatchedToRegisteredHistory}件は
+                    「新規」ではなく、当サイトの登録済み履歴だけでは復刻元を確定できない項目です。
+                  </p>
+                  {insight.matchingPriorItems.length ? (
+                    <ul>
+                      {insight.matchingPriorItems.map((item) => (
+                        <li key={`${item.id}-${item.firstGachaSlug}`}>
+                          {item.name}（{item.rarity || '未確認'}）— 先に確認した
+                          <Link to={`/gacha/${item.firstGachaSlug}`}> {item.firstGachaTitle}</Link>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : null}
+                  <p><Link to="/guides/reprints">復刻照合の条件と限界を見る</Link></p>
+                </div>
               ) : null}
             </>
           ) : (
@@ -234,6 +246,23 @@ function GachaDetail() {
             </p>
           </section>
         )}
+
+        {insight?.previous || insight?.next ? (
+          <nav className="adjacent-gacha-nav" aria-label="開催順で前後のガチャ">
+            {insight.previous ? (
+              <Link to={`/gacha/${insight.previous.slug}`}>
+                <span>ひとつ前に開始</span>
+                <strong>{insight.previous.title}</strong>
+              </Link>
+            ) : <span />}
+            {insight.next ? (
+              <Link to={`/gacha/${insight.next.slug}`}>
+                <span>次に開始</span>
+                <strong>{insight.next.title}</strong>
+              </Link>
+            ) : null}
+          </nav>
+        ) : null}
         <div className="detail-back-wrap">
           <button
             type="button"
