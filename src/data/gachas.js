@@ -1,3 +1,4 @@
+import osoroiYumeKaWaKode from './gachas/osoroi-yume-ka-wa-kode'
 import haitokuNoShisutaTsumibukakiInori from './gachas/haitoku-no-shisuta-tsumibukaki-inori'
 import bichiDeOKyujiShiChaiMasu from './gachas/bichi-de-o-kyuji-shi-chai-masu'
 import torokeruNittoNoYuwaku from './gachas/torokeru-nitto-no-yuwaku'
@@ -38,6 +39,7 @@ import kimiNoTokubetsu from './gachas/kimi-no-tokubetsu'
 import friendPoint from './gachas/friend-point'
 
 export const gachas = [
+  osoroiYumeKaWaKode,
   haitokuNoShisutaTsumibukakiInori,
   bichiDeOKyujiShiChaiMasu,
   torokeruNittoNoYuwaku,
