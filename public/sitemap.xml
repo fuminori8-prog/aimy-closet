@@ -2,15 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://aimycloset.jp/</loc>
-    <lastmod>2026-09-11</lastmod>
+    <lastmod>2026-09-14</lastmod>
   </url>
   <url>
     <loc>https://aimycloset.jp/item</loc>
-    <lastmod>2026-09-11</lastmod>
+    <lastmod>2026-09-14</lastmod>
   </url>
   <url>
     <loc>https://aimycloset.jp/gacha</loc>
-    <lastmod>2026-09-11</lastmod>
+    <lastmod>2026-09-14</lastmod>
   </url>
   <url>
     <loc>https://aimycloset.jp/image-search</loc>
@@ -46,15 +46,15 @@
   </url>
   <url>
     <loc>https://aimycloset.jp/insights</loc>
-    <lastmod>2026-09-11</lastmod>
+    <lastmod>2026-09-14</lastmod>
   </url>
   <url>
     <loc>https://aimycloset.jp/guides/gacha-cycle</loc>
-    <lastmod>2026-09-11</lastmod>
+    <lastmod>2026-09-14</lastmod>
   </url>
   <url>
     <loc>https://aimycloset.jp/guides/reprints</loc>
-    <lastmod>2026-09-11</lastmod>
+    <lastmod>2026-09-14</lastmod>
   </url>
   <url>
     <loc>https://aimycloset.jp/guides/image-search</loc>
@@ -83,6 +83,10 @@
   <url>
     <loc>https://aimycloset.jp/gacha/anata-senzoku-shikurettobani</loc>
     <lastmod>2026-08-21</lastmod>
+  </url>
+  <url>
+    <loc>https://aimycloset.jp/gacha/ano-ko-no-oshigoto-jijo</loc>
+    <lastmod>2026-09-14</lastmod>
   </url>
   <url>
     <loc>https://aimycloset.jp/gacha/ano-natsu-no-hokago</loc>
