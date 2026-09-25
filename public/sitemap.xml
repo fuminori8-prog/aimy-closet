@@ -2,15 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://aimycloset.jp/</loc>
-    <lastmod>2026-09-21</lastmod>
+    <lastmod>2026-09-25</lastmod>
   </url>
   <url>
     <loc>https://aimycloset.jp/item</loc>
-    <lastmod>2026-09-21</lastmod>
+    <lastmod>2026-09-25</lastmod>
   </url>
   <url>
     <loc>https://aimycloset.jp/gacha</loc>
-    <lastmod>2026-09-21</lastmod>
+    <lastmod>2026-09-25</lastmod>
   </url>
   <url>
     <loc>https://aimycloset.jp/image-search</loc>
@@ -46,15 +46,15 @@
   </url>
   <url>
     <loc>https://aimycloset.jp/insights</loc>
-    <lastmod>2026-09-21</lastmod>
+    <lastmod>2026-09-25</lastmod>
   </url>
   <url>
     <loc>https://aimycloset.jp/guides/gacha-cycle</loc>
-    <lastmod>2026-09-21</lastmod>
+    <lastmod>2026-09-25</lastmod>
   </url>
   <url>
     <loc>https://aimycloset.jp/guides/reprints</loc>
-    <lastmod>2026-09-21</lastmod>
+    <lastmod>2026-09-25</lastmod>
   </url>
   <url>
     <loc>https://aimycloset.jp/guides/image-search</loc>
@@ -199,6 +199,10 @@
   <url>
     <loc>https://aimycloset.jp/gacha/rin-go-ame-to-otome-no-himi-tsu</loc>
     <lastmod>2026-08-03</lastmod>
+  </url>
+  <url>
+    <loc>https://aimycloset.jp/gacha/shushoku-deto-sutairu</loc>
+    <lastmod>2026-09-25</lastmod>
   </url>
   <url>
     <loc>https://aimycloset.jp/gacha/steam-antique</loc>
