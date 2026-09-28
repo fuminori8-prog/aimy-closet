@@ -73,6 +73,22 @@ function getMode(values) {
   )[0]
 }
 
+function getDataUpdatedDate(gacha) {
+  const match = String(gacha?.startDate || '').match(
+    /^(\d{4})\/(\d{1,2})\/(\d{1,2})/,
+  )
+
+  if (!match) {
+    return { iso: '', label: '未確認' }
+  }
+
+  const [, year, month, day] = match
+  return {
+    iso: `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`,
+    label: `${year}年${Number(month)}月${Number(day)}日`,
+  }
+}
+
 export function getSiteInsights(inputGachas) {
   const gachas = dedupeGachasBySlug(inputGachas)
   const dated = gachas
@@ -162,6 +178,8 @@ export function getSiteInsights(inputGachas) {
       currentGachaSlug: gacha.slug,
     })),
   )
+  const latestRegisteredGacha = gachaRows[gachaRows.length - 1] || null
+  const dataUpdatedDate = getDataUpdatedDate(latestRegisteredGacha)
 
   return {
     gachas,
@@ -174,7 +192,8 @@ export function getSiteInsights(inputGachas) {
     commonDuration: getMode(durationValues),
     exactMatches,
     earliestRegisteredGacha: gachaRows[0] || null,
-    latestRegisteredGacha: gachaRows[gachaRows.length - 1] || null,
+    latestRegisteredGacha,
+    dataUpdatedDate,
     medianIntervalDays: median(intervals),
     averageIntervalDays: intervals.length
       ? Math.round(

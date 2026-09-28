@@ -5,6 +5,7 @@ import Header from '../components/Header'
 import Footer from '../components/Footer'
 import SearchBar from '../components/SearchBar'
 import GachaItemCard from '../components/GachaItemCard'
+import { historicalItems } from '../data/historicalItems'
 import { getAllItems, getCanonicalItemId } from '../utils/items'
 import {
   MAIN_CATEGORIES,
@@ -144,9 +145,11 @@ function ItemList() {
             📷 名前が分からないアイテムを画像から探す
           </Link>
 
-          <Link to="/historical-items" className="historical-entry-link">
-            🗂 ガチャ名・名称が未特定の過去アイテムを見る
-          </Link>
+          {historicalItems.length > 0 ? (
+            <Link to="/historical-items" className="historical-entry-link">
+              🗂 ガチャ名・名称が未特定の過去アイテムを見る
+            </Link>
+          ) : null}
 
           {itemQuery ? (
             <div className="focused-item-notice">

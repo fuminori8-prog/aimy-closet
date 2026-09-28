@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import LegalPage from '../components/LegalPage'
+import { historicalItems } from '../data/historicalItems'
 
 function Guide() {
   return (
@@ -31,11 +32,13 @@ function Guide() {
             <p>開始日時が新しい順の履歴から、その時期に開催されたガチャを確認します。</p>
             <Link to="/gacha">ガチャ履歴を開く</Link>
           </article>
-          <article>
-            <h3>古いアイテム・ガチャ不明</h3>
-            <p>2.5周年交換所で確認した、正式名や配布ガチャが未特定の記録も確認できます。</p>
-            <Link to="/historical-items">未特定アイテムを見る</Link>
-          </article>
+          {historicalItems.length > 0 ? (
+            <article>
+              <h3>古いアイテム・ガチャ不明</h3>
+              <p>2.5周年交換所で確認した、正式名や配布ガチャが未特定の記録も確認できます。</p>
+              <Link to="/historical-items">未特定アイテムを見る</Link>
+            </article>
+          ) : null}
         </div>
       </section>
 

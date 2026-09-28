@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import LegalPage from '../components/LegalPage'
 import { gachas } from '../data/gachas'
+import { historicalItems } from '../data/historicalItems'
 import { getSiteInsights } from '../utils/siteInsights'
 
 const insights = getSiteInsights(gachas)
@@ -15,13 +16,14 @@ const reprintExactMatches = reprintRows.flatMap((gacha) =>
     currentGachaSlug: gacha.slug,
   })),
 )
-const REVIEWED_DATE = '2026年9月11日'
+const DATA_UPDATED_DATE = insights.dataUpdatedDate.label
+const hasHistoricalItems = historicalItems.length > 0
 
 function ArticleStamp({ method }) {
   return (
     <div className="article-stamp" aria-label="記事情報">
       <p><strong>執筆・検証:</strong> Aimy Closet運営者</p>
-      <p><strong>最終内容確認:</strong> {REVIEWED_DATE}</p>
+      <p><strong>データ最終更新:</strong> {DATA_UPDATED_DATE}</p>
       {method ? <p><strong>確認方法:</strong> {method}</p> : null}
     </div>
   )
@@ -415,7 +417,9 @@ function ItemFinderGuide() {
           <article><h3>名前の一部が分かる</h3><p>色名や「リボン」「ツイン」など特徴的な語を図鑑で検索します。</p><Link to="/item">図鑑で検索</Link></article>
           <article><h3>画像だけある</h3><p>服・髪型・目などのカテゴリを決め、画像検索で候補を絞ります。</p><Link to="/image-search">画像から検索</Link></article>
           <article><h3>見た時期が分かる</h3><p>ガチャ履歴を開始日時順に見て、その前後に開催されたガチャを開きます。</p><Link to="/gacha">開催順で確認</Link></article>
-          <article><h3>かなり古い・ガチャ不明</h3><p>通常図鑑で見つからなければ、交換所で確認した未特定アイテムも確認します。</p><Link to="/historical-items">未特定一覧を見る</Link></article>
+          {hasHistoricalItems ? (
+            <article><h3>かなり古い・ガチャ不明</h3><p>通常図鑑で見つからなければ、交換所で確認した未特定アイテムも確認します。</p><Link to="/historical-items">未特定一覧を見る</Link></article>
+          ) : null}
         </div>
       </section>
 

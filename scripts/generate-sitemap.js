@@ -1,6 +1,7 @@
 import { readdir, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
+import { historicalItems } from '../src/data/historicalItems.js'
 
 const SITE_URL = 'https://aimycloset.jp'
 const CONTENT_REVIEW_DATE = '2026-09-11'
@@ -13,7 +14,6 @@ const staticPaths = [
   '/item',
   '/gacha',
   '/image-search',
-  '/historical-items',
   '/guide',
   '/about',
   '/data-policy',
@@ -27,6 +27,10 @@ const staticPaths = [
   '/guides/item-finder',
   '/guides/categories',
 ]
+
+if (historicalItems.length > 0) {
+  staticPaths.splice(4, 0, '/historical-items')
+}
 
 function escapeXml(value) {
   return String(value)
@@ -99,7 +103,7 @@ const latestGachaDate = gachas
 const siteUpdatedDate = [latestGachaDate, CONTENT_REVIEW_DATE].sort().at(-1)
 const entries = staticPaths.map((pagePath) => ({
   pagePath,
-  lastModified: ['/', '/item', '/gacha', '/insights', '/guides/gacha-cycle', '/guides/reprints'].includes(pagePath)
+  lastModified: ['/', '/item', '/gacha', '/insights', '/guides/gacha-cycle', '/guides/reprints', '/guides/item-finder'].includes(pagePath)
     ? siteUpdatedDate
     : CONTENT_REVIEW_DATE,
 }))

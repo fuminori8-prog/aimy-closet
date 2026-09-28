@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
+import { historicalItems } from '../data/historicalItems'
 
 const SITE_URL = 'https://aimycloset.jp'
 
@@ -33,10 +34,12 @@ function RouteSeo() {
   useEffect(() => {
     const isItemDetail = /^\/item\/[^/]+$/.test(pathname)
     const isPrivateUtility = pathname === '/favorites'
+    const isEmptyHistoricalPage =
+      pathname === '/historical-items' && historicalItems.length === 0
     const robots = getOrCreateMeta('robots')
     const canonical = getOrCreateCanonical()
 
-    robots.content = isItemDetail || isPrivateUtility
+    robots.content = isItemDetail || isPrivateUtility || isEmptyHistoricalPage
       ? 'noindex,follow'
       : 'index,follow'
     canonical.href = `${SITE_URL}${pathname === '/' ? '/' : pathname}`

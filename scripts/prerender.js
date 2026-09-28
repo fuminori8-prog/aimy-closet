@@ -6,9 +6,12 @@ import {
   getSiteInsights,
 } from '../src/utils/siteInsights.js'
 import { getMainCategory } from '../src/utils/itemCategory.js'
+import { historicalItems } from '../src/data/historicalItems.js'
 
 const SITE_URL = 'https://aimycloset.jp'
-const REVIEWED_DATE = '2026-09-11'
+const FALLBACK_REVIEWED_DATE = '2026-09-11'
+let reviewedDate = FALLBACK_REVIEWED_DATE
+let reviewedDateLabel = '2026年9月11日'
 const project = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const dist = path.join(project, 'dist')
 const dataDirectory = path.join(project, 'src', 'data', 'gachas')
@@ -78,7 +81,7 @@ function definitionList(entries) {
 }
 
 function articleStamp(method) {
-  return `<div class="article-stamp"><p><strong>執筆・検証:</strong> Aimy Closet運営者</p><p><strong>最終内容確認:</strong> 2026年9月11日</p>${
+  return `<div class="article-stamp"><p><strong>執筆・検証:</strong> Aimy Closet運営者</p><p><strong>データ最終更新:</strong> ${escapeHtml(reviewedDateLabel)}</p>${
     method ? `<p><strong>確認方法:</strong> ${escapeHtml(method)}</p>` : ''
   }</div>`
 }
@@ -124,8 +127,8 @@ function jsonLdFor(page, canonical) {
 
   if (page.kind === 'article') {
     base.author = { '@type': 'Person', name: 'Aimy Closet運営者' }
-    base.datePublished = page.datePublished || REVIEWED_DATE
-    base.dateModified = page.dateModified || REVIEWED_DATE
+    base.datePublished = page.datePublished || FALLBACK_REVIEWED_DATE
+    base.dateModified = page.dateModified || reviewedDate
   }
 
   return JSON.stringify(base).replaceAll('<', '\\u003c')
@@ -187,6 +190,9 @@ async function writePage(template, page) {
 
 function createPages(gachas) {
   const analysis = getSiteInsights(gachas)
+  reviewedDate = analysis.dataUpdatedDate.iso || FALLBACK_REVIEWED_DATE
+  reviewedDateLabel = analysis.dataUpdatedDate.label || '2026年9月11日'
+  const hasHistoricalItems = historicalItems.length > 0
   const newest = [...analysis.datedGachas].reverse().slice(0, 12)
   const reprints = analysis.datedGachas
     .filter((gacha) => gacha.title.includes('復刻'))
@@ -407,7 +413,7 @@ function createPages(gachas) {
         '名前が分からないAimy衣装の探し方',
         `名前を覚えていなくても、画像・カテゴリ・見かけた時期・ガチャのテーマのいずれかが分かれば、全${analysis.uniqueItemCount}件から候補を減らせます。`,
         [
-          ['手掛かり別の入口', '<ul><li>名前の一部：<a href="/item">図鑑で特徴語を検索</a></li><li>画像だけ：<a href="/image-search">カテゴリを選んで画像検索</a></li><li>時期：<a href="/gacha">開始順のガチャ履歴</a></li><li>かなり古い：<a href="/historical-items">ガチャ未特定の過去アイテム</a></li></ul>'],
+          ['手掛かり別の入口', `<ul><li>名前の一部：<a href="/item">図鑑で特徴語を検索</a></li><li>画像だけ：<a href="/image-search">カテゴリを選んで画像検索</a></li><li>時期：<a href="/gacha">開始順のガチャ履歴</a></li>${hasHistoricalItems ? '<li>かなり古い：<a href="/historical-items">ガチャ未特定の過去アイテム</a></li>' : ''}</ul>`],
           ['名前の一部から探す', '<ol><li>リボン・猫目・紫陽花など特徴を1語にする</li><li>カテゴリで絞る</li><li>括弧内の色と画像を比べる</li><li>収録ガチャの開催時期も確認する</li></ol><p>「白」だけより、形を表す語を組み合わせると候補を減らせます。</p>'],
           ['画像と時期を組み合わせる', '<p>画像検索の上位候補が似ている場合は、撮影日の前後に開催中だったガチャを開き、候補名がラインナップにあるか確認します。撮影日は初登場日とは限らないため、日付だけで断定しません。</p>'],
           ['見つからないとき', '<ol><li>隣接カテゴリへ変える</li><li>名前を短くする</li><li>切り抜き範囲を変える</li><li>未特定一覧を確認する</li><li>未登録として情報提供する</li></ol>'],
@@ -445,6 +451,7 @@ function createPages(gachas) {
       path: '/historical-items',
       title: 'ガチャ未特定の過去アイテム｜Aimy Closet',
       description: '正式名・ガチャ未特定の過去アイテムを実装時期、レアリティ、カテゴリ別に掲載します。',
+      robots: hasHistoricalItems ? 'index,follow' : 'noindex,follow',
       content: infoPage(
         'ガチャ未特定の過去アイテム',
         '交換所で存在を確認できても、正式名や配布ガチャを確認できないものを通常図鑑と分けて整理します。',
@@ -460,7 +467,7 @@ function createPages(gachas) {
         'Aimy Closetの使い方',
         '名前・画像・時期・ガチャのうち、分かっている手掛かりに合う入口から探します。画像だけで決めず、カテゴリ・レアリティ・開催時期も照合します。',
         [
-          ['手掛かり別の入口', '<ul><li><a href="/item">名前・特徴から図鑑検索</a></li><li><a href="/image-search">スクリーンショットから画像検索</a></li><li><a href="/gacha">見た時期からガチャ履歴</a></li><li><a href="/historical-items">古い未特定アイテム</a></li></ul>'],
+          ['手掛かり別の入口', `<ul><li><a href="/item">名前・特徴から図鑑検索</a></li><li><a href="/image-search">スクリーンショットから画像検索</a></li><li><a href="/gacha">見た時期からガチャ履歴</a></li>${hasHistoricalItems ? '<li><a href="/historical-items">古い未特定アイテム</a></li>' : ''}</ul>`],
           ['図鑑の読み方', '<p>各カードには名前、カテゴリ、種類、収録ガチャを表示します。同名でも色やレアリティが違う場合は別候補です。</p>'],
           ['復刻を確認する', '<p>当サイトの登録開始前の復刻元は照合できません。「一致なし＝新規」とは判断せず、<a href="/guides/reprints">確認済みと未判定を分けます。</a></p>'],
           ['見つからない場合', '<p>カテゴリ変更、短い名前、切り抜き直し、未特定一覧の順で確認します。誤りは確認できる画面とURLを添えてお問い合わせください。</p>'],
