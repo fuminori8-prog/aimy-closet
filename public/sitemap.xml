@@ -2,15 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://aimycloset.jp/</loc>
-    <lastmod>2026-09-28</lastmod>
+    <lastmod>2026-10-01</lastmod>
   </url>
   <url>
     <loc>https://aimycloset.jp/item</loc>
-    <lastmod>2026-09-28</lastmod>
+    <lastmod>2026-10-01</lastmod>
   </url>
   <url>
     <loc>https://aimycloset.jp/gacha</loc>
-    <lastmod>2026-09-28</lastmod>
+    <lastmod>2026-10-01</lastmod>
   </url>
   <url>
     <loc>https://aimycloset.jp/image-search</loc>
@@ -42,15 +42,15 @@
   </url>
   <url>
     <loc>https://aimycloset.jp/insights</loc>
-    <lastmod>2026-09-28</lastmod>
+    <lastmod>2026-10-01</lastmod>
   </url>
   <url>
     <loc>https://aimycloset.jp/guides/gacha-cycle</loc>
-    <lastmod>2026-09-28</lastmod>
+    <lastmod>2026-10-01</lastmod>
   </url>
   <url>
     <loc>https://aimycloset.jp/guides/reprints</loc>
-    <lastmod>2026-09-28</lastmod>
+    <lastmod>2026-10-01</lastmod>
   </url>
   <url>
     <loc>https://aimycloset.jp/guides/image-search</loc>
@@ -58,7 +58,7 @@
   </url>
   <url>
     <loc>https://aimycloset.jp/guides/item-finder</loc>
-    <lastmod>2026-09-28</lastmod>
+    <lastmod>2026-10-01</lastmod>
   </url>
   <url>
     <loc>https://aimycloset.jp/guides/categories</loc>
@@ -227,6 +227,10 @@
   <url>
     <loc>https://aimycloset.jp/gacha/wagamama-de-biru-ni-obore-tai</loc>
     <lastmod>2026-08-01</lastmod>
+  </url>
+  <url>
+    <loc>https://aimycloset.jp/gacha/watashi-o-kainarashi-te</loc>
+    <lastmod>2026-10-01</lastmod>
   </url>
   <url>
     <loc>https://aimycloset.jp/gacha/watashi-wo-mitashite</loc>

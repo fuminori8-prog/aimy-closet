@@ -1,3 +1,4 @@
+import watashiOKainarashiTe from './gachas/watashi-o-kainarashi-te'
 import tailoredfemmefatale from './gachas/tailoredfemmefatale'
 import shushokuDetoSutairu from './gachas/shushoku-deto-sutairu'
 import togenkyoKaraWagaAi from './gachas/togenkyo-kara-waga-ai'
@@ -44,6 +45,7 @@ import kimiNoTokubetsu from './gachas/kimi-no-tokubetsu'
 import friendPoint from './gachas/friend-point'
 
 export const gachas = [
+  watashiOKainarashiTe,
   tailoredfemmefatale,
   shushokuDetoSutairu,
   togenkyoKaraWagaAi,
