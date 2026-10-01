@@ -46,10 +46,6 @@ if (!dailyTasks.includes('ガチャチケット2枚') || !dailyTasks.includes('�
   throw new Error('デイリー攻略記事の合計報酬が正しくありません')
 }
 
-if (!dailyTasks.includes('ガチャチケット2枚') || !dailyTasks.includes('ジェム100個')) {
-  throw new Error('デイリー攻略記事の合計報酬が正しくありません')
-}
-
 if (!sitemap.includes('/guides/daily-tasks')) {
   throw new Error('デイリー攻略記事がサイトマップに含まれていません')
 }

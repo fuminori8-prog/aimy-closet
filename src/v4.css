@@ -251,11 +251,14 @@
   padding: 1.1rem 1.25rem;
   border: 1px solid #d9dff0;
   border-radius: 18px;
-  background: #f7f9ff;
+  color: #3f3a43;
+  background: #ffffff;
 }
 
 .daily-guide-summary h2 {
   margin-top: 0;
+  color: #553f54 !important;
+  opacity: 1;
 }
 
 .daily-guide-summary ol {
@@ -263,6 +266,19 @@
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0.55rem 1.6rem;
   margin-bottom: 0;
+  color: #3f3a43 !important;
+}
+
+.daily-guide-summary li {
+  color: #3f3a43 !important;
+  opacity: 1;
+}
+
+.daily-guide-reset {
+  display: block;
+  color: #77717a;
+  font-size: 0.82rem;
+  line-height: 1.6;
 }
 
 .daily-guide-step-number {
@@ -348,23 +364,6 @@
   margin: 1rem auto;
 }
 
-.daily-guide-site-link,
-.daily-guide-reward-total {
-  margin-top: 1rem;
-  border: 1px solid rgba(122, 91, 119, 0.22);
-  border-radius: 16px;
-  background: rgba(255, 248, 253, 0.82);
-  padding: 1rem 1.1rem;
-}
-
-.daily-guide-reward-total {
-  display: grid;
-  gap: 0.35rem;
-}
-
-.daily-guide-reward-total strong {
-  color: #704f6b;
-}
 
 .daily-guide-site-link,
 .daily-guide-reward-total {
