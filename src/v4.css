@@ -246,6 +246,162 @@
   gap: 0.7rem;
 }
 
+.daily-guide-summary {
+  margin: 1.5rem 0 2rem;
+  padding: 1.1rem 1.25rem;
+  border: 1px solid #d9dff0;
+  border-radius: 18px;
+  background: #f7f9ff;
+}
+
+.daily-guide-summary h2 {
+  margin-top: 0;
+}
+
+.daily-guide-summary ol {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.55rem 1.6rem;
+  margin-bottom: 0;
+}
+
+.daily-guide-step-number {
+  display: inline-flex;
+  margin: 0 0 0.35rem;
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+  color: #315f91;
+  background: #e6f3ff;
+  font-size: 0.8rem;
+  font-weight: 850;
+  letter-spacing: 0.06em;
+}
+
+.daily-guide-figure {
+  max-width: 560px;
+  margin: 1.25rem auto;
+}
+
+.daily-guide-figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid #e1e4ec;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 10px 24px rgba(67, 78, 102, 0.08);
+}
+
+.daily-guide-figure figcaption {
+  margin-top: 0.55rem;
+  color: #6f727b;
+  font-size: 0.88rem;
+  line-height: 1.65;
+  text-align: center;
+}
+
+.daily-guide-action-list {
+  display: grid;
+  gap: 0.75rem;
+  padding-left: 0;
+  list-style: none;
+  counter-reset: daily-action;
+}
+
+.daily-guide-action-list li {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.2rem 0.75rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid #e3e6ee;
+  border-radius: 14px;
+  background: #fff;
+  counter-increment: daily-action;
+}
+
+.daily-guide-action-list li::before {
+  grid-row: 1 / span 2;
+  content: counter(daily-action);
+  display: grid;
+  place-items: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 50%;
+  color: #fff;
+  background: #5497cf;
+  font-weight: 850;
+}
+
+.daily-guide-action-list span {
+  color: #646772;
+  line-height: 1.75;
+}
+
+.daily-guide-image-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  align-items: start;
+}
+
+.daily-guide-image-grid .daily-guide-figure {
+  margin: 1rem auto;
+}
+
+.daily-guide-site-link,
+.daily-guide-reward-total {
+  margin-top: 1rem;
+  border: 1px solid rgba(122, 91, 119, 0.22);
+  border-radius: 16px;
+  background: rgba(255, 248, 253, 0.82);
+  padding: 1rem 1.1rem;
+}
+
+.daily-guide-reward-total {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.daily-guide-reward-total strong {
+  color: #704f6b;
+}
+
+.daily-guide-site-link,
+.daily-guide-reward-total {
+  margin-top: 1rem;
+  border: 1px solid rgba(122, 91, 119, 0.22);
+  border-radius: 16px;
+  background: rgba(255, 248, 253, 0.82);
+  padding: 1rem 1.1rem;
+}
+
+.daily-guide-reward-total {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.daily-guide-reward-total strong {
+  color: #704f6b;
+}
+
+.daily-guide-faq details {
+  margin-top: 0.75rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid #e2dfe5;
+  border-radius: 14px;
+  background: #fff;
+}
+
+.daily-guide-faq summary {
+  color: #584451;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.daily-guide-faq details p {
+  margin-bottom: 0;
+}
+
 .guide-inline-links a,
 .item-guide-strip a,
 .focused-item-notice a {
@@ -418,5 +574,10 @@
   .item-guide-strip {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .daily-guide-summary ol,
+  .daily-guide-image-grid {
+    grid-template-columns: 1fr;
   }
 }

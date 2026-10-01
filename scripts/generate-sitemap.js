@@ -26,6 +26,7 @@ const staticPaths = [
   '/guides/image-search',
   '/guides/item-finder',
   '/guides/categories',
+  '/guides/daily-tasks',
 ]
 
 if (historicalItems.length > 0) {
@@ -103,9 +104,11 @@ const latestGachaDate = gachas
 const siteUpdatedDate = [latestGachaDate, CONTENT_REVIEW_DATE].sort().at(-1)
 const entries = staticPaths.map((pagePath) => ({
   pagePath,
-  lastModified: ['/', '/item', '/gacha', '/insights', '/guides/gacha-cycle', '/guides/reprints', '/guides/item-finder'].includes(pagePath)
-    ? siteUpdatedDate
-    : CONTENT_REVIEW_DATE,
+  lastModified: pagePath === '/guides/daily-tasks'
+    ? '2026-10-01'
+    : ['/', '/item', '/gacha', '/insights', '/guides/gacha-cycle', '/guides/reprints', '/guides/item-finder'].includes(pagePath)
+      ? siteUpdatedDate
+      : CONTENT_REVIEW_DATE,
 }))
 
 for (const gacha of gachas) {
@@ -117,6 +120,7 @@ for (const gacha of gachas) {
 
 await writeFile(outputPath, createSitemap(entries), 'utf8')
 
-console.log(`サイトマップ: ${entries.length}URL（固有ガチャ${gachas.length}件・実用ガイド5件）`)
+const guideCount = staticPaths.filter((pagePath) => pagePath.startsWith('/guides/')).length
+console.log(`サイトマップ: ${entries.length}URL（固有ガチャ${gachas.length}件・実用ガイド${guideCount}件）`)
 console.log('個別アイテムURL: 内部リンクを図鑑検索へ統合・サイトマップ対象外')
 console.log(`サイト更新日: ${siteUpdatedDate}`)

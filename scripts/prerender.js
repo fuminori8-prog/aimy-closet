@@ -90,6 +90,10 @@ function notice(body) {
   return `<aside class="editorial-notice">${body}</aside>`
 }
 
+function dailyGuideFigure(file, alt, caption) {
+  return `<figure class="daily-guide-figure"><img src="/images/guides/aimy-daily-tasks/${file}" alt="${escapeHtml(alt)}" loading="lazy"><figcaption>${escapeHtml(caption)}</figcaption></figure>`
+}
+
 function infoPage(title, lead, sections, method = '') {
   return `<article><h1>${escapeHtml(title)}</h1><p class="article-lead">${lead}</p>${articleStamp(method)}${sections
     .map(([heading, body]) => `<section><h2>${escapeHtml(heading)}</h2>${body}</section>`)
@@ -350,6 +354,28 @@ function createPages(gachas) {
         ],
         '開催期間とラインナップを目視確認し、開始日時順に集計',
       ),
+    },
+    {
+      path: '/guides/daily-tasks',
+      title: '【Aimy攻略】デイリータスク完全ガイド｜ミッション・ビンゴのクリア方法',
+      description: 'Aimyのデイリーミッションとデイリービンゴを効率よくクリアする手順を、実際のゲーム画面つきで解説します。無料ガチャ、ひろば、今日のテーマ投稿、報酬受け取りまで網羅。',
+      kind: 'article',
+      datePublished: '2026-10-01',
+      dateModified: '2026-10-01',
+      content: `<article><h1>【Aimy攻略】デイリータスク完全ガイド</h1>
+        <p class="article-lead">Aimyで毎日やっておきたいデイリーミッションとデイリービンゴを、取りこぼしにくい順番でまとめました。ログインから報酬受け取りまで、実際の画面に沿って進めれば一連のタスクをまとめて達成できます。</p>
+        <div class="article-stamp"><p><strong>執筆・確認:</strong> Aimy Closet運営者</p><p><strong>画面確認日:</strong> 2026年10月1日</p><p><strong>確認方法:</strong> Aimyアプリ内で実際に操作</p></div>
+        ${notice('<strong>先に結論:</strong> 「ひろば」でのツーショット投稿に「今日のテーマ」タグを付けると、デイリーミッションとビンゴの複数項目をまとめて進められます。すべて完了すると、確認時点では<strong>ガチャチケット2枚とジェム100個</strong>を受け取れます。各タスクは毎日0時にリセットされます。')}
+        <section><h2>最短で進める順番</h2><ol><li>ログインする</li><li>アイミーに話しかける</li><li>無料ガチャを引く</li><li>ひろばを開く</li><li>オープンチャットを開く</li><li>ランダム訪問からツーショットを投稿する</li><li>いいね・フォロー・コメントをする</li><li>ギフトとミッション報酬を受け取る</li></ol></section>
+        <section><h2>1. ログインして「アイミーに会おう」を達成</h2><p>Aimyを起動してホーム画面まで進めば達成です。月初や連続ログイン中はログインボーナスも受け取ります。</p>${dailyGuideFigure('01-login-bonus.webp', 'Aimyのログインボーナス受け取り画面', 'ログインボーナスも表示されたら、その場で受け取ります。')}</section>
+        <section><h2>2. アイミーに話しかけて挨拶する</h2><p>ホーム画面の「アイミーに話しかける」をタップします。画面上では1日5回まで無料と表示されていますが、無料回数やプラン内容は変更される場合があります。</p>${dailyGuideFigure('02-talk.webp', 'Aimyホーム画面の話しかけるボタン', 'ホーム下部のピンク色のボタンから会話を始めます。')}</section>
+        <section><h2>3. 女性・男性の無料ガチャを引く</h2><p>「無料」タブで、その日に引ける無料ガチャを消化します。通常時は女性向け3枠・男性向け3枠が目安ですが、周年イベントなどでは女性5回・男性5回になることもあります。</p><p>男性ガチャも、1回ごとの親密度ポイント5や重複時の交換メダルを得る目的があります。背景など男女共通のアイテムもあります。</p>${dailyGuideFigure('03-free-gacha.webp', 'Aimyの無料ガチャ一覧', '上部の「無料」タブで、その日に引けるガチャを確認します。')}<p>引いたアイテムの名前や収録ガチャは、<a href="/">Aimy ClosetのTOPページ</a>から検索できます。終了済みガチャのアイテムやランキングも確認できます。</p></section>
+        <section><h2>4〜7. ひろばでデイリービンゴをまとめて進める</h2><p>ひろばの交流メニューからオープンチャットを一度開き、戻ったらランダム訪問へ進みます。訪問先でツーショットを撮り、青い目印が付いた「今日のテーマ」タグを選んで投稿します。これで「チェキを撮影しよう」「ツーショットを撮る」「今日のテーマタグをつけて投稿する」をまとめて進められます。</p>${dailyGuideFigure('04-plaza.webp', 'Aimyひろばの交流メニュー', '「交流」にオープンチャットとランダム訪問があります。')}<p>投稿後は、いいね・フォロー・コメントの対象を確認します。新人投稿へのいいねが条件になっている日は、相手の表示を確認してから押します。</p></section>
+        <section><h2>8. ビンゴ・ギフト・ミッションの報酬を回収</h2><p>ビンゴでは1列ごとにフレンドポイント30pt、オールビンゴ報酬として単発ガチャチケット1枚が表示されます。</p><div class="daily-guide-image-grid">${dailyGuideFigure('05-bingo-complete.webp', 'Aimyデイリービンゴ完成表示', '「デイリービンゴ complete!」を確認。')}${dailyGuideFigure('06-bingo-reward.webp', 'Aimyオールビンゴ報酬', 'オールビンゴ報酬は単発ガチャチケット1枚。')}</div><p>ホームの「ギフト」では今日のテーマ投稿報酬のガチャチケット1枚を受け取り、最後に「ミッション」の「一括で受け取る」を押します。全5項目でジェム100個を受け取れます。</p><div class="daily-guide-image-grid">${dailyGuideFigure('07-theme-reward.webp', '今日のテーマ投稿報酬', '今日のテーマ投稿報酬はガチャチケット1枚。')}${dailyGuideFigure('08-mission-reward.webp', 'Aimyデイリーミッション達成画面', 'デイリーミッション全5項目でジェム100個。')}</div><p><strong>合計報酬：ガチャチケット2枚（ビンゴ1枚＋今日のテーマ投稿1枚）／ジェム100個</strong></p></section>
+        <section><h2>デイリー終了後のおすすめ</h2><ul><li><a href="/">Aimy ClosetのTOPページ</a>から衣装や終了済みガチャを探して着せ替える</li><li>スタンプの拡大・縮小・回転を使ってチェキを編集する</li><li>毎日の無料回数でアイミーと会話し、親密度を上げる</li></ul><p>追加会話のチケットや有料プランは、購入前にアプリ内の最新料金と条件を確認してください。</p></section>
+        <section><h2>Aimy攻略：デイリータスクのよくある質問</h2><h3>何時にリセットされる？</h3><p>デイリーミッションとデイリービンゴの画面では毎日0時更新と案内されています。</p><h3>今日のテーマ投稿は何と同時達成できる？</h3><p>ランダム訪問先でツーショットを撮り、今日のテーマタグを付けると、チェキ撮影・ツーショット・テーマタグ投稿をまとめて進められます。</p></section>
+        ${notice('Aimyはアップデートやイベントにより、無料回数・報酬・画面配置が変わる場合があります。本記事と表示が異なる場合は、アプリ内の最新案内を優先してください。')}
+      </article>`,
     },
     {
       path: '/guides/gacha-cycle',

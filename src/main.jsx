@@ -17,6 +17,7 @@ import Contact from './pages/Contact.jsx'
 import About from './pages/About.jsx'
 import Guide from './pages/Guide.jsx'
 import DataPolicy from './pages/DataPolicy.jsx'
+import DailyTasksGuide from './pages/DailyTasksGuide.jsx'
 import Insights, {
   CategoryGuide,
   GachaCycleGuide,
@@ -56,6 +57,7 @@ createRoot(document.getElementById('root')).render(
           <Route path="/guides/image-search" element={<ImageSearchGuide />} />
           <Route path="/guides/item-finder" element={<ItemFinderGuide />} />
           <Route path="/guides/categories" element={<CategoryGuide />} />
+          <Route path="/guides/daily-tasks" element={<DailyTasksGuide />} />
         </Routes>
       </FavoritesProvider>
     </BrowserRouter>

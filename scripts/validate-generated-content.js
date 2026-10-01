@@ -19,15 +19,40 @@ function capture(html, pattern, label) {
   return match[1]
 }
 
-const [home, item, insights, itemFinder, historical, sitemap] =
+const [home, item, insights, itemFinder, dailyTasks, historical, sitemap] =
   await Promise.all([
     read('dist/index.html'),
     read('dist/item.html'),
     read('dist/insights.html'),
     read('dist/guides/item-finder.html'),
+    read('dist/guides/daily-tasks.html'),
     read('dist/historical-items.html'),
     read('dist/sitemap.xml'),
   ])
+
+if (!dailyTasks.includes('【Aimy攻略】デイリータスク完全ガイド')) {
+  throw new Error('デイリー攻略記事のタイトルを生成HTMLから確認できません')
+}
+
+if ((dailyTasks.match(/images\/guides\/aimy-daily-tasks\//g) || []).length < 8) {
+  throw new Error('デイリー攻略記事の手順画像が不足しています')
+}
+
+if (!dailyTasks.includes('今日のテーマ投稿報酬') || !dailyTasks.includes('オールビンゴ報酬')) {
+  throw new Error('テーマ投稿報酬とビンゴ報酬の区別を生成HTMLから確認できません')
+}
+
+if (!dailyTasks.includes('ガチャチケット2枚') || !dailyTasks.includes('ジェム100個')) {
+  throw new Error('デイリー攻略記事の合計報酬が正しくありません')
+}
+
+if (!dailyTasks.includes('ガチャチケット2枚') || !dailyTasks.includes('ジェム100個')) {
+  throw new Error('デイリー攻略記事の合計報酬が正しくありません')
+}
+
+if (!sitemap.includes('/guides/daily-tasks')) {
+  throw new Error('デイリー攻略記事がサイトマップに含まれていません')
+}
 
 const counts = {
   top: capture(home, /固有アイテム(\d+)件/, 'TOPのアイテム件数'),
